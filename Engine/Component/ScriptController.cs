@@ -6,7 +6,20 @@ using STG.Engine.Debugging;
 
 namespace STG.Engine.Component {
     public class ScriptController {
-        public static ScriptController self;
+        #region シングルトン
+        static ScriptController self = null;
+
+        ScriptController() { 
+            
+        }
+
+        public static ScriptController Instance() {
+            if (self == null) {
+                self = new ScriptController();
+            }
+            return self;
+        }
+        #endregion
 
         public CoroutineRunner coroutineRunner = new CoroutineRunner();
 

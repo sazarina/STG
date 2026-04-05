@@ -94,7 +94,7 @@ namespace STG.Engine.Component {
 
         public static T CreateScirptInstance<T>(GameObject gameObject) where T: ScriptBase,new(){
             T t = new T();
-            t.Initialize(ScriptController.self,gameObject);
+            t.Initialize(ScriptController.Instance(),gameObject);
             t.Start();
             return t;
         }
