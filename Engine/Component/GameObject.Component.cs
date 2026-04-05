@@ -1,6 +1,4 @@
-﻿using STG.Engine.Component;
-using STG.Engine.Debug;
-using System;
+﻿using System;
 using System.Collections.Generic;
 
 namespace STG.Engine.Component {

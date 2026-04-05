@@ -1,9 +1,9 @@
-﻿using STG.Engine.Graphics;
-using Microsoft.Xna.Framework;
+﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using System;
 using System.Collections.Generic;
 using Xenon.Core;
+using STG.Engine.Graphics;
 using static STG.Engine.Graphics.GraphicsUltis;
 
 namespace STG.Engine.Component {

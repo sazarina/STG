@@ -1,11 +1,5 @@
-﻿using STG.Engine;
-using STG.Engine.Component;
-using Microsoft.Xna.Framework.Input;
-using STG.Engine.Debug;
-using STG.Engine.Graphics;
+﻿using STG.Engine.Component;
 using System.Collections;
-using System.Linq;
-using Xenon.Core;
 using Keys = Microsoft.Xna.Framework.Input.Keys;
 
 namespace STG.Engine.Debug {

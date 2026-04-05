@@ -1,9 +1,7 @@
 ﻿using ChevyRay.Coroutines;
 using Microsoft.Xna.Framework.Graphics;
-using System.Collections;
-using STG.Engine.Component;
-using STG.Engine.Debug;
 using STG.Engine.Graphics;
+using System.Collections;
 
 namespace STG.Engine.Component {
     /// <summary>

@@ -1,10 +1,8 @@
-﻿using STG.Engine.Debug;
-using STG.Engine.Graphics;
-using STG.Engine.Component;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using Xenon.Core;
+using STG.Engine.Graphics;
 using _Debug = STG.Engine.Debug.Debug;
 
 namespace STG.Engine.Component {

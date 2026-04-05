@@ -1,5 +1,4 @@
 ﻿using STG.Engine.Component;
-using STG.Engine.Debug;
 
 namespace STG.Engine.Graphics {
     public class Layer {

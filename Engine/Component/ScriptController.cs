@@ -1,5 +1,4 @@
 ﻿using ChevyRay.Coroutines;
-using STG.Engine.Debug;
 using Microsoft.Xna.Framework;
 using System.Collections;
 using System.Collections.Generic;

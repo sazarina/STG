@@ -1,12 +1,12 @@
-﻿using STG.Engine.Component;
-using STG.Engine.Helper;
-using Microsoft.Xna.Framework;
+﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Drawing.Imaging;
 using System.Runtime.InteropServices;
+using STG.Engine.Component;
+using STG.Engine.Helper;
 using static STG.Engine.Helper.FileLocation;
 using Color = Microsoft.Xna.Framework.Color;
 using Point = Microsoft.Xna.Framework.Point;

@@ -1,6 +1,4 @@
-﻿using STG.Engine.Debug;
-using Microsoft.Xna.Framework;
-using STG.Engine.Component;
+﻿using Microsoft.Xna.Framework;
 using System;
 using System.Collections.Generic;
 

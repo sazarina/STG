@@ -1,5 +1,4 @@
-﻿using STG.Engine.Debug;
-using STG.Engine.Helper;
+﻿using STG.Engine.Helper;
 using Microsoft.Xna.Framework.Input;
 
 namespace STG.Engine {

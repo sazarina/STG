@@ -1,11 +1,11 @@
-﻿using STG.Engine.Helper;
-using Microsoft.Xna.Framework.Graphics;
+﻿using Microsoft.Xna.Framework.Graphics;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Drawing.Imaging;
-using _Debug = STG.Engine.Debug.Debug;
+using STG.Engine.Helper;
 using static STG.Engine.Graphics.GraphicsUltis;
+using _Debug = STG.Engine.Debug.Debug;
 using Point = Microsoft.Xna.Framework.Point;
 using Rectangle = System.Drawing.Rectangle;
 
