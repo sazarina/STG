@@ -8,11 +8,7 @@ namespace STG.Engine.Component {
     /// <summary>
     /// スクリプトの基底クラス
     /// </summary>
-    public abstract class Behaviour {
-        internal GameObject gameObject { get; private set; }
-
-        public Transform transform => gameObject.transform;
-
+    public abstract class Behaviour : Component{
         /// <summary>
         /// スクリプトを管理するクラス
         /// </summary>
@@ -29,10 +25,6 @@ namespace STG.Engine.Component {
         }
 
         public virtual void Start() { }
-
-        public virtual void Update() { }
-
-        public virtual void Draw() { }
 
         protected Texture2D LoadTexture(string path,string name) => GraphicsUltis.CreateTexture(path,name);
     
