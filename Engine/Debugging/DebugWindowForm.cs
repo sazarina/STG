@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Windows.Forms;
 
-namespace STG.Engine.Debug {
+namespace STG.Engine.Debugging {
     public partial class DebugWindowForm : Form {
         public List<ListViewItem> OriginItemCorection = new List<ListViewItem>();
 

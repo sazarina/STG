@@ -1,7 +1,8 @@
 ﻿using ChevyRay.Coroutines;
 using Microsoft.Xna.Framework.Graphics;
-using STG.Engine.Graphics;
 using System.Collections;
+using STG.Engine.Debugging;
+using STG.Engine.Graphics;
 
 namespace STG.Engine.Component {
     /// <summary>
@@ -54,7 +55,7 @@ namespace STG.Engine.Component {
         protected CoroutineHandle StartCoroutine(float delay, IEnumerator coroutine) {
             var handle = coroutineRunner.Run(delay, coroutine);
             AddCoroutine(coroutine, handle);
-            Debug.Debug.Log(coroutine);
+            Debug.Log(coroutine);
             return handle;
         }
 

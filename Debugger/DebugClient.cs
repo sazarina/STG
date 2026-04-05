@@ -1,7 +1,7 @@
 ﻿using STG.Engine.Component;
 using Xenon.Core;
 
-namespace STG.Engine.Debug {
+namespace STG.Engine.Debugging {
     public class DebugClient:GameObjectManager {
         MainWindow window = MainWindow.self;
         TreeView treeView => window.treeView1;

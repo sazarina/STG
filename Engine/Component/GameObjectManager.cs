@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Xenon.Core;
 using STG.Engine.Graphics;
-using _Debug = STG.Engine.Debug.Debug;
+using STG.Engine.Debugging;
 
 namespace STG.Engine.Component {
     public class GameObjectManager {
@@ -13,7 +13,7 @@ namespace STG.Engine.Component {
         protected GameObjectManager(EntityManager entityManager) {
             this.entityManager = entityManager;
             scriptController = entityManager.scriptController;
-            _Debug.Log("Initialize/ctor()");
+            Debug.Log("Initialize/ctor()");
         }
 
 
@@ -42,7 +42,7 @@ namespace STG.Engine.Component {
                     throw new InvalidOperationException("EntityManager の ScriptController が null です");
                 }
 
-                _Debug.Log($"GameObjectManager を {typeof(T).Name} として初期化します。");
+                Debug.Log($"GameObjectManager を {typeof(T).Name} として初期化します。");
                 self = (T)Activator.CreateInstance(typeof(T), entityManager);
             } else {
                 if (entityManager != null) {
@@ -88,7 +88,7 @@ namespace STG.Engine.Component {
             if (Instance().Layers.ContainsKey(gameObject)) {
                 Instance().Layers[gameObject] = layerGroup;
             } else {
-                Debug.Debug.Log($"{layerGroup.Name}レイヤーは登録されていません");
+                Debug.Log($"{layerGroup.Name}レイヤーは登録されていません");
             }
         }
 
@@ -150,7 +150,7 @@ namespace STG.Engine.Component {
 
         public void UpdateGameObjectList(GameObject gameObject) {
             if (!GameObjects.ContainsKey(gameObject.Guid)) {
-                _Debug.Log($"{gameObject.name}は登録されていません");
+                Debug.Log($"{gameObject.name}は登録されていません");
             } else {
                 GameObjects[gameObject.Guid] = gameObject;
             }

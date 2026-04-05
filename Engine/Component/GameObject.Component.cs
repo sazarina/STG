@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using STG.Engine.Debugging;
 
 namespace STG.Engine.Component {
     public partial class GameObject {
@@ -29,7 +30,7 @@ namespace STG.Engine.Component {
                 if (IsRegisteredComponent<T>()) {
                     return (T)(object)AttachedScripts[typeof(T)];
                 } else {
-                    Debug.Debug.Log($"{typeof(T).Name}型のスクリプトはアタッチされていません");
+                    Debug.Log($"{typeof(T).Name}型のスクリプトはアタッチされていません");
                     return default;
                 }
 
@@ -38,12 +39,12 @@ namespace STG.Engine.Component {
                     return (T)(object)ComponentList[typeof(T)];
 
                 } else {
-                    Debug.Debug.Log($"{typeof(T).Name}型のコンポーネントはアタッチされていません");
+                    Debug.Log($"{typeof(T).Name}型のコンポーネントはアタッチされていません");
                     return default;
                 }
 
             } else {
-                Debug.Debug.Log($"{baseType.Name}型の親を持つコンポーネントは見つかりません");
+                Debug.Log($"{baseType.Name}型の親を持つコンポーネントは見つかりません");
                 return default;
             }
         }
@@ -59,7 +60,7 @@ namespace STG.Engine.Component {
                 return ComponentList.ContainsKey(typeof(T));
 
             } else {
-                Debug.Debug.Log($"{baseType.Name}型の親を持つコンポーネントは見つかりません");
+                Debug.Log($"{baseType.Name}型の親を持つコンポーネントは見つかりません");
                 return false;
             }
         }
@@ -106,7 +107,7 @@ namespace STG.Engine.Component {
         }
 
         public void AttachScript<T>(T t) where T : ScriptBase, new() {
-            Debug.Debug.Log(typeof(T).BaseType);
+            Debug.Log(typeof(T).BaseType);
             AttachedScripts.Add(t.GetType(), t);
         }
         #endregion

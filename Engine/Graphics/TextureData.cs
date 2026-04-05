@@ -1,6 +1,6 @@
 ﻿using Microsoft.Xna.Framework.Graphics;
 using System.Drawing;
-using _Debug = STG.Engine.Debug.Debug;
+using STG.Engine.Debugging;
 using Point = Microsoft.Xna.Framework.Point;
 
 namespace STG.Engine.Graphics {
@@ -17,7 +17,7 @@ namespace STG.Engine.Graphics {
             this.size = size;
             this.bitmap = bitmap;
 
-            _Debug.Log($"name:{name} , size:{size}");
+            Debug.Log($"name:{name} , size:{size}");
         }
     }
 }

@@ -1,4 +1,4 @@
-using STG.Engine.Debug;
+using STG.Engine.Debugging;
 
 namespace STG.Debug {
     internal static class Program {

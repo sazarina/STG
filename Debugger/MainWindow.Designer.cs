@@ -1,4 +1,4 @@
-﻿namespace STG.Engine.Debug
+﻿namespace STG.Engine.Debugging
 {
     partial class MainWindow
     {
@@ -32,7 +32,7 @@
             this.treeView1 = new System.Windows.Forms.TreeView();
             this.textBox1 = new System.Windows.Forms.TextBox();
             this.listBox1 = new System.Windows.Forms.ListBox();
-            this.game1 = new STG.Engine.Debug.GameControl();
+            this.game1 = new STG.Engine.Debugging.GameControl();
             this.panel1.SuspendLayout();
             this.SuspendLayout();
             // 

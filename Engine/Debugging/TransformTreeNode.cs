@@ -1,7 +1,7 @@
 ﻿using STG.Engine.Component;
 using System.Windows.Forms;
 
-namespace STG.Engine.Debug {
+namespace STG.Engine.Debugging {
     class TransformTreeNode : TreeNode {
         public Transform transform;
         //List<Transform> children = new List<Transform>();

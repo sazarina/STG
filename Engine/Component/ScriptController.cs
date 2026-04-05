@@ -2,6 +2,7 @@
 using Microsoft.Xna.Framework;
 using System.Collections;
 using System.Collections.Generic;
+using STG.Engine.Debugging;
 
 namespace STG.Engine.Component {
     public class ScriptController {
@@ -29,8 +30,7 @@ namespace STG.Engine.Component {
         }
 
         public void Initialize() {
-            self = this;
-            Debug.Debug.Log("----------");
+            Debug.Log("----------");
         }
         //どうしようかなアタッチするってことはScriptController_Updateメソッドでは実行しないように変更しようかな
         public void Update(GameTime gameTime) {

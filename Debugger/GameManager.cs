@@ -2,7 +2,7 @@
 using Microsoft.Xna.Framework.Graphics;
 using STG.Engine.Component;
 
-namespace STG.Engine.Debug {
+namespace STG.Engine.Debugging {
     class GameManager :EntityManager {
         DebugClient debugClient;
 

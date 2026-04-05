@@ -1,4 +1,4 @@
-﻿using STG.Engine.Debug;
+﻿using STG.Engine.Debugging;
 using STG.Engine.Graphics;
 using STG.Engine.Component;
 using System;
@@ -22,7 +22,7 @@ namespace STG.Engine.SceneManagement {
             if (!Layers.ContainsKey(layerGroup.gameObject)) {
                 Layers.Add(layerGroup.gameObject, layerGroup);
             } else {
-                Debug.Debug.Log($"{layerGroup.gameObject}は既に登録しています");
+                Debug.Log($"{layerGroup.gameObject}は既に登録しています");
             }
         }
 

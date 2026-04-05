@@ -1,6 +1,6 @@
 ﻿using STG.Engine.Component;
 
-namespace STG.Engine.Debug {
+namespace STG.Engine.Debugging {
     public partial class MainWindow : Form {
         public static MainWindow self;
 

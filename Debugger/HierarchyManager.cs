@@ -2,7 +2,7 @@
 using System.Collections;
 using Keys = Microsoft.Xna.Framework.Input.Keys;
 
-namespace STG.Engine.Debug {
+namespace STG.Engine.Debugging {
     class HierarchyManager : ScriptBase {
         DebugClient clientManager;
 

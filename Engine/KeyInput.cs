@@ -1,9 +1,9 @@
 ﻿using STG.Engine.Helper;
 using Microsoft.Xna.Framework.Input;
+using STG.Engine.Debugging;
 
 namespace STG.Engine {
     public static class KeyInput {
-        //static Game game;
 
         public enum Mouses { 
             RightMouse,
@@ -12,7 +12,7 @@ namespace STG.Engine {
         
 
         public static void Initialize() {
-           // KeyInput.game = game;
+
         }
 
         public static KeyboardState CurrentKeyboard { get; set; }
@@ -37,7 +37,7 @@ namespace STG.Engine {
                 case Mouses.RightMouse: return MouseState(isUseCurrent).RightButton == state;
                 case Mouses.LeftMouse : return MouseState(isUseCurrent).LeftButton  == state;
                 default:
-                    Debug.Debug.Log($"{mouse.ToString()}はswitch case defaultです");
+                    Debug.Log($"{mouse.ToString()}は実装されていません");
                     return false;
             }
         }
