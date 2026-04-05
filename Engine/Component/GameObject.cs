@@ -1,4 +1,4 @@
-﻿using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using System;
 using System.Collections.Generic;
@@ -50,7 +50,7 @@ namespace STG.Engine.Component {
         public bool IsMouseCursorClicked => IsMouseCursorPointed && KeyInput.MouseJustPressed(KeyInput.Mouses.LeftMouse);
         #endregion
 
-        Dictionary<Type, ScriptBase> AttachedScripts = new Dictionary<Type, ScriptBase>();
+        Dictionary<Type, Behaviour> AttachedScripts = new Dictionary<Type, Behaviour>();
         Dictionary<Type, Component> ComponentList = new Dictionary<Type, Component>();
 
         #region Functions
@@ -77,13 +77,13 @@ namespace STG.Engine.Component {
             return gameObject;
         }
 
-        public static GameObject Instantiate<T>(int x, int y, string name, Texture2D texture = null, string tag = "") where T:ScriptBase,new() {
+        public static GameObject Instantiate<T>(int x, int y, string name, Texture2D texture = null, string tag = "") where T:Behaviour,new() {
             GameObject gameObject = InstantiateInternal(x, y, name, texture, tag);
             gameObject.AttachScript<T>();
             return gameObject;
         }
 
-        public static GameObject Instantiate<T>(string name = "", string tag = "") where T : ScriptBase, new() {
+        public static GameObject Instantiate<T>(string name = "", string tag = "") where T : Behaviour, new() {
             if (name == "") {
                 name = typeof(T).Name;
             }

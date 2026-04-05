@@ -35,8 +35,8 @@ namespace STG.Engine.Component {
         public CoroutineHandle GetCoroutine(IEnumerator routine) => Coroutines[routine];
 
 
-        List<ScriptBase> ScriptList = new List<ScriptBase>();
-        public void AddScript<T>(T t) where T : ScriptBase, new() {
+        List<Behaviour> ScriptList = new List<Behaviour>();
+        public void AddScript<T>(T t) where T : Behaviour, new() {
             t.Initialize(this,null);
             t.Start();
             ScriptList.Add(t);

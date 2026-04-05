@@ -3,7 +3,7 @@ using System.Collections;
 using Keys = Microsoft.Xna.Framework.Input.Keys;
 
 namespace STG.Engine.Debugging {
-    class HierarchyManager : ScriptBase {
+    class HierarchyManager : Behaviour {
         DebugClient clientManager;
 
         public override void Draw() {

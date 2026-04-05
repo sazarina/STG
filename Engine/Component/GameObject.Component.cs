@@ -26,7 +26,7 @@ namespace STG.Engine.Component {
         public T GetComponent<T>() {
             Type baseType = typeof(T).BaseType;
 
-            if (baseType == typeof(ScriptBase)) {
+            if (baseType == typeof(Behaviour)) {
                 if (IsRegisteredComponent<T>()) {
                     return (T)(object)AttachedScripts[typeof(T)];
                 } else {
@@ -53,7 +53,7 @@ namespace STG.Engine.Component {
 
         bool IsRegisteredComponent<T>() {
             Type baseType = typeof(T).BaseType;
-            if (baseType == typeof(ScriptBase)) {
+            if (baseType == typeof(Behaviour)) {
                 return AttachedScripts.ContainsKey(typeof(T));
 
             } else if (baseType == typeof(Component)) {
@@ -92,21 +92,21 @@ namespace STG.Engine.Component {
 
         #region AttachScript
 
-        public static T CreateScirptInstance<T>(GameObject gameObject) where T: ScriptBase,new(){
+        public static T CreateScirptInstance<T>(GameObject gameObject) where T: Behaviour,new(){
             T t = new T();
             t.Initialize(ScriptController.Instance(),gameObject);
             t.Start();
             return t;
         }
         
-        public T AttachScript<T>() where T : ScriptBase, new() {
+        public T AttachScript<T>() where T : Behaviour, new() {
             T t = CreateScirptInstance<T>(this);
 
             AttachedScripts.Add(t.GetType(), t);
             return t;
         }
 
-        public void AttachScript<T>(T t) where T : ScriptBase, new() {
+        public void AttachScript<T>(T t) where T : Behaviour, new() {
             Debug.Log(typeof(T).BaseType);
             AttachedScripts.Add(t.GetType(), t);
         }
