@@ -3,6 +3,7 @@
 namespace STG.Engine.Component {
     public class Component {
         public GameObject gameObject { get; protected set; }
+        public Transform transform => gameObject.transform;
 
         public string Name {
             get {

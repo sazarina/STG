@@ -10,42 +10,38 @@ namespace STG.Engine.Component {
         #region シングルトン
         static GameObjectManager self = null;
 
-        protected GameObjectManager(EntityManager entityManager) {
-            this.entityManager = entityManager;
-            scriptController = entityManager.scriptController;
+        protected GameObjectManager(ScriptController scriptController) {
+            this.scriptController = scriptController;
             Debug.Log("Initialize/ctor()");
         }
 
 
-        public static GameObjectManager Instance(EntityManager entityManager = null) {
+        public static GameObjectManager Instance(ScriptController scriptController = null) {
             if (self == null) {
-                if (entityManager == null) {
-                    throw new InvalidOperationException("最初の呼び出し時は EntityManager  を渡す必要があります");
+                if (scriptController == null) {
+                    throw new InvalidOperationException("最初の呼び出し時は ScriptController  を渡す必要があります");
                 }
 
-                if (entityManager.scriptController == null) {
-                    throw new InvalidOperationException("EntityManager の ScriptController が null です");
+                Debug.Log($"GameObjectManager を {typeof(GameObjectManager).Name} として初期化します。");
+                self = new GameObjectManager(scriptController);
+            } else {
+                if (scriptController != null) {
+                    throw new InvalidOperationException($"GameObjectManager はすでに {self.GetType().Name} として初期化されています。");
                 }
-
-                self = new GameObjectManager(entityManager);
             }
 
             return self;
         }
-        public static GameObjectManager Instance<T>(EntityManager entityManager = null) where T : GameObjectManager {
+        public static GameObjectManager Instance<T>(ScriptController scriptController = null) where T : GameObjectManager {
             if (self == null) {
-                if (entityManager == null) {
-                    throw new InvalidOperationException("最初の呼び出し時は EntityManager  を渡す必要があります");
-                }
-
-                if (entityManager.scriptController == null) {
-                    throw new InvalidOperationException("EntityManager の ScriptController が null です");
+                if (scriptController == null) {
+                    throw new InvalidOperationException("最初の呼び出し時は ScriptController  を渡す必要があります");
                 }
 
                 Debug.Log($"GameObjectManager を {typeof(T).Name} として初期化します。");
-                self = (T)Activator.CreateInstance(typeof(T), entityManager);
+                self = (T)Activator.CreateInstance(typeof(T), scriptController);
             } else {
-                if (entityManager != null) {
+                if (scriptController != null) {
                     throw new InvalidOperationException($"GameObjectManager はすでに {self.GetType().Name} として初期化されています。");
                 }
             }
@@ -54,7 +50,6 @@ namespace STG.Engine.Component {
 
         #endregion
 
-        protected EntityManager entityManager;
         protected ScriptController scriptController;
 
         /// <summary>

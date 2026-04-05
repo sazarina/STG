@@ -8,7 +8,7 @@ namespace STG.Engine.Debugging {
 
         HierarchyManager hierarchyManager = new HierarchyManager();
 
-        public DebugClient(EntityManager entityManager) : base(entityManager) {
+        public DebugClient(ScriptController scriptController) : base(scriptController) {
             Debug.isDebug = true;
             
 

@@ -8,7 +8,7 @@ using static STG.Engine.Graphics.GraphicsUltis;
 namespace STG.Engine.Component {
     public class EntityManager {
         protected SpriteBatch spriteBatch;
-        internal ScriptController scriptController = new ScriptController();
+        internal ScriptController scriptController = ScriptController.Instance();
         internal GameObjectManager gameObjectManager = null;
 
         FPSCounter fPSCounter;
@@ -30,9 +30,9 @@ namespace STG.Engine.Component {
         }
 
         public virtual void Initialize<T>()where T:GameObjectManager {
-            gameObjectManager = (T)GameObjectManager.Instance<T>(this);
-
             scriptController.Initialize();
+
+            gameObjectManager = (T)GameObjectManager.Instance<T>(scriptController);
             gameObjectManager.Initialize();
         }
 

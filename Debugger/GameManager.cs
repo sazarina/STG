@@ -1,5 +1,6 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using STG.Engine.Debugging.Scripts;
 using STG.Engine.Component;
 
 namespace STG.Engine.Debugging {
@@ -7,7 +8,7 @@ namespace STG.Engine.Debugging {
         DebugClient debugClient;
 
         public GameManager(SpriteBatch spriteBatch) :base(spriteBatch) {
-            debugClient = new DebugClient(this);
+            debugClient = new DebugClient();
         }
 
         /// <summary>
@@ -21,7 +22,9 @@ namespace STG.Engine.Debugging {
         public override void Initialize<T> ()  {
             base.Initialize<T>();
             
-            GameObject battleManager = GameObject.Instantiate(0,0,"sss");
+            GameObject player = GameObject.Instantiate(0,0,"player");
+            player.AddComponent<Player>();
+            player.AddComponent<SpriteRenderer>();
             Debug.Log("GameObject 'sss' created at (0,0)");
         }
 
