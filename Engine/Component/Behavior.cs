@@ -8,7 +8,11 @@ namespace STG.Engine.Component {
     /// <summary>
     /// スクリプトの基底クラス
     /// </summary>
-    public abstract class Behaviour : Component{
+    public abstract class Behavior {
+        internal GameObject gameObject { get; private set; }
+
+        public Transform transform => gameObject.transform;
+
         /// <summary>
         /// スクリプトを管理するクラス
         /// </summary>

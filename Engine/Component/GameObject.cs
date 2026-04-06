@@ -25,14 +25,14 @@ namespace STG.Engine.Component {
         public Texture2D texture { get; set; }
         public LayerGroup layerGroup { get; set; } = LayerGroup.Default;
 
-        public void SetLayer(Layer layer=default, int orderInLayer = 0) {
+        public void SetLayer(Layer layer = default, int orderInLayer = 0) {
             if (layer != default) {
                 layerGroup.layer = layer;
             }
             if (orderInLayer != 0) {
                 layerGroup.orderInLayer = orderInLayer;
             }
-            GameObjectManager.UpdateLayerGroup(this,layerGroup);
+            GameObjectManager.UpdateLayerGroup(this, layerGroup);
         }
 
         public Rectangle Rect {
@@ -50,10 +50,12 @@ namespace STG.Engine.Component {
         public bool IsMouseCursorClicked => IsMouseCursorPointed && KeyInput.MouseJustPressed(KeyInput.Mouses.LeftMouse);
         #endregion
 
-        Dictionary<Type, Behaviour> AttachedScripts = new Dictionary<Type, Behaviour>();
+        Dictionary<Type, Behavior> AttachedScripts = new Dictionary<Type, Behavior>();
         Dictionary<Type, Component> ComponentList = new Dictionary<Type, Component>();
 
         #region Functions
+
+
         public void Update() {
             AttachedScripts.Values.ForEach(script => script.Update());
         }
@@ -65,7 +67,7 @@ namespace STG.Engine.Component {
             }
         }
         #region Instantiate
-        public GameObject(Guid Guid,string name,string tag,Texture2D texture) {
+        public GameObject(Guid Guid, string name, string tag, Texture2D texture) {
             this.Guid = Guid;
             this.name = name;
             this.tag = tag;
@@ -77,13 +79,13 @@ namespace STG.Engine.Component {
             return gameObject;
         }
 
-        public static GameObject Instantiate<T>(int x, int y, string name, Texture2D texture = null, string tag = "") where T:Behaviour,new() {
+        public static GameObject Instantiate<T>(int x, int y, string name, Texture2D texture = null, string tag = "") where T : Behavior, new() {
             GameObject gameObject = InstantiateInternal(x, y, name, texture, tag);
             gameObject.AttachScript<T>();
             return gameObject;
         }
 
-        public static GameObject Instantiate<T>(string name = "", string tag = "") where T : Behaviour, new() {
+        public static GameObject Instantiate<T>(string name = "", string tag = "") where T : Behavior, new() {
             if (name == "") {
                 name = typeof(T).Name;
             }
@@ -92,21 +94,14 @@ namespace STG.Engine.Component {
             return gameObject;
         }
 
-        static GameObject InstantiateInternal(int x, int y, string name, Texture2D texture = null, string tag = "",Transform parent=default) {
-            GameObject gameObject = new GameObject(Guid.NewGuid(),name,tag,texture);
+        static GameObject InstantiateInternal(int x, int y, string name, Texture2D texture = null, string tag = "", Transform parent = default) {
+            GameObject gameObject = new GameObject(Guid.NewGuid(), name, tag, texture);
 
-            gameObject.CreateTransformFunc = () => {
+            Vector2 position = new Vector2(x, y);
+            Transform transform = new Transform(position, gameObject, Vector2.Zero);
+            gameObject.ComponentList.Add(typeof(Transform), transform);
 
-                //LocalPositionでも作れるようにしたい
-
-                Vector2 position = new Vector2(x, y);
-                Transform transform = new Transform(position, gameObject, Vector2.Zero);
-
-                gameObject.ComponentList.Add(typeof(Transform), transform);
-
-                return transform;
-            };
-            gameObject.transform = gameObject.AddComponent<Transform>();
+            gameObject.transform = transform;
 
             gameObject.layerGroup.SetGameObject(gameObject);
             GameObjectManager.AddLayerGroup(gameObject);
@@ -134,6 +129,6 @@ namespace STG.Engine.Component {
         #endregion
 
 
-        
+
     }
 }

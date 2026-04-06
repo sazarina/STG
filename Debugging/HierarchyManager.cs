@@ -1,9 +1,9 @@
-﻿using STG.Engine.Component;
+using STG.Engine.Component;
 using System.Collections;
 using Keys = Microsoft.Xna.Framework.Input.Keys;
 
 namespace STG.Engine.Debugging {
-    class HierarchyManager : Behaviour {
+    class HierarchyManager : Behavior {
         DebugClient clientManager;
 
         public override void Draw() {

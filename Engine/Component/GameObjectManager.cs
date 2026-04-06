@@ -87,12 +87,9 @@ namespace STG.Engine.Component {
             }
         }
 
-
-
         public virtual void Initialize() {
             Root = GameObject.Instantiate(0, 0, "OriginLocalPosition");
         }
-
 
         public virtual void Update() {
             var Objects = GameObjects.Values;

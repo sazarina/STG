@@ -10,10 +10,10 @@ namespace STG.Engine.Component {
             Type type = typeof(T);
 
             if (!IsRegisteredComponent<T>()) {
-                if (type == typeof(Transform)) {
-                    return (T)(object)(CreateTransformFunc());
-                    //else if(type == typeof())
+                if (typeof(Behavior).IsAssignableFrom(type)) { 
+                    AttachScript<T>();
 
+                    //return
                 } else {
                     throw new NotImplementedException($"{type.Name}型のは実装されていません");
                 }
@@ -26,11 +26,11 @@ namespace STG.Engine.Component {
         public T GetComponent<T>() {
             Type baseType = typeof(T).BaseType;
 
-            if (baseType == typeof(Behaviour)) {
+            if (baseType == typeof(Behavior)) {
                 if (IsRegisteredComponent<T>()) {
                     return (T)(object)AttachedScripts[typeof(T)];
                 } else {
-                    Debug.Log($"{typeof(T).Name}型のスクリプトはアタッチされていません");
+                    Debugging.Debug.Log($"{typeof(T).Name}型のスクリプトはアタッチされていません");
                     return default;
                 }
 
@@ -53,10 +53,7 @@ namespace STG.Engine.Component {
 
         bool IsRegisteredComponent<T>() {
             Type baseType = typeof(T).BaseType;
-            if (baseType == typeof(Behaviour)) {
-                return AttachedScripts.ContainsKey(typeof(T));
-
-            } else if (baseType == typeof(Component)) {
+            if (baseType == typeof(Component)  || baseType == typeof(Behavior)) {
                 return ComponentList.ContainsKey(typeof(T));
 
             } else {
@@ -92,24 +89,26 @@ namespace STG.Engine.Component {
 
         #region AttachScript
 
-        public static T CreateScirptInstance<T>(GameObject gameObject) where T: Behaviour,new(){
+        internal static T CreateScirptInstance<T>(GameObject gameObject) where T : Behavior, new() {
             T t = new T();
-            t.Initialize(ScriptController.Instance(),gameObject);
+            t.Initialize(ScriptController.Instance(), gameObject);
             t.Start();
             return t;
         }
+
         
-        public T AttachScript<T>() where T : Behaviour, new() {
+        public T AttachScript<T>() where T : Behavior, new() {
             T t = CreateScirptInstance<T>(this);
 
             AttachedScripts.Add(t.GetType(), t);
             return t;
         }
 
-        public void AttachScript<T>(T t) where T : Behaviour, new() {
-            Debug.Log(typeof(T).BaseType);
-            AttachedScripts.Add(t.GetType(), t);
+        void AttachScript(Type type) {
+            Debug.Log(type.BaseType);
+            //AttachedScripts.Add(type, t);
         }
+
         #endregion
         public void Destroy() {
             GameObjectManager.Instance().Destroy(this);

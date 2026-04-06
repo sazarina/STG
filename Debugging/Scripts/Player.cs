@@ -6,7 +6,7 @@ using System.Text;
 using System.Threading.Tasks;
 
 namespace STG.Engine.Debugging.Scripts {
-    class Player : Behaviour {
+    class Player : Behavior {
         override public void Start() {
             gameObject.texture = LoadTexture("Content/Player.png", "Player");
 

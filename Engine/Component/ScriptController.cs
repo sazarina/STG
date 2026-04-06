@@ -9,16 +9,18 @@ namespace STG.Engine.Component {
         #region シングルトン
         static ScriptController self = null;
 
-        ScriptController() { 
+        ScriptController() {
             
         }
 
         public static ScriptController Instance() {
             if (self == null) {
+                Debug.Log("ScriptController を初期化します。");
                 self = new ScriptController();
             }
             return self;
         }
+
         #endregion
 
         public CoroutineRunner coroutineRunner = new CoroutineRunner();
@@ -35,8 +37,8 @@ namespace STG.Engine.Component {
         public CoroutineHandle GetCoroutine(IEnumerator routine) => Coroutines[routine];
 
 
-        List<Behaviour> ScriptList = new List<Behaviour>();
-        public void AddScript<T>(T t) where T : Behaviour, new() {
+        List<Behavior> ScriptList = new List<Behavior>();
+        public void AddScript<T>(T t) where T : Behavior, new() {
             t.Initialize(this,null);
             t.Start();
             ScriptList.Add(t);

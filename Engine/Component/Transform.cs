@@ -1,4 +1,5 @@
 ﻿using Microsoft.Xna.Framework;
+using STG.Engine.Debugging;
 using System;
 using System.Collections.Generic;
 
@@ -62,7 +63,7 @@ namespace STG.Engine.Component {
         public Vector2 localPosition {
             get {
                 if (Parent.Name == "OriginLocalPosition") {
-                    //_Debug.Log(_Debug.SetDebugInfo(),"NoParent");
+                    //Debug.Log(_Debug.SetDebugInfo(),"NoParent");
                     return _position;
                 } else {
                     return _localPosition;
@@ -71,10 +72,10 @@ namespace STG.Engine.Component {
             set {
                 //
                 if (Name == "OriginLocalPosition") {
-                    //_Debug.Log(_Debug.SetDebugInfo(), Parent.Name);
+                    //Debug.Log(_Debug.SetDebugInfo(), Parent.Name);
                     _localPosition = value;
                 } else {
-                    //_Debug.Log(_Debug.SetDebugInfo(), Name);
+                    //Debug.Log(_Debug.SetDebugInfo(), Name);
 
                     _localPosition = value;
                     _position = Parent._position + localPosition;
@@ -147,7 +148,7 @@ namespace STG.Engine.Component {
 
         public GameObject RemoveParent() {
             if (Parent == null) {
-                Debugging.Debug.Log("このオブジェクトには親がいません");
+                Debug.Log("このオブジェクトには親がいません");
                 return null;
             }
             GameObject parent = Parent.gameObject;
@@ -226,7 +227,7 @@ namespace STG.Engine.Component {
                 return true;
             } else {
                 //上書きしないで置く
-                //_Debug.Log(_Debug.SetDebugInfo(), $"{Name}には既に親:{Parent.Name}が設定されています", "上書きします");
+                //Debug.Log(_Debug.SetDebugInfo(), $"{Name}には既に親:{Parent.Name}が設定されています", "上書きします");
                 //Parent.Children[gameObject.Guid] = gameObject;
                 return false;
             }

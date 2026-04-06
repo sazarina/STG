@@ -10,12 +10,11 @@ namespace STG.Engine.Debugging {
 
         public DebugClient(ScriptController scriptController) : base(scriptController) {
             Debug.isDebug = true;
-            
 
-            //Debug.Log(DebugClient.Instance().GetType());
+            //Debugging.Log(DebugClient.Instance().GetType());
         }
 
-        public override  void Initialize() {
+        public override void Initialize() {
             base.Initialize();
 
             var obj = GameObject.Instantiate(0,0, "HierarchyManager");
