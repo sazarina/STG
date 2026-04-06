@@ -10,10 +10,10 @@ namespace STG.Engine.Component {
             Type type = typeof(T);
 
             if (!IsRegisteredComponent<T>()) {
-                if (type == typeof(Transform)) {
-                    return (T)(object)(CreateTransformFunc());
-                    //else if(type == typeof())
+                if (typeof(Behavior).IsAssignableFrom(type)) { 
+                    AttachScript<T>();
 
+                    //return
                 } else {
                     throw new NotImplementedException($"{type.Name}型のは実装されていません");
                 }
