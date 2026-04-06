@@ -4,8 +4,8 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.Drawing.Imaging;
 using STG.Engine.Helper;
+using STG.Engine.Debugging;
 using static STG.Engine.Graphics.GraphicsUltis;
-using _Debug = STG.Engine.Debugging.Debug;
 using Point = Microsoft.Xna.Framework.Point;
 using Rectangle = System.Drawing.Rectangle;
 
@@ -99,7 +99,7 @@ namespace STG.Engine.Graphics {
 
                     count++;
 
-                    _Debug.Log($"count:{count} {rect}");
+                    Debug.Log($"count:{count} {rect}");
                 }
                 bitmaps.Add(bmplst);
             }
@@ -120,7 +120,7 @@ namespace STG.Engine.Graphics {
                 Textures.Add(lst);
             }
             Texture2D.AddRange(textures);
-            _Debug.Log(":" + Texture2D.Count);
+            Debug.Log(":" + Texture2D.Count);
         }
 
         public SpriteSheet[] SplitSheet() {

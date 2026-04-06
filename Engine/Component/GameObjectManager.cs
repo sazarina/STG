@@ -12,7 +12,7 @@ namespace STG.Engine.Component {
 
         protected GameObjectManager(ScriptController scriptController) {
             this.scriptController = scriptController;
-            Debug.Log("InitializeInernal/ctor()");
+            Debug.Log("Initialize/ctor()");
         }
 
 

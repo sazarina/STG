@@ -13,6 +13,11 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Xenon.Core", "ThirdPartyLib
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Editor", "Editor\Editor.csproj", "{065FC385-2712-497E-991A-A1483E722A43}"
 EndProject
+<<<<<<< HEAD
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Debugging", "Debugger\Debugging.csproj", "{9803F112-52CE-4B5C-8BCC-86B995964C02}"
+EndProject
+=======
+>>>>>>> develop
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "ThirdParty", "ThirdParty", "{DDB4EF12-CC4E-5E88-E6FC-71A802F4DE97}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Debugging", "Debugging\Debugging.csproj", "{FC69CC47-FBE5-9155-AC3E-E6B4650AC933}"

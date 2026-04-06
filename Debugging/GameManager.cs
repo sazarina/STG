@@ -1,5 +1,6 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using STG.Engine.Debugging.Scripts;
 using STG.Engine.Component;
 using STG.Engine.Debugging.Scripts;
 
@@ -8,7 +9,7 @@ namespace STG.Engine.Debugging {
         DebugClient debugClient;
 
         public GameManager(SpriteBatch spriteBatch) :base(spriteBatch) {
-            debugClient = new DebugClient(this);
+            debugClient = new DebugClient();
         }
 
         /// <summary>

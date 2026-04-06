@@ -1,7 +1,8 @@
 ﻿using ChevyRay.Coroutines;
 using Microsoft.Xna.Framework.Graphics;
-using STG.Engine.Graphics;
 using System.Collections;
+using STG.Engine.Debugging;
+using STG.Engine.Graphics;
 
 namespace STG.Engine.Component {
     /// <summary>
@@ -29,10 +30,6 @@ namespace STG.Engine.Component {
 
         public virtual void Start() { }
 
-        public virtual void Update() { }
-
-        public virtual void Draw() { }
-
         protected Texture2D LoadTexture(string path,string name) => GraphicsUltis.CreateTexture(path,name);
     
         protected void AddCoroutine(IEnumerator routine, CoroutineHandle coroutineHandle) =>
@@ -54,7 +51,7 @@ namespace STG.Engine.Component {
         protected CoroutineHandle StartCoroutine(float delay, IEnumerator coroutine) {
             var handle = coroutineRunner.Run(delay, coroutine);
             AddCoroutine(coroutine, handle);
-            Debugging.Debug.Log(coroutine);
+            Debug.Log(coroutine);
             return handle;
         }
 

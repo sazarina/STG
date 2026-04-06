@@ -1,8 +1,8 @@
 ﻿using ChevyRay.Coroutines;
 using Microsoft.Xna.Framework;
-using STG.Engine.Debugging;
 using System.Collections;
 using System.Collections.Generic;
+using STG.Engine.Debugging;
 
 namespace STG.Engine.Component {
     public class ScriptController {

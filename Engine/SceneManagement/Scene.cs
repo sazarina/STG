@@ -22,7 +22,7 @@ namespace STG.Engine.SceneManagement {
             if (!Layers.ContainsKey(layerGroup.gameObject)) {
                 Layers.Add(layerGroup.gameObject, layerGroup);
             } else {
-                Debugging.Debug.Log($"{layerGroup.gameObject}は既に登録しています");
+                Debug.Log($"{layerGroup.gameObject}は既に登録しています");
             }
         }
 
