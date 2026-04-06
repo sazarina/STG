@@ -1,8 +1,8 @@
 ﻿using System;
 using System.IO;
-using static STG.Engine.Debug.Debug;
+using static STG.Engine.Debugging.Debug;
 
-namespace STG.Engine.Debug {
+namespace STG.Engine.Debugging {
         internal class LogData {
             public LogType debugType;
 

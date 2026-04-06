@@ -1,6 +1,6 @@
 ﻿using Microsoft.Xna.Framework.Graphics;
 using System.Drawing;
-using _Debug = STG.Engine.Debug.Debug;
+using _Debug = STG.Engine.Debugging.Debug;
 using Point = Microsoft.Xna.Framework.Point;
 
 namespace STG.Engine.Graphics {

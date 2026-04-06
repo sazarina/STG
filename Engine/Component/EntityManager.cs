@@ -1,6 +1,7 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
+using STG.Engine.Debugging;
 using STG.Engine.Helper;
 using static STG.Engine.Graphics.GraphicsUltis;
 
@@ -8,7 +9,9 @@ using static STG.Engine.Graphics.GraphicsUltis;
 namespace STG.Engine.Component {
     public class EntityManager {
         protected SpriteBatch spriteBatch;
-        internal ScriptController scriptController = new ScriptController();
+        internal ScriptController scriptController = ScriptController.Instance();
+        public ScriptController ScriptController => scriptController;
+
         internal GameObjectManager gameObjectManager = null;
 
         FPSCounter fPSCounter;
@@ -30,10 +33,12 @@ namespace STG.Engine.Component {
         }
 
         public virtual void Initialize<T>()where T:GameObjectManager {
-            gameObjectManager = (T)GameObjectManager.Instance<T>(this);
-
             scriptController.Initialize();
+
+            gameObjectManager = (T)GameObjectManager.Instance<T>(scriptController);
             gameObjectManager.Initialize();
+
+            Debug.Log("GameObjectManager Initialized");
         }
 
         public virtual void Update(GameTime gameTime) {

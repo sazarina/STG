@@ -5,7 +5,7 @@ using System.Drawing;
 using System.Drawing.Imaging;
 using STG.Engine.Helper;
 using static STG.Engine.Graphics.GraphicsUltis;
-using _Debug = STG.Engine.Debug.Debug;
+using _Debug = STG.Engine.Debugging.Debug;
 using Point = Microsoft.Xna.Framework.Point;
 using Rectangle = System.Drawing.Rectangle;
 

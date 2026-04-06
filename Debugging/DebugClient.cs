@@ -1,7 +1,7 @@
 ﻿using STG.Engine.Component;
 using Xenon.Core;
 
-namespace STG.Engine.Debug {
+namespace STG.Engine.Debugging {
     public class DebugClient:GameObjectManager {
         MainWindow window = MainWindow.self;
         TreeView treeView => window.treeView1;
@@ -10,12 +10,11 @@ namespace STG.Engine.Debug {
 
         public DebugClient(EntityManager entityManager) : base(entityManager) {
             Debug.isDebug = true;
-            
 
-            //Debug.Log(DebugClient.Instance().GetType());
+            //Debugging.Log(DebugClient.Instance().GetType());
         }
 
-        public override  void Initialize() {
+        public override void Initialize() {
             base.Initialize();
 
             var obj = GameObject.Instantiate(0,0, "HierarchyManager");

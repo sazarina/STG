@@ -1,11 +1,27 @@
 ﻿using ChevyRay.Coroutines;
 using Microsoft.Xna.Framework;
+using STG.Engine.Debugging;
 using System.Collections;
 using System.Collections.Generic;
 
 namespace STG.Engine.Component {
     public class ScriptController {
-        public static ScriptController self;
+        #region シングルトン
+        static ScriptController self = null;
+
+        ScriptController() {
+            
+        }
+
+        public static ScriptController Instance() {
+            if (self == null) {
+                Debug.Log("ScriptController を初期化します。");
+                self = new ScriptController();
+            }
+            return self;
+        }
+
+        #endregion
 
         public CoroutineRunner coroutineRunner = new CoroutineRunner();
 
@@ -21,16 +37,15 @@ namespace STG.Engine.Component {
         public CoroutineHandle GetCoroutine(IEnumerator routine) => Coroutines[routine];
 
 
-        List<ScriptBase> ScriptList = new List<ScriptBase>();
-        public void AddScript<T>(T t) where T : ScriptBase, new() {
+        List<Behavior> ScriptList = new List<Behavior>();
+        public void AddScript<T>(T t) where T : Behavior, new() {
             t.Initialize(this,null);
             t.Start();
             ScriptList.Add(t);
         }
 
         public void Initialize() {
-            self = this;
-            Debug.Debug.Log("----------");
+            Debug.Log("----------");
         }
         //どうしようかなアタッチするってことはScriptController_Updateメソッドでは実行しないように変更しようかな
         public void Update(GameTime gameTime) {

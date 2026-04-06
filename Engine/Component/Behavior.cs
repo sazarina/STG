@@ -7,7 +7,7 @@ namespace STG.Engine.Component {
     /// <summary>
     /// スクリプトの基底クラス
     /// </summary>
-    public abstract class ScriptBase {
+    public abstract class Behavior {
         internal GameObject gameObject { get; private set; }
 
         public Transform transform => gameObject.transform;
@@ -54,7 +54,7 @@ namespace STG.Engine.Component {
         protected CoroutineHandle StartCoroutine(float delay, IEnumerator coroutine) {
             var handle = coroutineRunner.Run(delay, coroutine);
             AddCoroutine(coroutine, handle);
-            Debug.Debug.Log(coroutine);
+            Debugging.Debug.Log(coroutine);
             return handle;
         }
 

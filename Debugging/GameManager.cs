@@ -1,8 +1,9 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using STG.Engine.Component;
+using STG.Engine.Debugging.Scripts;
 
-namespace STG.Engine.Debug {
+namespace STG.Engine.Debugging {
     class GameManager :EntityManager {
         DebugClient debugClient;
 
@@ -21,7 +22,9 @@ namespace STG.Engine.Debug {
         public override void Initialize<T> ()  {
             base.Initialize<T>();
             
-            GameObject battleManager = GameObject.Instantiate(0,0,"sss");
+            GameObject player = GameObject.Instantiate(0,0,"player");
+            player.AddComponent<Player>();
+            player.AddComponent<SpriteRenderer>();
             Debug.Log("GameObject 'sss' created at (0,0)");
         }
 

@@ -6,7 +6,7 @@
     <Nullable>enable</Nullable>
     <UseWindowsForms>true</UseWindowsForms>
     <ImplicitUsings>enable</ImplicitUsings>
-    <RootNamespace>STG.Debug</RootNamespace>
+    <RootNamespace>STG.Engine.Debugging</RootNamespace>
   </PropertyGroup>
 
   <ItemGroup>

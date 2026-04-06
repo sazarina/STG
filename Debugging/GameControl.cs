@@ -6,14 +6,14 @@ using ButtonState = Microsoft.Xna.Framework.Input.ButtonState;
 using Color = Microsoft.Xna.Framework.Color;
 using Keys = Microsoft.Xna.Framework.Input.Keys;
 
-namespace STG.Engine.Debug {
+namespace STG.Engine.Debugging {
     public class GameControl :  MonoGameControl{
         GameManager gameManager;
 
         /// <summary>
         /// Allows the game to perform any initialization it needs to before starting to run.
         /// This is where it can query for any required services and load any non-graphic
-        /// related content.  Calling base.Initialize will enumerate through any components
+        /// related content.  Calling base.InitializeInernal will enumerate through any components
         /// and initialize them as well.
         /// </summary>
         protected override void Initialize() {

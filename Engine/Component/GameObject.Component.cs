@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using STG.Engine.Debugging;
 
 namespace STG.Engine.Component {
     public partial class GameObject {
@@ -25,11 +26,11 @@ namespace STG.Engine.Component {
         public T GetComponent<T>() {
             Type baseType = typeof(T).BaseType;
 
-            if (baseType == typeof(ScriptBase)) {
+            if (baseType == typeof(Behavior)) {
                 if (IsRegisteredComponent<T>()) {
                     return (T)(object)AttachedScripts[typeof(T)];
                 } else {
-                    Debug.Debug.Log($"{typeof(T).Name}型のスクリプトはアタッチされていません");
+                    Debugging.Debug.Log($"{typeof(T).Name}型のスクリプトはアタッチされていません");
                     return default;
                 }
 
@@ -38,12 +39,12 @@ namespace STG.Engine.Component {
                     return (T)(object)ComponentList[typeof(T)];
 
                 } else {
-                    Debug.Debug.Log($"{typeof(T).Name}型のコンポーネントはアタッチされていません");
+                    Debug.Log($"{typeof(T).Name}型のコンポーネントはアタッチされていません");
                     return default;
                 }
 
             } else {
-                Debug.Debug.Log($"{baseType.Name}型の親を持つコンポーネントは見つかりません");
+                Debug.Log($"{baseType.Name}型の親を持つコンポーネントは見つかりません");
                 return default;
             }
         }
@@ -52,14 +53,11 @@ namespace STG.Engine.Component {
 
         bool IsRegisteredComponent<T>() {
             Type baseType = typeof(T).BaseType;
-            if (baseType == typeof(ScriptBase)) {
-                return AttachedScripts.ContainsKey(typeof(T));
-
-            } else if (baseType == typeof(Component)) {
+            if (baseType == typeof(Component)  || baseType == typeof(Behavior)) {
                 return ComponentList.ContainsKey(typeof(T));
 
             } else {
-                Debug.Debug.Log($"{baseType.Name}型の親を持つコンポーネントは見つかりません");
+                Debug.Log($"{baseType.Name}型の親を持つコンポーネントは見つかりません");
                 return false;
             }
         }
@@ -91,24 +89,26 @@ namespace STG.Engine.Component {
 
         #region AttachScript
 
-        public static T CreateScirptInstance<T>(GameObject gameObject) where T: ScriptBase,new(){
+        internal static T CreateScirptInstance<T>(GameObject gameObject) where T : Behavior, new() {
             T t = new T();
-            t.Initialize(ScriptController.self,gameObject);
+            t.Initialize(ScriptController.Instance(), gameObject);
             t.Start();
             return t;
         }
+
         
-        public T AttachScript<T>() where T : ScriptBase, new() {
+        public T AttachScript<T>() where T : Behavior, new() {
             T t = CreateScirptInstance<T>(this);
 
             AttachedScripts.Add(t.GetType(), t);
             return t;
         }
 
-        public void AttachScript<T>(T t) where T : ScriptBase, new() {
-            Debug.Debug.Log(typeof(T).BaseType);
-            AttachedScripts.Add(t.GetType(), t);
+        void AttachScript(Type type) {
+            Debug.Log(type.BaseType);
+            //AttachedScripts.Add(type, t);
         }
+
         #endregion
         public void Destroy() {
             GameObjectManager.Instance().Destroy(this);

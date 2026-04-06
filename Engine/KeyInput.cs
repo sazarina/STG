@@ -37,7 +37,7 @@ namespace STG.Engine {
                 case Mouses.RightMouse: return MouseState(isUseCurrent).RightButton == state;
                 case Mouses.LeftMouse : return MouseState(isUseCurrent).LeftButton  == state;
                 default:
-                    Debug.Debug.Log($"{mouse.ToString()}はswitch case defaultです");
+                    Debugging.Debug.Log($"{mouse.ToString()}はswitch case defaultです");
                     return false;
             }
         }

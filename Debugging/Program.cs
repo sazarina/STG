@@ -1,6 +1,4 @@
-using STG.Engine.Debug;
-
-namespace STG.Debug {
+namespace STG.Engine.Debugging {
     internal static class Program {
         /// <summary>
         ///  The main entry point for the application.

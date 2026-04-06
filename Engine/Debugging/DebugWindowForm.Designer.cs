@@ -1,4 +1,4 @@
-﻿namespace STG.Engine.Debug {
+﻿namespace STG.Engine.Debugging {
     partial class DebugWindowForm {
         /// <summary>
         /// Required designer variable.
@@ -83,7 +83,7 @@
             // 
             // bindingSource1
             // 
-            this.bindingSource1.DataSource = typeof(STG.Engine.Debug.DebugWindowForm);
+            this.bindingSource1.DataSource = typeof(STG.Engine.Debugging.DebugWindowForm);
             // 
             // DebugWindowForm
             // 

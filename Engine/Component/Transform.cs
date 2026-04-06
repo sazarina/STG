@@ -147,7 +147,7 @@ namespace STG.Engine.Component {
 
         public GameObject RemoveParent() {
             if (Parent == null) {
-                Debug.Debug.Log("このオブジェクトには親がいません");
+                Debugging.Debug.Log("このオブジェクトには親がいません");
                 return null;
             }
             GameObject parent = Parent.gameObject;
