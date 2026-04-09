@@ -3,8 +3,6 @@ using Microsoft.Xna.Framework.Graphics;
 using System;
 using System.Collections.Generic;
 using Xenon.Core;
-using STG.Engine.Graphics;
-using static STG.Engine.Graphics.GraphicsUltis;
 
 namespace STG.Engine.Component {
     public partial class GameObject {
@@ -35,11 +33,16 @@ namespace STG.Engine.Component {
             GameObjectManager.UpdateLayerGroup(this, layerGroup);
         }
 
-        public Rectangle Rect {
+        #region Mouse
+        public bool IsMouseCursorPointed {
             get {
-                Rectangle rect = texture.Bounds;
-                rect.Location = transform.position.ToPoint();
-                return rect;
+                SpriteRenderer sr;
+                if (IsRegisteredComponent<SpriteRenderer>()) {
+                    sr = GetComponent<SpriteRenderer>();
+                    return sr.texture != null && sr.Rect.Contains(KeyInput.CurrentMouseState.Position);
+                } else {
+                    return false;
+                }
             }
         }
         #endregion
@@ -61,11 +64,9 @@ namespace STG.Engine.Component {
         }
 
         public void Draw() {
-            AttachedScripts.Values.ForEach(script => script.Draw());
-            if (texture != null) {
-                DrawSprite(texture, transform);
-            }
+            //AttachedScripts.Values.ForEach(script => script.Draw());
         }
+
         #region Instantiate
         public GameObject(Guid Guid, string name, string tag, Texture2D texture) {
             this.Guid = Guid;
@@ -81,7 +82,7 @@ namespace STG.Engine.Component {
 
         public static GameObject Instantiate<T>(int x, int y, string name, Texture2D texture = null, string tag = "") where T : Behavior, new() {
             GameObject gameObject = InstantiateInternal(x, y, name, texture, tag);
-            gameObject.AttachScript<T>();
+            gameObject.AddComponent<T>();
             return gameObject;
         }
 
@@ -90,7 +91,7 @@ namespace STG.Engine.Component {
                 name = typeof(T).Name;
             }
             GameObject gameObject = InstantiateInternal(0, 0, name, null, tag);
-            gameObject.AttachScript<T>();
+            gameObject.AddComponent<T>();
             return gameObject;
         }
 
