@@ -60,6 +60,10 @@ namespace Engine.Component {
 
         public Action<int,LayerGroup> OnLayerOrderChanged;
 
+        public void Update() {
+         
+        }
+
         public void Draw() {
             foreach (var renderer in renderers) {
                 if (renderer.isActive) {
