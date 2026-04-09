@@ -32,6 +32,13 @@ namespace STG.Engine.Component {
 
         protected Texture2D LoadTexture(string path,string name) => GraphicsUltis.CreateTexture(path,name);
     
+        public T AddComponent<T>() where T : Component, new() => gameObject.AddComponent<T>();
+        public T GetComponent<T>() where T : Component, new() => gameObject.GetComponent<T>();
+        public bool IsRegisteredComponent<T>() where T : Component => gameObject.IsRegisteredComponent<T>();
+
+
+
+        #region ChevyRay.Coroutinesのラッパー関数
         protected void AddCoroutine(IEnumerator routine, CoroutineHandle coroutineHandle) =>
             scriptController.AddCoroutine(routine, coroutineHandle);
 
@@ -40,8 +47,6 @@ namespace STG.Engine.Component {
 
         protected CoroutineHandle GetCoroutine(IEnumerator routine) =>
             scriptController.GetCoroutine(routine);
-
-        #region ChevyRay.Coroutinesのラッパー関数
         /// <summary>
         /// コルーチン実行
         /// </summary>
