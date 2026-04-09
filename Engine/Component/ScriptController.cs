@@ -10,12 +10,11 @@ namespace STG.Engine.Component {
         static ScriptController self = null;
 
         ScriptController() {
-            
+            Debug.Log("ScriptController.ctor()");
         }
 
         public static ScriptController Instance() {
             if (self == null) {
-                Debug.Log("ScriptController を初期化します。");
                 self = new ScriptController();
             }
             return self;
@@ -45,7 +44,7 @@ namespace STG.Engine.Component {
         }
 
         public void Initialize() {
-            Debug.Log("----------");
+            Debug.Log("ScriptContoller.Initalize()");
         }
         //どうしようかなアタッチするってことはScriptController_Updateメソッドでは実行しないように変更しようかな
         public void Update(GameTime gameTime) {
