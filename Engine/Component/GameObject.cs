@@ -21,19 +21,7 @@ namespace STG.Engine.Component {
         public void SetActive(bool value) {
             active = value;
         }
-        #region Texture
-        public Texture2D texture { get; set; }
-        public LayerGroup layerGroup { get; set; } = LayerGroup.Default;
 
-        public void SetLayer(Layer layer = default, int orderInLayer = 0) {
-            if (layer != default) {
-                layerGroup.layer = layer;
-            }
-            if (orderInLayer != 0) {
-                layerGroup.orderInLayer = orderInLayer;
-            }
-            GameObjectManager.UpdateLayerGroup(this, layerGroup);
-        }
 
         public Rectangle Rect {
             get {
@@ -42,10 +30,6 @@ namespace STG.Engine.Component {
                 return rect;
             }
         }
-        #endregion
-        #region Mouse
-        public bool IsMouseCursorPointed =>
-            texture != null && Rect.Contains(KeyInput.CurrentMouseState.Position);
 
         public bool IsMouseCursorClicked => IsMouseCursorPointed && KeyInput.MouseJustPressed(KeyInput.Mouses.LeftMouse);
         #endregion
@@ -71,7 +55,7 @@ namespace STG.Engine.Component {
             this.Guid = Guid;
             this.name = name;
             this.tag = tag;
-            this.texture = texture;
+            //this.texture = texture;
         }
 
         public static GameObject Instantiate(int x, int y, string name, Texture2D texture = null, string tag = "") {
@@ -103,8 +87,8 @@ namespace STG.Engine.Component {
 
             gameObject.transform = transform;
 
-            gameObject.layerGroup.SetGameObject(gameObject);
-            GameObjectManager.AddLayerGroup(gameObject);
+            //gameObject.layerGroup.SetGameObject(gameObject);
+            //GameObjectManager.AddLayerGroup(gameObject);
 
             //先にGameObjectを監視リストに追加しないと、
             //transform.SetParentで親を指定をすることができない
