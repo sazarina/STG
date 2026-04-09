@@ -56,7 +56,7 @@ namespace STG.Engine.Component {
         public virtual void Draw() {
             MouseState mouseState = Mouse.GetState();
 
-            gameObjectManager.Draw();
+            //gameObjectManager.Draw();
             scriptController.Draw();
             fPSCounter.Draw();
 

@@ -2,14 +2,15 @@
 using Microsoft.Xna.Framework.Graphics;
 using STG.Engine.Debugging.Scripts;
 using STG.Engine.Component;
-using STG.Engine.Debugging.Scripts;
+using Engine.Component;
+using STG.Engine.Graphics;
 
 namespace STG.Engine.Debugging {
     class GameManager :EntityManager {
         DebugClient debugClient;
 
         public GameManager(SpriteBatch spriteBatch) :base(spriteBatch) {
-            debugClient = new DebugClient();
+            debugClient = new DebugClient(ScriptController);
         }
 
         /// <summary>
@@ -20,13 +21,29 @@ namespace STG.Engine.Debugging {
         /// GameObjectManagerのインスタンスの型。
         /// 例: フォームデバッグ時は `DebugClient`、
         /// 通常実行時は `GameObjectManager`。</typeparam>
-        public override void Initialize<T> ()  {
+        public override void Initialize<T>() {
             base.Initialize<T>();
-            
-            GameObject player = GameObject.Instantiate(0,0,"player");
-            player.AddComponent<Player>();
-            player.AddComponent<SpriteRenderer>();
-            Debug.Log("GameObject 'sss' created at (0,0)");
+
+            var layers = RenderManager.Instance().Layers;
+            layers["Default"] = new LayerGroup() {
+                Name = "Default",
+                LayerOrder = 0,
+            };
+
+            layers["Chacter"] = new LayerGroup() {
+                Name = "Character",
+                LayerOrder = 1,
+            };
+
+            layers["UI"] = new LayerGroup() {
+                Name = "UI",
+                LayerOrder = 2,
+            };
+
+
+            GameObject player = GameObject.Instantiate<Player>(0, 0, "player");
+
+            Debug.Log("GameManager.Initialize() Ended");
         }
 
         public override void Update(GameTime gameTime) {
