@@ -76,7 +76,7 @@ namespace STG.Engine.Graphics {
             spriteBatch.DrawString(spriteFont, text.ToString(), vector, color);
         }
 
-        public static Bitmap LoadBitmap(string path) => new Bitmap(ImageFolderDirectory + path);
+        public static Bitmap LoadBitmap(string path) => new Bitmap(ContentFolderDirectory + path);
 
         public static Texture2D CreateTexture(string path, string name) {
             Bitmap bitmap = LoadBitmap(path);
