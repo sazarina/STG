@@ -45,7 +45,7 @@ namespace STG.Engine.Graphics {
             timer++;
             if (timer % interval == 0 && isAnim) {
                 currentFrameX++;
-                if (currentFrameX > spriteSheet.Texture2D.Count() - 3) {
+                if (currentFrameX > spriteSheet.SpriteTextures.Count() - 3) {
                     currentFrameX = 0;
 
                     if (!isWait) {
@@ -67,19 +67,19 @@ namespace STG.Engine.Graphics {
                 center = new Vector2(0, 0);
             }
 
-            DrawSprite(spriteSheet.GetTexture2D(currentFrameX), x, y, center);
+            DrawSprite(spriteSheet.GetTexture(currentFrameX), x, y, center);
         }
 
         public void Draw(Vector2 position, Vector2 center = default) {
             if (center == default) {
                 center = new Vector2(0, 0);
             }
-            DrawSprite(spriteSheet.GetTexture2D(currentFrameX), (int)position.X, (int)position.Y, center);
+            DrawSprite(spriteSheet.GetTexture(currentFrameX), (int)position.X, (int)position.Y, center);
         }
         public void Draw(Vector2 position, int x, int y) {
             var center = new Vector2(x, y);
 
-            DrawSprite(spriteSheet.GetTexture2D(currentFrameX), (int)position.X, (int)position.Y, center);
+            DrawSprite(spriteSheet.GetTexture(currentFrameX), (int)position.X, (int)position.Y, center);
         }
     }
 }

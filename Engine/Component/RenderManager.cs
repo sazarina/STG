@@ -60,6 +60,10 @@ namespace Engine.Component {
 
         public Action<int,LayerGroup> OnLayerOrderChanged;
 
+        public void Update() {
+         
+        }
+
         public void Draw() {
             foreach (var renderer in renderers) {
                 if (renderer.isActive) {
@@ -70,7 +74,7 @@ namespace Engine.Component {
 
             var groupList = renderers.GroupBy(x => x.SortingLayer.LayerOrder).OrderBy(x => x.Key).ToList();
 
-            Debug.Log($"GroupList Count: {groupList.Count}");
+            //Debug.Log($"GroupList Count: {groupList.Count}");
             groupList.ForEach(group => {
                 var sorted = group.OrderBy(x => x.SortingLayer.LayerOrder).ToList();
                 sorted.ForEach(sr => {

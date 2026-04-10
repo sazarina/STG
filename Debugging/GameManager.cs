@@ -6,11 +6,12 @@ using Engine.Component;
 using STG.Engine.Graphics;
 
 namespace STG.Engine.Debugging {
-    class GameManager :EntityManager {
+    class GameManager {
         DebugClient debugClient;
+        RuntimeManager runtimeManager = new RuntimeManager();
 
-        public GameManager(SpriteBatch spriteBatch) :base(spriteBatch) {
-            debugClient = new DebugClient(ScriptController);
+        public GameManager() {
+            debugClient = new DebugClient(ScriptController.Instance());
         }
 
         /// <summary>
@@ -21,8 +22,8 @@ namespace STG.Engine.Debugging {
         /// GameObjectManagerのインスタンスの型。
         /// 例: フォームデバッグ時は `DebugClient`、
         /// 通常実行時は `GameObjectManager`。</typeparam>
-        public override void Initialize<T>() {
-            base.Initialize<T>();
+        public void Initialize<T>() where T : GameObjectManager {
+            runtimeManager.Initialize<T>();
 
             var layers = RenderManager.Instance().Layers;
             layers["Default"] = new LayerGroup() {
@@ -46,13 +47,12 @@ namespace STG.Engine.Debugging {
             Debug.Log("GameManager.Initialize() Ended");
         }
 
-        public override void Update(GameTime gameTime) {
-            base.Update(gameTime);
+        public void Update(GameTime gameTime) {
+            runtimeManager.Update(gameTime);
         }
 
-        public override void Draw() {
-            base.Draw();
-
+        public void Draw() {
+            runtimeManager.Draw();
         }
     }
 }

@@ -1,26 +1,30 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
-  <PropertyGroup>
-    <OutputType>WinExe</OutputType>
-    <TargetFramework>net8.0-windows</TargetFramework>
-    <Nullable>enable</Nullable>
-    <UseWindowsForms>true</UseWindowsForms>
-    <ImplicitUsings>enable</ImplicitUsings>
-    <RootNamespace>STG.Engine.Debugging</RootNamespace>
-  </PropertyGroup>
+	<PropertyGroup>
+		<OutputType>WinExe</OutputType>
+		<TargetFramework>net8.0-windows</TargetFramework>
+		<Nullable>enable</Nullable>
+		<UseWindowsForms>true</UseWindowsForms>
+		<ImplicitUsings>enable</ImplicitUsings>
+		<ApplicationIcon>Logo.ico</ApplicationIcon>
+		<RootNamespace>STG.Engine.Debugging</RootNamespace>
+		<AssemblyName>STG.Engine.Debugging</AssemblyName>
+	</PropertyGroup>
 
-  <ItemGroup>
-    <PackageReference Include="MonoGame.Forms.DX" Version="3.2.1" />
-  </ItemGroup>
+	<ItemGroup>
+		<MonoGameContentReference Include="Content\Content.mgcb" />
+	</ItemGroup>
+	<ItemGroup>
+		<Content Include="Logo.ico" />
+	</ItemGroup>
 
-  <ItemGroup>
-    <ProjectReference Include="..\Engine\Engine.csproj" />
-  </ItemGroup>
+	<ItemGroup>
+		<PackageReference Include="MonoGame.Forms.DX" Version="*" />
 
-  <ItemGroup>
-    <Compile Update="MainWindow.cs">
-      <SubType>Form</SubType>
-    </Compile>
-  </ItemGroup>
+	</ItemGroup>
+
+	<ItemGroup>
+	  <ProjectReference Include="..\Engine\Engine.csproj" />
+	</ItemGroup>
 
 </Project>
