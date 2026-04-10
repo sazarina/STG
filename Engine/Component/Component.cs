@@ -2,7 +2,7 @@
 
 namespace STG.Engine.Component {
     public class Component {
-        public GameObject gameObject { get; protected set; }
+        public GameObject gameObject { get; internal set; }
         public Transform transform => gameObject.transform;
 
         public string Name {
@@ -31,10 +31,6 @@ namespace STG.Engine.Component {
 
         public virtual void  Update() { 
         
-        }
-
-        public virtual void Draw() {
-
         }
 
         public Action OnInitialize;

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using Engine.Component;
 using STG.Engine.Debugging;
 
 namespace STG.Engine.Component {
@@ -10,10 +11,21 @@ namespace STG.Engine.Component {
             Type type = typeof(T);
 
             if (!IsRegisteredComponent<T>()) {
-                if (typeof(Behavior).IsAssignableFrom(type)) { 
-                    AttachScript<T>();
+                if (typeof(Behavior).IsAssignableFrom(type)) {
+                    var script = AttachScript(type);
+                    ComponentList.Add(type, script);
+                    return (T)script;
+                } else if (type.BaseType == typeof(Component)) {
+                    Component component = null;
+                    if (type == typeof(SpriteRenderer)){ 
+                        component  = new SpriteRenderer();
+                        RenderManager.Instance().Register(component as SpriteRenderer);
+                    }
 
-                    //return
+                    component.gameObject = this;
+
+                    ComponentList.Add(type, component);
+                    return (T)component;
                 } else {
                     throw new NotImplementedException($"{type.Name}型のは実装されていません");
                 }
@@ -30,7 +42,7 @@ namespace STG.Engine.Component {
                 if (IsRegisteredComponent<T>()) {
                     return (T)(object)AttachedScripts[typeof(T)];
                 } else {
-                    Debugging.Debug.Log($"{typeof(T).Name}型のスクリプトはアタッチされていません");
+                    Debug.Log($"{typeof(T).Name}型のスクリプトはアタッチされていません");
                     return default;
                 }
 
@@ -48,10 +60,11 @@ namespace STG.Engine.Component {
                 return default;
             }
         }
+
         public Dictionary<Type, Component> GetComponents()
             => ComponentList;
 
-        bool IsRegisteredComponent<T>() {
+        public bool IsRegisteredComponent<T>() {
             Type baseType = typeof(T).BaseType;
             if (baseType == typeof(Component)  || baseType == typeof(Behavior)) {
                 return ComponentList.ContainsKey(typeof(T));
@@ -89,24 +102,28 @@ namespace STG.Engine.Component {
 
         #region AttachScript
 
-        internal static T CreateScirptInstance<T>(GameObject gameObject) where T : Behavior, new() {
-            T t = new T();
-            t.Initialize(ScriptController.Instance(), gameObject);
-            t.Start();
-            return t;
-        }
+        //internal static T CreateScirptInstance<T>(GameObject gameObject) where T : Behavior, new() {
+        //    T t = new T();
+        //    t.Initialize(ScriptController.Instance(), gameObject);
+        //    t.Start();
+        //    return t;
+        //}
 
         
-        public T AttachScript<T>() where T : Behavior, new() {
-            T t = CreateScirptInstance<T>(this);
+        //public T AttachScript<T>() where T : Behavior, new() {
+        //    T t = CreateScirptInstance<T>(this);
 
-            AttachedScripts.Add(t.GetType(), t);
-            return t;
-        }
+        //    AttachedScripts.Add(t.GetType(), t);
+        //    return t;
+        //}
 
-        void AttachScript(Type type) {
-            Debug.Log(type.BaseType);
-            //AttachedScripts.Add(type, t);
+        Component AttachScript(Type type) {
+           var script = (Behavior)Activator.CreateInstance(type);
+            Debug.Log($"スクリプト:{type.Name}を{name}にアタッチします");
+            script.Initialize(ScriptController.Instance(), this);
+            script.Start();
+            AttachedScripts.Add(type, script);
+            return script;
         }
 
         #endregion

@@ -3,8 +3,6 @@ using Microsoft.Xna.Framework.Graphics;
 using System;
 using System.Collections.Generic;
 using Xenon.Core;
-using STG.Engine.Graphics;
-using static STG.Engine.Graphics.GraphicsUltis;
 
 namespace STG.Engine.Component {
     public partial class GameObject {
@@ -21,31 +19,20 @@ namespace STG.Engine.Component {
         public void SetActive(bool value) {
             active = value;
         }
-        #region Texture
-        public Texture2D texture { get; set; }
-        public LayerGroup layerGroup { get; set; } = LayerGroup.Default;
 
-        public void SetLayer(Layer layer = default, int orderInLayer = 0) {
-            if (layer != default) {
-                layerGroup.layer = layer;
-            }
-            if (orderInLayer != 0) {
-                layerGroup.orderInLayer = orderInLayer;
-            }
-            GameObjectManager.UpdateLayerGroup(this, layerGroup);
-        }
 
-        public Rectangle Rect {
-            get {
-                Rectangle rect = texture.Bounds;
-                rect.Location = transform.position.ToPoint();
-                return rect;
-            }
-        }
-        #endregion
         #region Mouse
-        public bool IsMouseCursorPointed =>
-            texture != null && Rect.Contains(KeyInput.CurrentMouseState.Position);
+        public bool IsMouseCursorPointed {
+            get {
+                SpriteRenderer sr;
+                if (IsRegisteredComponent<SpriteRenderer>()) {
+                    sr = GetComponent<SpriteRenderer>();
+                    return sr.texture != null && sr.Rect.Contains(KeyInput.CurrentMouseState.Position);
+                } else {
+                    return false;
+                }
+            }
+        }
 
         public bool IsMouseCursorClicked => IsMouseCursorPointed && KeyInput.MouseJustPressed(KeyInput.Mouses.LeftMouse);
         #endregion
@@ -61,17 +48,15 @@ namespace STG.Engine.Component {
         }
 
         public void Draw() {
-            AttachedScripts.Values.ForEach(script => script.Draw());
-            if (texture != null) {
-                DrawSprite(texture, transform);
-            }
+            //AttachedScripts.Values.ForEach(script => script.Draw());
         }
+
         #region Instantiate
         public GameObject(Guid Guid, string name, string tag, Texture2D texture) {
             this.Guid = Guid;
             this.name = name;
             this.tag = tag;
-            this.texture = texture;
+            //this.texture = texture;
         }
 
         public static GameObject Instantiate(int x, int y, string name, Texture2D texture = null, string tag = "") {
@@ -81,7 +66,7 @@ namespace STG.Engine.Component {
 
         public static GameObject Instantiate<T>(int x, int y, string name, Texture2D texture = null, string tag = "") where T : Behavior, new() {
             GameObject gameObject = InstantiateInternal(x, y, name, texture, tag);
-            gameObject.AttachScript<T>();
+            gameObject.AddComponent<T>();
             return gameObject;
         }
 
@@ -90,7 +75,7 @@ namespace STG.Engine.Component {
                 name = typeof(T).Name;
             }
             GameObject gameObject = InstantiateInternal(0, 0, name, null, tag);
-            gameObject.AttachScript<T>();
+            gameObject.AddComponent<T>();
             return gameObject;
         }
 
@@ -103,8 +88,8 @@ namespace STG.Engine.Component {
 
             gameObject.transform = transform;
 
-            gameObject.layerGroup.SetGameObject(gameObject);
-            GameObjectManager.AddLayerGroup(gameObject);
+            //gameObject.layerGroup.SetGameObject(gameObject);
+            //GameObjectManager.AddLayerGroup(gameObject);
 
             //先にGameObjectを監視リストに追加しないと、
             //transform.SetParentで親を指定をすることができない

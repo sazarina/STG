@@ -18,7 +18,7 @@ namespace STG.Engine.Debugging {
             base.Initialize();
 
             var obj = GameObject.Instantiate(0,0, "HierarchyManager");
-            hierarchyManager = obj.AttachScript<HierarchyManager>();
+            hierarchyManager = obj.AddComponent<HierarchyManager>();
             hierarchyManager.Start(this);
 
             Debug.Log($"GameObjectManagerIstance: {Instance()}"); ;
@@ -62,10 +62,6 @@ namespace STG.Engine.Debugging {
                     parentNode.Nodes.Add(transform.Name, transform.Name);
                 }
             }
-        }
-
-        public override void Draw() {
-            base.Draw();
         }
 
     }
