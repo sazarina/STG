@@ -5,7 +5,6 @@ using System.Drawing;
 using System.Drawing.Imaging;
 using STG.Engine.Helper;
 using STG.Engine.Debugging;
-using static STG.Engine.Graphics.GraphicsUltis;
 using Point = Microsoft.Xna.Framework.Point;
 using Rectangle = System.Drawing.Rectangle;
 
@@ -15,139 +14,162 @@ namespace STG.Engine.Graphics {
         /// 横の数
         /// </summary>
         public int NumX;
+
         /// <summary>
         /// 縦の数
         /// </summary>
         public int NumY;
-        public int numAll;
 
+        /// <summary>
+        /// 上限数。0の場合は全て読み込む。
+        /// </summary>
+        public int numAll;
 
         /// <summary>
         /// 1個当たりのサイズ
         /// </summary>
         public Size spriteSize;
+
+        public List<SpriteTexture> SpriteTextures = new List<SpriteTexture>();
+
         /// <summary>
-        /// <para>Textures[y][x]のように使う</para>
-        /// <para>SpriteSheetを分割してSpriteSheetを作った場合はy=0とする</para>
+        /// Texture2Dを取得する。indexは左上から右に向かって0から始まる。例えば、NumXが4の場合、1行目は0,1,2,3、2行目は4,5,6,7となる。
         /// </summary>
-        public List<List<Texture2D>> Textures = new List<List<Texture2D>>();
-
-        public List<Texture2D_Data> Texture2D = new List<Texture2D_Data>();
-
-        public Texture2D GetTexture2D(int index) {
-            return Texture2D[index].texture;
+        public Texture2D GetTexture(int index) {
+            return SpriteTextures[index].texture;
         }
 
-        public class Texture2D_Data {
+        /// <summary>
+        /// テクスチャとその位置を保持するクラス。位置はスプライトシート内の座標で、左上が(0,0)となる。
+        /// </summary>
+        public class SpriteTexture {
             public Texture2D texture;
             public Point point;
-            public Texture2D_Data(Texture2D texture, int x, int y) {
+            public SpriteTexture(Texture2D texture, int x, int y) {
                 this.texture = texture;
                 point = new Point(x, y);
             }
+
+            public void Dispose() {
+                texture.Dispose();
+            }
         }
 
-        List<List<Bitmap>> bitmaps = new List<List<Bitmap>>();
-
-        GraphicsDevice device;
-        public SpriteSheet(string path, string name, int NumX, int NumY, Point spriteSize, int padX = 0, int padY = 0, int numAll = 1000) {
-            device = LoadHelper.Device;
+        /// <summary>
+        /// コンストラクタ。ビットマップからスプライトシートを作成する。
+        /// </summary>
+        /// <param name="path">パス</param>
+        /// <param name="NumX">横の数</param>
+        /// <param name="NumY">縦の数</param>
+        /// <param name="spriteSize">1個当たりのサイズ</param>
+        /// <param name="padX">X方向のパディング</param>
+        /// <param name="padY">Y方向のパディング</param>
+        /// <param name="numAll">読み込むスプライトの上限。0の場合は全て読み込む。</param>
+        public SpriteSheet(string path, string name, int NumX, int NumY, Point spriteSize, int padX = 0, int padY = 0, int numAll = 0) {
             this.NumX = NumX;
             this.NumY = NumY;
             this.numAll = numAll;
             this.spriteSize = spriteSize.CastToSize();
 
-            Bitmap bmp = LoadBitmap(path);
-            SplitTexture(bmp, padX, padY);
-            LoadTextures(name);
+            Bitmap bmp = GraphicsUltis.LoadBitmap(path);
+            LoadSpriteSheet(bmp, padX, padY);
         }
 
-        public SpriteSheet(Bitmap bitmap, string name, int NumX, int NumY, Point spriteSize, int padX = 0, int padY = 0, int numAll = 1000) {
-            device = LoadHelper.Device;
+        /// <summary>
+        /// コンストラクタ。ビットマップからスプライトシートを作成する。
+        /// </summary>
+        /// <param name="bitmap">ビットマップ</param>
+        /// <param name="name">スプライトシートの名前 *今は未使用</param>
+        /// <param name="NumX">横の数</param>
+        /// <param name="NumY">縦の数</param>
+        /// <param name="spriteSize">1個当たりのサイズ</param>
+        /// <param name="padX">X方向のパディング</param>
+        /// <param name="padY">Y方向のパディング</param>
+        /// <param name="numAll">読み込むスプライトの上限。0の場合は全て読み込む。</param>
+        public SpriteSheet(Bitmap bitmap,string name, int NumX, int NumY, Point spriteSize, int padX = 0, int padY = 0, int numAll = 0) {
             this.NumX = NumX;
             this.NumY = NumY;
             this.numAll = numAll;
             this.spriteSize = spriteSize.CastToSize();
 
-            SplitTexture(bitmap, padX, padY);
-            LoadTextures(name);
+            LoadSpriteSheet(bitmap, padX, padY);
         }
 
         public SpriteSheet() { }
 
-        public void SplitTexture(Bitmap bmp, int padX, int padY) {
+        /// <summary>
+        /// // スプライトシートを読み込む。スプライトシートは、NumXとNumYで指定された数だけ、spriteSizeのサイズで分割される。
+        /// </summary>
+        /// <param name="bmp">ビットマップ</param>
+        /// <param name="padX">X方向のパディング</param>
+        /// <param name="padY">Y方向のパディング</param>
+        void LoadSpriteSheet(Bitmap bmp, int padX, int padY) {
             int count = 0;
 
             for (int y = 0; y < NumY; y++) {
-                List<Bitmap> bmplst = new List<Bitmap>();
                 for (int x = 0; x < NumX; x++) {
                     Point pos = new Point(padX + spriteSize.Width * x, padY + spriteSize.Height * y);
-
-
                     var rect = new Rectangle(pos.CastToPoint(), spriteSize);
+
                     if (bmp.Width <= pos.X) { break; }
                     if (bmp.Height <= pos.Y) { return; }
 
-                    Bitmap bitmap = bmp.Clone(rect, PixelFormat.Format32bppArgb);
-                    bitmap.MakeTransparent(Color.FromArgb(255, 0, 255));
+                    //numAllが0のときは全て読み込み、numAllが0以外のときは上限まで読み込む
+                    if (numAll == 0 || count < numAll) {
+                        Bitmap bitmap = bmp.Clone(rect, PixelFormat.Format32bppArgb);
+                        bitmap.MakeTransparent(Color.FromArgb(255, 0, 255));
 
-                    if (count < numAll) {
+                        GraphicsUltis.ConvertBitmapToTexture2D(bitmap, out Texture2D texture);
+                        
+                        //不要になったBitmapは解放する
+                        bitmap.Dispose();
 
-                        if (numAll != 0)
-                            bmplst.Add(bitmap);
+                        var spriteTexture = new SpriteTexture(texture, x, y);
+                        SpriteTextures.Add(spriteTexture);
                     }
-
                     count++;
 
                     Debug.Log($"count:{count} {rect}");
                 }
-                bitmaps.Add(bmplst);
             }
+            
+            Debug.Log(":" + SpriteTextures.Count);
         }
 
-        public void LoadTextures(string name) {
-            Texture2D_Data[] textures = new Texture2D_Data[NumX * NumY];
-
-            for (int y = 0; y < bitmaps.Count; y++) {
-                List<Texture2D> lst = new List<Texture2D>();
-                for (int x = 0; x < bitmaps[y].Count; x++) {
-                    ConvertBitmapToTexture2D(bitmaps[y][x], out Texture2D texture);
-
-                    textures[x + bitmaps[y].Count * y] = new Texture2D_Data(texture, x, y);
-                    dictBitmap[texture] = new TexData(texture, $"{name}[{x + 1}][{y + 1}]", bitmaps[y][x].Size.CastToPoint(), bitmaps[y][x]);
-                    lst.Add(texture);
-                }
-                Textures.Add(lst);
-            }
-            Texture2D.AddRange(textures);
-            Debug.Log(":" + Texture2D.Count);
-        }
-
+        /// <summary>
+        /// スプライトシートを縦ごとに分割して、複数のスプライトシートを作成する。
+        /// </summary>
+        /// <returns></returns>
         public SpriteSheet[] SplitSheet() {
             SpriteSheet[] spriteSheets = new SpriteSheet[NumY];
             for (int y = 0; y < NumY; y++) {
-                spriteSheets[y] = new SpriteSheet();
-                List<List<Texture2D>> tex = new List<List<Texture2D>> {
-                    new List<Texture2D>()
+                var sheet = new SpriteSheet() {
+                    NumX = NumX,
+                    NumY = 1,
+                    spriteSize = spriteSize
                 };
-                for (int x = 0; x < NumX; x++) {
-                    tex[0].Add(Textures[y][x]);
-                    spriteSheets[y].Texture2D.Add(new Texture2D_Data(tex[0][x], x, y));
-                }
-                spriteSheets[y].Textures = tex;
 
-                spriteSheets[y].NumX = NumX;
-                spriteSheets[y].NumY = 1;
-                spriteSheets[y].spriteSize = spriteSize;
+                for (int x = 0; x < NumX; x++) {
+                    var index = x + y * NumX;
+                    var sprite = SpriteTextures[index];
+
+                    sheet.SpriteTextures.Add(new SpriteTexture(sprite.texture, x, y));
+                }
+                
+                spriteSheets[y] = sheet;
             }
 
             return spriteSheets;
         }
 
+        /// <summary>
+        /// すべてのテクスチャを配列で取得する。
+        /// </summary>
+        /// <returns></returns>
         public Texture2D[] GetTextureArray() {
             List<Texture2D> texList = new List<Texture2D>();
-            for (int i = 0; i < Texture2D.Count; i++) {
-                Texture2D_Data texdata = Texture2D[i];
+            for (int i = 0; i < SpriteTextures.Count; i++) {
+                SpriteTexture texdata = SpriteTextures[i];
                 texList.Add(texdata.texture);
             }
 
@@ -155,8 +177,15 @@ namespace STG.Engine.Graphics {
         }
 
 
+        /// <summary>
+        /// アンマネージドリソースを解放する。SpriteSheetクラスはTexture2Dを保持しているため、Disposeメソッドを呼び出して、すべてのテクスチャを解放する必要がある。
+        /// </summary>
         public void Dispose() {
+            foreach (var texture in SpriteTextures) {
+                texture.Dispose();
+            }
 
+            SpriteTextures.Clear();
         }
     }
 }

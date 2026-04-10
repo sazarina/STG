@@ -1,11 +1,6 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using STG.Engine.Graphics;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace STG.Engine.Component {
     public class SpriteRenderer :Component {
@@ -42,9 +37,8 @@ namespace STG.Engine.Component {
 
         public void Draw() {
             if (texture != null) {
-                    GraphicsUltis.DrawSprite(texture, transform);
+                GraphicsUltis.DrawSprite(texture, transform);
             }
         }
-
     }
 }
