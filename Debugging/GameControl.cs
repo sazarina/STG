@@ -3,7 +3,6 @@ using Microsoft.Xna.Framework.Input;
 using MonoGame.Forms.NET.Controls;
 using STG.Engine.Graphics;
 using ButtonState = Microsoft.Xna.Framework.Input.ButtonState;
-using Color = Microsoft.Xna.Framework.Color;
 using Keys = Microsoft.Xna.Framework.Input.Keys;
 
 namespace STG.Engine.Debugging {
@@ -20,14 +19,14 @@ namespace STG.Engine.Debugging {
             Editor.Content.RootDirectory = "Content";
 
             LoadHelper.Initialize(Editor.Content, Editor.GraphicsDevice);
-            GraphicsUltis.Initialize(Editor.GraphicsDevice, Editor.spriteBatch);
+            GraphicsUltis.Initialize();
 
             KeyInput.Initialize();
 
             Debug.Log("GameControl.initialize()");
 
             gameManager = new GameManager();
-            gameManager.Initialize<DebugClient>();
+            gameManager.Initialize<DebugClient>(Editor.GraphicsDevice, Editor.spriteBatch);
         }
 
         /// <summary>
@@ -48,10 +47,7 @@ namespace STG.Engine.Debugging {
         /// This is called when the game should draw itself.
         /// </summary>
         protected override void Draw() {
-            Editor.GraphicsDevice.Clear(Color.Blue);
-            Editor.spriteBatch.Begin();
             gameManager.Draw();
-            Editor.spriteBatch.End();
         }
     }
 }

@@ -9,20 +9,17 @@ using static STG.Engine.Helper.FileLocation;
 using Color = Microsoft.Xna.Framework.Color;
 using Point = Microsoft.Xna.Framework.Point;
 using Rectangle = Microsoft.Xna.Framework.Rectangle;
+using Engine.Component;
 
 namespace STG.Engine.Graphics {
-    public static class GraphicsUltis {
-        static GraphicsDevice device;
-        static SpriteBatch spriteBatch;
+    public class GraphicsUltis {
 
         //Texture2DにWidthとHeightがあるため、不要になった
         //public static Dictionary<Texture2D, TexData> dictBitmap = new Dictionary<Texture2D, TexData>();
 
         static SpriteFont spriteFont;
 
-        public static void Initialize(GraphicsDevice device, SpriteBatch spriteBatch) {
-            GraphicsUltis.device = device;
-            GraphicsUltis.spriteBatch = spriteBatch;
+        public static void Initialize() {
             spriteFont = LoadHelper.Content.Load<SpriteFont>("DebugText");
         }
 
@@ -31,10 +28,11 @@ namespace STG.Engine.Graphics {
             var sourceRect = new Rectangle(new Point(0, 0), new Point(texture.Width, texture.Height));
             var color = Color.White;
             //spriteBatch.Draw(texture, sourceRect, vec, position, color);
+            var spriteBatch = RenderManager.Instance().SpriteBatch;
             spriteBatch.Draw(texture, transform.position, sourceRect, color);
         }
 
-        public static void DrawSprite(Texture2D texture, Vector2 position, float rotation,Vector2 scale, SpriteEffects spriteEffects = SpriteEffects.None) {
+        public static void DrawSprite(Texture2D texture, Vector2 position, float rotation, Vector2 scale, SpriteEffects spriteEffects = SpriteEffects.None) {
             Vector2 vec = new Vector2(0, 0);
             var sourceRect = new Rectangle(new Point(0, 0), new Point(texture.Width, texture.Height));
             var color = Color.White;
@@ -42,7 +40,8 @@ namespace STG.Engine.Graphics {
             //origin と scaleが追加されている
             var origin = new Vector2(texture.Width / 2, texture.Height / 2);
 
-            spriteBatch.Draw(texture, position: position, sourceRectangle: sourceRect, color: color, rotation,origin, scale, effects: spriteEffects, 0);
+            var spriteBatch = RenderManager.Instance().SpriteBatch;
+            spriteBatch.Draw(texture, position: position, sourceRectangle: sourceRect, color: color, rotation, origin, scale, effects: spriteEffects, 0);
         }
 
         //public static void DrawSprite(SpriteTextures texture, Vector2 position, float rotation, Vector2 scale, SpriteEffects spriteEffects = SpriteEffects.None) {
@@ -59,6 +58,8 @@ namespace STG.Engine.Graphics {
             var sourceRect = new Rectangle(new Point(0, 0), new Point(texture.Width, texture.Height));
             var position = new Vector2(x, y) + center;
             var color = Color.White;
+
+            var spriteBatch = RenderManager.Instance().SpriteBatch;
             spriteBatch.Draw(texture, position, sourceRect, color);
         }
 
@@ -66,6 +67,8 @@ namespace STG.Engine.Graphics {
             if (color == default) {
                 color = Color.White;
             }
+
+            var spriteBatch = RenderManager.Instance().SpriteBatch;
             spriteBatch.DrawString(spriteFont, text, vector, color);
         }
 
@@ -73,6 +76,8 @@ namespace STG.Engine.Graphics {
             if (color == default) {
                 color = Color.White;
             }
+
+            var spriteBatch = RenderManager.Instance().SpriteBatch;
             spriteBatch.DrawString(spriteFont, text.ToString(), vector, color);
         }
 
@@ -122,7 +127,8 @@ namespace STG.Engine.Graphics {
                 }
             }
 
-            texture = new Texture2D(device, bitmap.Width, bitmap.Height);
+            var graphicsDevice = RenderManager.Instance().GraphicsDevice;
+            texture = new Texture2D(graphicsDevice, bitmap.Width, bitmap.Height);
             texture.SetData(bytes2);
             bitmap.UnlockBits(bitmapData);
         }

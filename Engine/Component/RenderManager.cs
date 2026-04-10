@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
 using STG.Engine.Component;
 using STG.Engine.Debugging;
 using STG.Engine.Graphics;
@@ -10,22 +12,7 @@ namespace Engine.Component {
         #region シングルトン
         static RenderManager self = null;
 
-        public static RenderManager Instance() {
-            if (self == null) {
-                self = new RenderManager();
-            }
-
-            return self;
-        }
-
-        #endregion
-
-        public Dictionary<string, LayerGroup> Layers { get; set; } = new Dictionary<string, LayerGroup>();
-
-        List<SpriteRenderer> renderers = new List<SpriteRenderer>();
-        Dictionary<int, List<SpriteRenderer>> layerList =new Dictionary<int, List<SpriteRenderer>>();
-
-        RenderManager() {
+        RenderManager(GraphicsDevice graphicsDevice, SpriteBatch spriteBatch) {
             //    OnLayerOrderChanged += (order, group) => {
             //    //    if (layerList.ContainsKey(order)) {
             //    //        layerList[order] =;
@@ -33,8 +20,38 @@ namespace Engine.Component {
             //    //        layerList.Add(order, group);
             //    //    }
             //    //};
+            GraphicsDevice = graphicsDevice;
+            SpriteBatch = spriteBatch;
             Debug.Log("RenderManager.ctor()");
         }
+
+        public static RenderManager Instance(GraphicsDevice graphicsDevice = null, SpriteBatch spriteBatch = null) {
+            if (self == null) {
+                if (graphicsDevice == null) {
+                    throw new ArgumentNullException(nameof(graphicsDevice), "GraphicsDeviceはnullにできません。");
+                }
+                if (spriteBatch == null) {
+                    throw new ArgumentNullException(nameof(spriteBatch), "SpriteBatchはnullにできません。");
+                }
+
+                self = new RenderManager(graphicsDevice, spriteBatch);
+            }
+
+            return self;
+        }
+
+        #endregion
+
+        internal SpriteBatch SpriteBatch { get; private set; }
+
+        internal GraphicsDevice GraphicsDevice { get; private set; }
+
+        public Dictionary<string, LayerGroup> Layers { get; set; } = new Dictionary<string, LayerGroup>();
+
+        List<SpriteRenderer> renderers = new List<SpriteRenderer>();
+        Dictionary<int, List<SpriteRenderer>> layerList = new Dictionary<int, List<SpriteRenderer>>();
+
+
 
         internal void Register(SpriteRenderer renderer) {
             renderers.Add(renderer);
@@ -50,7 +67,7 @@ namespace Engine.Component {
 
         internal void Unregister(SpriteRenderer renderer) {
             renderers.Remove(renderer);
-            if(layerList.ContainsKey(renderer.SortingOrder)) {
+            if (layerList.ContainsKey(renderer.SortingOrder)) {
                 layerList[renderer.SortingOrder].Remove(renderer);
                 if (layerList[renderer.SortingOrder].Count == 0) {
                     layerList.Remove(renderer.SortingOrder);
@@ -58,13 +75,15 @@ namespace Engine.Component {
             }
         }
 
-        public Action<int,LayerGroup> OnLayerOrderChanged;
+        public Action<int, LayerGroup> OnLayerOrderChanged;
 
         public void Update() {
-         
+
         }
 
         public void Draw() {
+            GraphicsDevice.Clear(Color.Blue);
+            SpriteBatch.Begin();
             foreach (var renderer in renderers) {
                 if (renderer.isActive) {
                     renderer.Draw();
@@ -84,6 +103,7 @@ namespace Engine.Component {
                     }
                 });
             });
+            SpriteBatch.End();
         }
     }
 }
