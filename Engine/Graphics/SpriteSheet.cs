@@ -28,7 +28,12 @@ namespace STG.Engine.Graphics {
         /// <summary>
         /// 1個当たりのサイズ
         /// </summary>
-        public Size spriteSize;
+        public Size Size;
+
+        /// <summary>
+        /// スプライト間の間隔
+        /// </summary>
+        public Point Spacing;
 
         public List<SpriteTexture> SpriteTextures = new List<SpriteTexture>();
 
@@ -62,17 +67,18 @@ namespace STG.Engine.Graphics {
         /// <param name="NumX">横の数</param>
         /// <param name="NumY">縦の数</param>
         /// <param name="spriteSize">1個当たりのサイズ</param>
-        /// <param name="padX">X方向のパディング</param>
-        /// <param name="padY">Y方向のパディング</param>
+        /// <param name="pad">パディング</param>
+        /// <param name="spacing">スプライト間の間隔</param>
         /// <param name="numAll">読み込むスプライトの上限。0の場合は全て読み込む。</param>
-        public SpriteSheet(string path, string name, int NumX, int NumY, Point spriteSize, int padX = 0, int padY = 0, int numAll = 0) {
+        public SpriteSheet(string path, string name, int NumX, int NumY, Point spriteSize, Point pad = new Point(), Point spacing = new Point(), int numAll = 0) {
             this.NumX = NumX;
             this.NumY = NumY;
             this.numAll = numAll;
-            this.spriteSize = spriteSize.CastToSize();
+            Size = spriteSize.CastToSize();
+            Spacing = spacing;
 
             Bitmap bmp = GraphicsUltis.LoadBitmap(path);
-            LoadSpriteSheet(bmp, padX, padY);
+            LoadSpriteSheet(bmp, pad, spacing);
         }
 
         /// <summary>
@@ -86,13 +92,13 @@ namespace STG.Engine.Graphics {
         /// <param name="padX">X方向のパディング</param>
         /// <param name="padY">Y方向のパディング</param>
         /// <param name="numAll">読み込むスプライトの上限。0の場合は全て読み込む。</param>
-        public SpriteSheet(Bitmap bitmap,string name, int NumX, int NumY, Point spriteSize, int padX = 0, int padY = 0, int numAll = 0) {
+        public SpriteSheet(Bitmap bitmap,string name, int NumX, int NumY, Point spriteSize, Point pad = new Point(), Point spacing = new Point(), int numAll = 0) {
             this.NumX = NumX;
             this.NumY = NumY;
             this.numAll = numAll;
-            this.spriteSize = spriteSize.CastToSize();
+            this.Size = spriteSize.CastToSize();
 
-            LoadSpriteSheet(bitmap, padX, padY);
+            LoadSpriteSheet(bitmap, pad, spacing);
         }
 
         public SpriteSheet() { }
@@ -103,13 +109,13 @@ namespace STG.Engine.Graphics {
         /// <param name="bmp">ビットマップ</param>
         /// <param name="padX">X方向のパディング</param>
         /// <param name="padY">Y方向のパディング</param>
-        void LoadSpriteSheet(Bitmap bmp, int padX, int padY) {
+        void LoadSpriteSheet(Bitmap bmp, Point pad,Point spacing) {
             int count = 0;
 
             for (int y = 0; y < NumY; y++) {
                 for (int x = 0; x < NumX; x++) {
-                    Point pos = new Point(padX + spriteSize.Width * x, padY + spriteSize.Height * y);
-                    var rect = new Rectangle(pos.CastToPoint(), spriteSize);
+                    Point pos = new Point(pad.X + (Size.Width + spacing.X) * x, pad.Y + (Size.Height + spacing.Y) * y);
+                    var rect = new Rectangle(pos.CastToPoint(), Size);
 
                     if (bmp.Width <= pos.X) { break; }
                     if (bmp.Height <= pos.Y) { return; }
@@ -146,7 +152,7 @@ namespace STG.Engine.Graphics {
                 var sheet = new SpriteSheet() {
                     NumX = NumX,
                     NumY = 1,
-                    spriteSize = spriteSize
+                    Size = Size
                 };
 
                 for (int x = 0; x < NumX; x++) {

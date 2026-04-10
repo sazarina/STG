@@ -3,8 +3,7 @@ using System;
 
 namespace STG.Engine.Helper {
     public static class FileLocation {
-        public readonly static string ResourcesFolderDirectory = "../../Resources";
-        public readonly static string ImageFolderDirectory = Environment.CurrentDirectory+"/Resources/Images";
+        public readonly static string ContentFolderDirectory = Environment.CurrentDirectory+"/Content";
         public readonly static string ScriptFolderDirectory = "../../Script";
     }
 
