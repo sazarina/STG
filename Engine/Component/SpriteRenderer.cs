@@ -3,7 +3,7 @@ using Microsoft.Xna.Framework.Graphics;
 using STG.Engine.Graphics;
 
 namespace STG.Engine.Component {
-    public class SpriteRenderer : Component {
+    public class SpriteRenderer :Component {
         #region Texture
         public Texture2D texture { get; set; }
         public LayerGroup SortingLayer { get; set; } = LayerGroup.Default;
@@ -12,8 +12,8 @@ namespace STG.Engine.Component {
 
 
         //使用するつもりはない。
-        void SetLayer(string layerName, int sortingOrder = 0) {
-            SortingLayer = new LayerGroup(layerName, sortingOrder, 0);
+        void SetLayer(string layerName,int sortingOrder=0) {
+            SortingLayer = new LayerGroup(layerName, sortingOrder,0);
             SortingOrder = sortingOrder;
 
             //GameObjectManager.UpdateLayerGroup(gameObject, SortingLayer);
@@ -40,6 +40,5 @@ namespace STG.Engine.Component {
                 GraphicsUltis.DrawSprite(texture, transform);
             }
         }
-
     }
 }

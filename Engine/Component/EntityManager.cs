@@ -8,7 +8,17 @@ using static STG.Engine.Graphics.GraphicsUltis;
 
 namespace STG.Engine.Component {
     public class EntityManager {
-        protected SpriteBatch spriteBatch;
+        static EntityManager instance;
+
+        internal static EntityManager Instance(SpriteBatch spriteBatch = null) {
+            if (instance == null) {
+                instance = new EntityManager(spriteBatch);
+            }
+            return instance;
+        }
+
+
+        internal SpriteBatch spriteBatch;
         internal ScriptController scriptController = ScriptController.Instance();
         public ScriptController ScriptController => scriptController;
 
@@ -16,7 +26,7 @@ namespace STG.Engine.Component {
 
         FPSCounter fPSCounter;
 
-        public EntityManager(SpriteBatch spriteBatch) {
+        EntityManager(SpriteBatch spriteBatch) {
             this.spriteBatch = spriteBatch;
 
             fPSCounter = new FPSCounter();
@@ -56,7 +66,7 @@ namespace STG.Engine.Component {
         public virtual void Draw() {
             MouseState mouseState = Mouse.GetState();
 
-            gameObjectManager.Draw();
+            //gameObjectManager.Draw();
             scriptController.Draw();
             fPSCounter.Draw();
 

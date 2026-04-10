@@ -1,8 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using STG.Engine.Component;
+using STG.Engine.Debugging;
+using STG.Engine.Graphics;
 
 namespace Engine.Component {
     public class RenderManager {
@@ -58,6 +59,10 @@ namespace Engine.Component {
         }
 
         public Action<int,LayerGroup> OnLayerOrderChanged;
+
+        public void Update() {
+         
+        }
 
         public void Draw() {
             foreach (var renderer in renderers) {

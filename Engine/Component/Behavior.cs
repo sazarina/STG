@@ -3,16 +3,13 @@ using Microsoft.Xna.Framework.Graphics;
 using System.Collections;
 using STG.Engine.Debugging;
 using STG.Engine.Graphics;
+using Engine.Component;
 
 namespace STG.Engine.Component {
     /// <summary>
     /// スクリプトの基底クラス
     /// </summary>
-    public abstract class Behavior {
-        internal GameObject gameObject { get; private set; }
-
-        public Transform transform => gameObject.transform;
-
+    public abstract class Behavior : Component {
         /// <summary>
         /// スクリプトを管理するクラス
         /// </summary>
@@ -31,7 +28,16 @@ namespace STG.Engine.Component {
         public virtual void Start() { }
 
         protected Texture2D LoadTexture(string path,string name) => GraphicsUltis.CreateTexture(path,name);
-    
+
+        protected LayerGroup Layer(string name) => RenderManager.Instance().Layers[name];
+
+        public T AddComponent<T>() where T : Component, new() => gameObject.AddComponent<T>();
+        public T GetComponent<T>() where T : Component, new() => gameObject.GetComponent<T>();
+        public bool IsRegisteredComponent<T>() where T : Component => gameObject.IsRegisteredComponent<T>();
+
+
+
+        #region ChevyRay.Coroutinesのラッパー関数
         protected void AddCoroutine(IEnumerator routine, CoroutineHandle coroutineHandle) =>
             scriptController.AddCoroutine(routine, coroutineHandle);
 
@@ -40,8 +46,6 @@ namespace STG.Engine.Component {
 
         protected CoroutineHandle GetCoroutine(IEnumerator routine) =>
             scriptController.GetCoroutine(routine);
-
-        #region ChevyRay.Coroutinesのラッパー関数
         /// <summary>
         /// コルーチン実行
         /// </summary>

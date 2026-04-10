@@ -6,10 +6,6 @@ namespace STG.Engine.Debugging {
     class HierarchyManager : Behavior {
         DebugClient clientManager;
 
-        public override void Draw() {
-
-        }
-
         public void Start(DebugClient clientManager) {
             this.clientManager = clientManager;
         }

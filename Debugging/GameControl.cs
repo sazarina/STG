@@ -24,7 +24,9 @@ namespace STG.Engine.Debugging {
 
             KeyInput.Initialize();
 
-            gameManager = new GameManager(Editor.spriteBatch);
+            Debug.Log("GameControl.initialize()");
+
+            gameManager = new GameManager();
             gameManager.Initialize<DebugClient>();
         }
 
