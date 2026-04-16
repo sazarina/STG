@@ -16,13 +16,17 @@ namespace STG.Engine.Component {
                     ComponentList.Add(type, script);
                     return (T)script;
                 } else if (type.BaseType == typeof(Component)) {
-                    Component component = null;
-                    if (type == typeof(SpriteRenderer)){ 
-                        component  = new SpriteRenderer();
-                        RenderManager.Instance().Register(component as SpriteRenderer);
+                    Component component = new T();
+                    component.gameObject = this;
+
+                    if (type == typeof(SpriteRenderer)){
+                        //これではSortingLayer:Defaultで登録されてしまうので、
+                        //sr.SortingLayer = Layer("Character");
+                        //代入されたときにsetterで登録をする。
+                        //RenderManager.Instance().Register(component as SpriteRenderer);
                     }
 
-                    component.gameObject = this;
+
 
                     ComponentList.Add(type, component);
                     return (T)component;
@@ -124,6 +128,10 @@ namespace STG.Engine.Component {
             script.Start();
             AttachedScripts.Add(type, script);
             return script;
+        }
+
+        public static GameObject Find(string name) {
+            return GameObjectManager.Instance().FindWithName(name);
         }
 
         #endregion

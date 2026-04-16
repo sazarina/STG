@@ -53,29 +53,35 @@ namespace Engine.Component {
 
         public Dictionary<string, LayerGroup> Layers { get; set; } = new Dictionary<string, LayerGroup>();
 
-        List<SpriteRenderer> renderers = new List<SpriteRenderer>();
+        //List<SpriteRenderer> renderers = new List<SpriteRenderer>();
         Dictionary<int, List<SpriteRenderer>> layerList = new Dictionary<int, List<SpriteRenderer>>();
 
 
 
         internal void Register(SpriteRenderer renderer) {
-            renderers.Add(renderer);
+            //renderers.Add(renderer);
             //LayerListに登録されていない場合
-            if (!layerList.ContainsKey(renderer.SortingOrder)) {
-                layerList.Add(renderer.SortingOrder, new List<SpriteRenderer> {
-                    renderer
-                });
+            if (!layerList.ContainsKey(renderer.SortingLayer.LayerOrder)) {
+                layerList.Add(renderer.SortingLayer.LayerOrder, new List<SpriteRenderer> { renderer });
+                
             } else {
-                layerList[renderer.SortingOrder].Add(renderer);
+                var index = layerList[renderer.SortingLayer.LayerOrder].IndexOf(renderer);
+                Debug.Log(index);
+
+                if (layerList[renderer.SortingLayer.LayerOrder].IndexOf(renderer) != -1) {
+                    Debug.Log($"RenderManager: SpriteRenderer {renderer.gameObject.name} は既にレイヤー {renderer.SortingLayer.Name} に登録されています。");
+                } else {
+                    layerList[renderer.SortingLayer.LayerOrder].Add(renderer);
+                }
             }
         }
 
         internal void Unregister(SpriteRenderer renderer) {
-            renderers.Remove(renderer);
-            if (layerList.ContainsKey(renderer.SortingOrder)) {
-                layerList[renderer.SortingOrder].Remove(renderer);
-                if (layerList[renderer.SortingOrder].Count == 0) {
-                    layerList.Remove(renderer.SortingOrder);
+            //renderers.Remove(renderer);
+            if (layerList.ContainsKey(renderer.SortingLayer.LayerOrder)) {
+                layerList[renderer.SortingLayer.LayerOrder].Remove(renderer);
+                if (layerList[renderer.SortingLayer.LayerOrder].Count == 0) {
+                    layerList.Remove(renderer.SortingLayer.LayerOrder);
                 }
             }
         }
@@ -87,27 +93,18 @@ namespace Engine.Component {
         }
 
         public void Draw() {
-            GraphicsDevice.Clear(Color.Blue);
-            SpriteBatch.Begin();
-            foreach (var renderer in renderers) {
-                if (renderer.isActive) {
-                    renderer.Draw();
+            GraphicsDevice.Clear(Color.White);
+            SpriteBatch.Begin(transformMatrix: camera.GetViewMatrix());
+
+            foreach (var kv in layerList) {
+                var sorted = kv.Value.OrderBy(x => x.SortingOrder);
+                foreach (var sr in sorted) {
+                    if (sr.gameObject.active) {
+                        sr.Draw();
+                    }
                 }
             }
 
-
-            var groupList = renderers.GroupBy(x => x.SortingLayer.LayerOrder).OrderBy(x => x.Key).ToList();
-
-            //Debug.Log($"GroupList Count: {groupList.Count}");
-            groupList.ForEach(group => {
-                var sorted = group.OrderBy(x => x.SortingLayer.LayerOrder).ToList();
-                sorted.ForEach(sr => {
-                    var gameObject = sr.gameObject;
-                    if (gameObject.active) {
-                        sr.Draw();
-                    }
-                });
-            });
             SpriteBatch.End();
         }
     }
