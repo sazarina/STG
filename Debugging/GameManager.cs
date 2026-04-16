@@ -2,7 +2,6 @@
 using Microsoft.Xna.Framework.Graphics;
 using STG.Engine.Debugging.Scripts;
 using STG.Engine.Component;
-using Engine.Component;
 using STG.Engine.Graphics;
 
 namespace STG.Engine.Debugging {
@@ -22,8 +21,8 @@ namespace STG.Engine.Debugging {
         /// GameObjectManagerのインスタンスの型。
         /// 例: フォームデバッグ時は `DebugClient`、
         /// 通常実行時は `GameObjectManager`。</typeparam>
-        public void Initialize<T>() where T : GameObjectManager {
-            runtimeManager.Initialize<T>();
+        public void Initialize<T>(GraphicsDevice graphicsDevice, SpriteBatch spriteBatch) where T : GameObjectManager {
+            runtimeManager.Initialize<T>(graphicsDevice, spriteBatch);
 
             var layers = RenderManager.Instance().Layers;
             layers["Default"] = new LayerGroup() {
@@ -31,7 +30,7 @@ namespace STG.Engine.Debugging {
                 LayerOrder = 0,
             };
 
-            layers["Chacter"] = new LayerGroup() {
+            layers["Character"] = new LayerGroup() {
                 Name = "Character",
                 LayerOrder = 1,
             };
@@ -42,7 +41,7 @@ namespace STG.Engine.Debugging {
             };
 
 
-            GameObject player = GameObject.Instantiate<Player>(0, 0, "player");
+            GameObject player = GameObject.Instantiate<Player>(0, 200, "player");
 
             Debug.Log("GameManager.Initialize() Ended");
         }
