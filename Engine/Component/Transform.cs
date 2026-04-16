@@ -17,7 +17,7 @@ namespace STG.Engine.Component {
                 if (Parent != null) {
                     return Parent.Name;
                 } else {
-                    return "No";
+                    return null;
                 }
             }
         }
@@ -37,7 +37,7 @@ namespace STG.Engine.Component {
         public Vector2 position {
             get {
                 if (Parent != null) {
-                    if (Parent.Name == GameObjectManager.RootlName) {
+                    if (Parent.Name == GameObjectManager.RootName) {
                         return _position;
                     } else {
                         return _position = Parent.position + localPosition;
@@ -49,7 +49,7 @@ namespace STG.Engine.Component {
             }
             set {
                 if (Parent != null) {
-                    if (Parent.Name == GameObjectManager.RootlName) {
+                    if (Parent.Name == GameObjectManager.RootName) {
 
                     } else {
 
@@ -62,7 +62,7 @@ namespace STG.Engine.Component {
 
         public Vector2 localPosition {
             get {
-                if (Parent.Name == "OriginLocalPosition") {
+                if (Parent.Name == GameObjectManager.RootName) {
                     //Debug.Log(_Debug.SetDebugInfo(),"NoParent");
                     return _position;
                 } else {
@@ -71,7 +71,7 @@ namespace STG.Engine.Component {
             }
             set {
                 //
-                if (Name == "OriginLocalPosition") {
+                if (Name == GameObjectManager.RootName) {
                     //Debug.Log(_Debug.SetDebugInfo(), Parent.Name);
                     _localPosition = value;
                 } else {
@@ -89,7 +89,7 @@ namespace STG.Engine.Component {
         /// </summary>
         /// <returns></returns>
         public Vector2 GetLocalPosition() {
-            if (Parent.Name != "OriginLocalPosition") {
+            if (Parent.Name != GameObjectManager.RootName) {
                 return _position - Parent._position;
             } else {
                 return _position;
