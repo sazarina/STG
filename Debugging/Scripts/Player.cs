@@ -1,5 +1,4 @@
-﻿using Microsoft.Xna.Framework;
-using STG.Engine.Component;
+﻿using STG.Engine.Component;
 using STG.Engine.Graphics;
 using Point = Microsoft.Xna.Framework.Point;
 using Keys = Microsoft.Xna.Framework.Input.Keys;

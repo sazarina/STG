@@ -2,7 +2,6 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using System;
 using System.Collections.Generic;
-using Xenon.Core;
 
 namespace STG.Engine.Component {
     public partial class GameObject {
@@ -44,11 +43,15 @@ namespace STG.Engine.Component {
 
 
         public void Update() {
-            AttachedScripts.Values.ForEach(script => script.Update());
+            foreach (var script in AttachedScripts.Values) {
+                script.Update();
+            }
         }
 
         public void Draw() {
-            //AttachedScripts.Values.ForEach(script => script.Draw());
+            //foreach (var script in AttachedScripts.Values) {
+            //    script.Draw();
+            //}
         }
 
         #region Instantiate

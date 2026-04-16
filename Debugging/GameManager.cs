@@ -43,6 +43,8 @@ namespace STG.Engine.Debugging {
 
             GameObject player = GameObject.Instantiate<Player>(0, 200, "player");
 
+            //GameObject.Instantiate<SortingLayerTest>(0, 0, "sortingLayerTest");
+
             Debug.Log("GameManager.Initialize() Ended");
         }
 

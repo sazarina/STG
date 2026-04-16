@@ -13,6 +13,5 @@
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\ThirdPartyLibrary\ChevyRay.Coroutines\ChevyRay.Coroutines.csproj" />
-    <ProjectReference Include="..\ThirdPartyLibrary\Xenon.Core\Xenon.Core.csproj" />
   </ItemGroup>
 </Project>

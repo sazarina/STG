@@ -3,7 +3,6 @@ using Microsoft.Xna.Framework.Graphics;
 using System.Collections;
 using STG.Engine.Debugging;
 using STG.Engine.Graphics;
-using Engine.Component;
 
 namespace STG.Engine.Component {
     /// <summary>
@@ -19,7 +18,7 @@ namespace STG.Engine.Component {
         /// </summary>
         CoroutineRunner coroutineRunner;
 
-        public void Initialize(ScriptController scriptController,GameObject gameObject) {
+        public void Initialize(ScriptController scriptController, GameObject gameObject) {
             this.scriptController = scriptController;
             this.gameObject = gameObject;
             coroutineRunner = scriptController.coroutineRunner;
@@ -27,7 +26,7 @@ namespace STG.Engine.Component {
 
         public virtual void Start() { }
 
-        protected Texture2D LoadTexture(string path,string name) => GraphicsUltis.CreateTexture(path,name);
+        protected Texture2D LoadTexture(string path, string name) => GraphicsUltis.CreateTexture(path, name);
 
         protected LayerGroup Layer(string name) => RenderManager.Instance().Layers[name];
 

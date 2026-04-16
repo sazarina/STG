@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using Xenon.Core;
 using STG.Engine.Graphics;
 using STG.Engine.Debugging;
 
@@ -88,18 +87,19 @@ namespace STG.Engine.Component {
 
         public virtual void Initialize() {
             Root = GameObject.Instantiate(0, 0, "OriginLocalPosition");
+            Debug.Log("GameObjectManager.Initialize()");
         }
 
         public virtual void Update() {
             var Objects = GameObjects.Values;
-            Objects.ForEach(gameObject => {
+            foreach (var gameObject in Objects) {
                 if (gameObject.active) {
                     gameObject.Update();
-                    gameObject.GetComponents().Values.ForEach(component => {
+                    foreach (var component in gameObject.GetComponents().Values) {
                         component.Update();
-                    });
+                    }
                 }
-            });
+            }
         }
         /// <summary>
         /// <para>レイヤー機能</para>
@@ -131,6 +131,10 @@ namespace STG.Engine.Component {
         }
 
         public GameObject FindWithName(string name) {
+            if (!GameObjects.Values.Any(x => x.name == name)) {
+                return null;
+            }
+
             return GameObjects.Values.Where(x => x.name == name).First();
         }
 

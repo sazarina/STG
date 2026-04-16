@@ -1,5 +1,4 @@
 ﻿using STG.Engine.Component;
-using Xenon.Core;
 
 namespace STG.Engine.Debugging {
     public class DebugClient:GameObjectManager {
@@ -21,19 +20,19 @@ namespace STG.Engine.Debugging {
             hierarchyManager = obj.AddComponent<HierarchyManager>();
             hierarchyManager.Start(this);
 
-            Debug.Log($"GameObjectManagerIstance: {Instance()}"); ;
+            Debug.Log($"DebugClient.Initialize()"); ;
         }
 
         public override void Update() {
             base.Update();
 
-            GameObjects.Values.ForEach(obj => {
+            foreach (var obj in GameObjects.Values) {
                 if (obj.IsMouseCursorClicked) {
                     Debug.Log(obj.name);
 
                     window.SelectItem(obj);
                 }
-            });
+            }
 
             hierarchyManager.Update();
         }

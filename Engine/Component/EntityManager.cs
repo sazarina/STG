@@ -47,8 +47,7 @@ namespace STG.Engine.Component {
 
             gameObjectManager = (T)GameObjectManager.Instance<T>(scriptController);
             gameObjectManager.Initialize();
-
-            Debug.Log("GameObjectManager Initialized");
+            Debug.Log($"EntityManager.Initialize()");
         }
 
         public virtual void Update(GameTime gameTime) {
