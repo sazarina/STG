@@ -3,11 +3,10 @@ using System.Collections.Generic;
 using System.Linq;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using STG.Engine.Component;
 using STG.Engine.Debugging;
 using STG.Engine.Graphics;
 
-namespace Engine.Component {
+namespace STG.Engine.Component {
     public class RenderManager {
         Camera camera;
 

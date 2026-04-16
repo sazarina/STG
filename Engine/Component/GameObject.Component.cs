@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using Engine.Component;
 using STG.Engine.Debugging;
 
 namespace STG.Engine.Component {

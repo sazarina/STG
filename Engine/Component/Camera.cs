@@ -1,5 +1,4 @@
 ﻿using Microsoft.Xna.Framework;
-using STG.Engine.Debugging;
 
 namespace STG.Engine.Component {
     public class Camera : Component {

@@ -2,7 +2,6 @@
 using Microsoft.Xna.Framework.Graphics;
 using STG.Engine.Debugging.Scripts;
 using STG.Engine.Component;
-using Engine.Component;
 using STG.Engine.Graphics;
 
 namespace STG.Engine.Debugging {
@@ -31,7 +30,7 @@ namespace STG.Engine.Debugging {
                 LayerOrder = 0,
             };
 
-            layers["Chacter"] = new LayerGroup() {
+            layers["Character"] = new LayerGroup() {
                 Name = "Character",
                 LayerOrder = 1,
             };
@@ -42,7 +41,7 @@ namespace STG.Engine.Debugging {
             };
 
 
-            GameObject player = GameObject.Instantiate<Player>(0, 0, "player");
+            GameObject player = GameObject.Instantiate<Player>(0, 200, "player");
 
             Debug.Log("GameManager.Initialize() Ended");
         }

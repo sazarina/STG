@@ -9,7 +9,6 @@ using static STG.Engine.Helper.FileLocation;
 using Color = Microsoft.Xna.Framework.Color;
 using Point = Microsoft.Xna.Framework.Point;
 using Rectangle = Microsoft.Xna.Framework.Rectangle;
-using Engine.Component;
 
 namespace STG.Engine.Graphics {
     public class GraphicsUltis {
@@ -27,9 +26,9 @@ namespace STG.Engine.Graphics {
             Vector2 vec = transform.center;
             var sourceRect = new Rectangle(new Point(0, 0), new Point(texture.Width, texture.Height));
             var color = Color.White;
-            //spriteBatch.Draw(texture, sourceRect, vec, position, color);
+            //spriteBatch.Draw(texture, sourceRect, vec, Position, color);
             var spriteBatch = RenderManager.Instance().SpriteBatch;
-            spriteBatch.Draw(texture, transform.position, sourceRect, color);
+            spriteBatch.Draw(texture, transform.position, null, color, 0f, new Vector2(texture.Width / 2, texture.Height / 2), 1f, SpriteEffects.None, 0f);
         }
 
         public static void DrawSprite(Texture2D texture, Vector2 position, float rotation, Vector2 scale, SpriteEffects spriteEffects = SpriteEffects.None) {
@@ -44,14 +43,14 @@ namespace STG.Engine.Graphics {
             spriteBatch.Draw(texture, position: position, sourceRectangle: sourceRect, color: color, rotation, origin, scale, effects: spriteEffects, 0);
         }
 
-        //public static void DrawSprite(SpriteTextures texture, Vector2 position, float rotation, Vector2 scale, SpriteEffects spriteEffects = SpriteEffects.None) {
+        //public static void DrawSprite(SpriteTextures texture, Vector2 Position, float rotation, Vector2 scale, SpriteEffects spriteEffects = SpriteEffects.None) {
         //    Vector2 vec = new Vector2(0, 0);
         //    var sourceRect = new Rectangle(new Point(0, 0), dictBitmap[texture].size);
         //    var color = Color.White;
 
         //    var origin = new Vector2(texture.Width / 2, texture.Height / 2);
 
-        //    spriteBatch.Draw(texture, position, sourceRect, color, rotation, origin, scale, spriteEffects, 0);
+        //    spriteBatch.Draw(texture, Position, sourceRect, color, rotation, origin, scale, spriteEffects, 0);
         //}
 
         public static void DrawSprite(Texture2D texture, int x, int y, Vector2 center = default) {

@@ -18,6 +18,9 @@ namespace STG.Engine.Debugging {
         protected override void Initialize() {
             Editor.Content.RootDirectory = "Content";
 
+            Screen.Width = Size.Width;
+            Screen.Height = Size.Height;
+
             LoadHelper.Initialize(Editor.Content, Editor.GraphicsDevice);
             GraphicsUltis.Initialize();
 
