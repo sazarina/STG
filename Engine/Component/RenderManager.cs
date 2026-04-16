@@ -9,6 +9,8 @@ using STG.Engine.Graphics;
 
 namespace Engine.Component {
     public class RenderManager {
+        Camera camera;
+
         #region シングルトン
         static RenderManager self = null;
 
@@ -22,6 +24,9 @@ namespace Engine.Component {
             //    //};
             GraphicsDevice = graphicsDevice;
             SpriteBatch = spriteBatch;
+
+            camera = GameObject.Instantiate(0, 0, "Camera").AddComponent<Camera>();
+
             Debug.Log("RenderManager.ctor()");
         }
 
