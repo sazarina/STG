@@ -27,13 +27,16 @@ namespace STG.Engine.Component {
             //GameObjectManager.UpdateLayerGroup(gameObject, SortingLayer);
         }
 
-        public Rectangle Rect {
-            get {
-                Rectangle rect = texture.Bounds;
-                rect.Location = transform.position.ToPoint();
-                return rect;
-            }
-        }
+        /// <summary>
+        /// スプライトの矩形。ワールド座標系で表される。
+        /// </summary>
+        public Rectangle Bound => new Rectangle() {
+            X = (int)transform.position.X - texture.Width / 2,
+            Y = (int)transform.position.Y - texture.Height / 2,
+            Width = texture.Width,
+            Height = texture.Height
+        };
+
         #endregion
         public override void Initialize() {
             base.Initialize();

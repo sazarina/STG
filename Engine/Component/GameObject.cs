@@ -14,7 +14,9 @@ namespace STG.Engine.Component {
 
         public Transform transform { get; set; }
 
-        public bool active { get; private set; } = true;
+        public bool active { get; internal set; } = true;
+        public bool isVisible { get; internal set; } = true;
+
         public void SetActive(bool value) {
             active = value;
         }
@@ -26,7 +28,7 @@ namespace STG.Engine.Component {
                 SpriteRenderer sr;
                 if (IsRegisteredComponent<SpriteRenderer>()) {
                     sr = GetComponent<SpriteRenderer>();
-                    return sr.texture != null && sr.Rect.Contains(KeyInput.CurrentMouseState.Position);
+                    return sr.texture != null && sr.Bound.Contains(KeyInput.CurrentMouseState.Position);
                 } else {
                     return false;
                 }

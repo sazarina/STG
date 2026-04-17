@@ -98,9 +98,12 @@ namespace STG.Engine.Component {
             foreach (var kv in layerList) {
                 var sorted = kv.Value.OrderBy(x => x.SortingOrder);
                 foreach (var sr in sorted) {
-                    if (sr.gameObject.active) {
+                    sr.gameObject.isVisible = camera.ViewRect.Intersects(sr.Bound);
+
+                    if (sr.gameObject.active && sr.gameObject.isVisible) {
                         sr.Draw();
                     }
+
                 }
             }
 
