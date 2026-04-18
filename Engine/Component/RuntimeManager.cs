@@ -13,6 +13,12 @@ namespace STG.Engine.Component {
             Debug.Log("RuntimeManager initialize().");
         }
 
+        public void Initialize(GraphicsDevice graphicsDevice, SpriteBatch spriteBatch) {
+            EntityManager.Instance().Initialize<GameObjectManager>();
+            RenderManager.Instance(graphicsDevice, spriteBatch);
+            Debug.Log("RuntimeManager initialize().");
+        }
+
         public void Update(GameTime gameTime) {
             EntityManager.Instance().Update(gameTime);
             RenderManager.Instance().Update();
