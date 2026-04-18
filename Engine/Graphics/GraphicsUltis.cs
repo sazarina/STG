@@ -9,6 +9,7 @@ using static STG.Engine.Helper.FileLocation;
 using Color = Microsoft.Xna.Framework.Color;
 using Point = Microsoft.Xna.Framework.Point;
 using Rectangle = Microsoft.Xna.Framework.Rectangle;
+using System.IO;
 
 namespace STG.Engine.Graphics {
     public class GraphicsUltis {
@@ -80,7 +81,13 @@ namespace STG.Engine.Graphics {
             spriteBatch.DrawString(spriteFont, text.ToString(), vector, color);
         }
 
-        public static Bitmap LoadBitmap(string path) => new Bitmap(ContentFolderDirectory + path);
+        public static Bitmap LoadBitmap(string path) {
+            var fullPath = ContentFolderDirectory + path;
+            if(!File.Exists(fullPath)) {
+                throw new FileNotFoundException($"Bitmap file not found: {fullPath}");
+            }
+            return new Bitmap(fullPath);
+        }
 
         public static Texture2D CreateTexture(string path, string name) {
             Bitmap bitmap = LoadBitmap(path);
