@@ -92,15 +92,15 @@ namespace STG.Engine.Component {
         }
 
         public void Draw() {
-            GraphicsDevice.Clear(Color.White);
+            GraphicsDevice.Clear(Color.DarkBlue);
             SpriteBatch.Begin(transformMatrix: camera.GetViewMatrix());
 
             foreach (var kv in layerList) {
                 var sorted = kv.Value.OrderBy(x => x.SortingOrder);
                 foreach (var sr in sorted) {
-                    sr.gameObject.isVisible = camera.ViewRect.Intersects(sr.Bound);
+                    sr.isVisible = camera.ViewRect.Intersects(sr.Bound);
 
-                    if (sr.gameObject.active && sr.gameObject.isVisible) {
+                    if (sr.gameObject.active && sr.isVisible) {
                         sr.Draw();
                     }
 

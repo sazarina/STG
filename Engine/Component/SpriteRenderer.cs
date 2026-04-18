@@ -4,8 +4,10 @@ using STG.Engine.Graphics;
 
 namespace STG.Engine.Component {
     public class SpriteRenderer : Component {
-        #region Texture
         public Texture2D texture { get; set; }
+
+        public bool isVisible { get; internal set; } = true;
+
         public LayerGroup SortingLayer { get {
                 return sortingLayer;
             } set {
@@ -37,7 +39,6 @@ namespace STG.Engine.Component {
             Height = texture.Height
         };
 
-        #endregion
         public override void Initialize() {
             base.Initialize();
         }
