@@ -1,28 +1,22 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using STG.Engine.Debugging.Scripts;
 using STG.Engine.Component;
+using STG.Engine.Debugging;
 using STG.Engine.Graphics;
 
-namespace STG.Engine.Debugging {
+namespace STG {
     class GameManager {
-        DebugClient debugClient;
         RuntimeManager runtimeManager = new RuntimeManager();
 
         public GameManager() {
-            debugClient = new DebugClient(ScriptController.Instance());
+
         }
 
         /// <summary>
-        /// 既定クラスの'Initialize'でT型の`GameObjectManager`のインスタンスを作成する。
-        /// ゲームで使用するエンティティの初期化もここで行う。
+        /// ゲームで使用するエンティティの初期化をここで行う。
         /// </summary>
-        /// <typeparam name="T">
-        /// GameObjectManagerのインスタンスの型。
-        /// 例: フォームデバッグ時は `DebugClient`、
-        /// 通常実行時は `GameObjectManager`。</typeparam>
-        public void Initialize<T>(GraphicsDevice graphicsDevice, SpriteBatch spriteBatch) where T : GameObjectManager {
-            runtimeManager.Initialize<T>(graphicsDevice, spriteBatch);
+        public void Initialize(GraphicsDevice graphicsDevice, SpriteBatch spriteBatch)  {
+            runtimeManager.Initialize(graphicsDevice, spriteBatch);
 
             var layers = RenderManager.Instance().Layers;
             layers["Default"] = new LayerGroup() {
@@ -40,13 +34,22 @@ namespace STG.Engine.Debugging {
                 LayerOrder = 2,
             };
 
-            GameObject test = GameObject.Instantiate<SortingLayerTest>(0, 200, "test");
+
+            GameObject player = GameObject.Instantiate<Player>(0, 200, "player");
+
+            //GameObject.Instantiate<SortingLayerTest>(0, 0, "sortingLayerTest");
+            var obj = GameObjectManager.Instance().FindWithName("player");
+            Debug.Log(obj);
 
             Debug.Log("GameManager.Initialize() Ended");
         }
 
         public void Update(GameTime gameTime) {
             runtimeManager.Update(gameTime);
+        }
+
+        public void Draw() {
+            runtimeManager.Draw();
         }
     }
 }
