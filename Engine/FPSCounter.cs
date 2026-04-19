@@ -1,4 +1,5 @@
 ﻿using Microsoft.Xna.Framework;
+using STG.Engine.Component;
 using STG.Engine.Graphics;
 
 namespace STG.Engine {
@@ -9,8 +10,8 @@ namespace STG.Engine {
         int m_frameCount; // 現在のフレーム数
 
         public FPSCounter() {
-            FPS = 0.0f;
-            m_interval = 2.0f;
+            FPS = 60.0f;
+            m_interval = 0.5f;
             m_updateTimer = 0.0f;
             m_frameCount = 0;
         }
@@ -32,10 +33,11 @@ namespace STG.Engine {
                 m_frameCount = 0;
                 m_updateTimer -= m_interval;
             }
-
-            // FPSの数値を描画する
-            GraphicsUltis.DrawText("FPS: " + FPS, new Vector2(0, 0), Color.Firebrick);
+            var camera = GameObjectManager.Instance().FindWithName("Camera").GetComponent<Camera>();
+            if (camera != null) {
+                // FPSの数値を描画する
+                GraphicsUltis.DrawText("FPS: " + FPS, camera.ScreenToWorld(new Vector2(20, 20)), Color.Firebrick);
+            }
         }
     }
-
 }

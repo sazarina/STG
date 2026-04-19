@@ -19,7 +19,7 @@ namespace STG.Engine.Debugging {
         }
 
         IEnumerator Show() {
-            yield return WaitForSecond(0.5f);
+            yield return WaitForSeconds(0.5f);
             clientManager.ShowHierarchy();
 
         }

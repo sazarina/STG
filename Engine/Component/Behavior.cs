@@ -85,7 +85,7 @@ namespace STG.Engine.Component {
             yield return null;
         }
 
-        protected IEnumerator WaitForSecond(float second) {
+        protected IEnumerator WaitForSeconds(float second) {
             yield return coroutineRunner.Run(second, Empty()).Wait();
         }
     }

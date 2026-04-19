@@ -9,6 +9,7 @@ using STG.Engine.Graphics;
 namespace STG.Engine.Component {
     public class RenderManager {
         Camera camera;
+        FPSCounter fpsCounter = new FPSCounter();
 
         #region シングルトン
         static RenderManager self = null;
@@ -94,6 +95,8 @@ namespace STG.Engine.Component {
         public void Draw() {
             GraphicsDevice.Clear(Color.White);
             SpriteBatch.Begin(transformMatrix: camera.GetViewMatrix());
+
+            fpsCounter.Draw();
 
             foreach (var kv in layerList) {
                 var sorted = kv.Value.OrderBy(x => x.SortingOrder);
