@@ -40,7 +40,7 @@ namespace STG.Engine.Debugging {
                 LayerOrder = 2,
             };
 
-            var test = GameObject.Instantiate<SortingLayerTest>(0, 200, "test");
+            GameObject test = GameObject.Instantiate<SortingLayerTest>(0, 200, "test");
 
             Debug.Log("GameManager.Initialize() Ended");
         }

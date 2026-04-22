@@ -35,7 +35,7 @@ namespace STG {
             };
 
 
-            GameObject player = GameObject.Instantiate<Player>(0, 200, "player");
+            var player = GameObject.Instantiate<Player>(0, 200, "player");
 
             //GameObject.Instantiate<SortingLayerTest>(0, 0, "sortingLayerTest");
             var obj = GameObjectManager.Instance().FindWithName("player");
