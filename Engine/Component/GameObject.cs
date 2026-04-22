@@ -67,10 +67,9 @@ namespace STG.Engine.Component {
             return gameObject;
         }
 
-        public static GameObject Instantiate<T>(int x, int y, string name, Texture2D texture = null, string tag = "") where T : Behavior, new() {
+        public static T Instantiate<T>(int x, int y, string name, Texture2D texture = null, string tag = "") where T : Behavior, new() {
             GameObject gameObject = InstantiateInternal(x, y, name, texture, tag);
-            gameObject.AddComponent<T>();
-            return gameObject;
+            return gameObject.AddComponent<T>();
         }
 
         public static GameObject Instantiate<T>(string name = "", string tag = "") where T : Behavior, new() {
