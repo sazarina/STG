@@ -63,40 +63,25 @@ namespace STG.Engine.Graphics {
         /// <summary>
         /// コンストラクタ。ビットマップからスプライトシートを作成する。
         /// </summary>
-        /// <param name="path">パス</param>
+        /// <param name="name">アセット名</param>
         /// <param name="NumX">横の数</param>
         /// <param name="NumY">縦の数</param>
         /// <param name="spriteSize">1個当たりのサイズ</param>
         /// <param name="pad">パディング</param>
         /// <param name="spacing">スプライト間の間隔</param>
         /// <param name="numAll">読み込むスプライトの上限。0の場合は全て読み込む。</param>
-        public SpriteSheet(string path, string name, int NumX, int NumY, Point spriteSize, Point pad = new Point(), Point spacing = new Point(), int numAll = 0) {
+        public SpriteSheet(string name, int NumX, int NumY, Point spriteSize, Point pad = new Point(), Point spacing = new Point(), int numAll = 0) {
             this.NumX = NumX;
             this.NumY = NumY;
             this.numAll = numAll;
             Size = spriteSize.CastToSize();
             Spacing = spacing;
 
-            Bitmap bmp = GraphicsUltis.LoadBitmap(path);
-            LoadSpriteSheet(bmp, pad, spacing);
-        }
+            var asset = AssetManager.Instance;
+            var texture = asset.Load(name);
 
-        /// <summary>
-        /// コンストラクタ。ビットマップからスプライトシートを作成する。
-        /// </summary>
-        /// <param name="bitmap">ビットマップ</param>
-        /// <param name="name">スプライトシートの名前 *今は未使用</param>
-        /// <param name="NumX">横の数</param>
-        /// <param name="NumY">縦の数</param>
-        /// <param name="spriteSize">1個当たりのサイズ</param>
-        /// <param name="padX">X方向のパディング</param>
-        /// <param name="padY">Y方向のパディング</param>
-        /// <param name="numAll">読み込むスプライトの上限。0の場合は全て読み込む。</param>
-        public SpriteSheet(Bitmap bitmap,string name, int NumX, int NumY, Point spriteSize, Point pad = new Point(), Point spacing = new Point(), int numAll = 0) {
-            this.NumX = NumX;
-            this.NumY = NumY;
-            this.numAll = numAll;
-            this.Size = spriteSize.CastToSize();
+            var bitmap = GraphicsUltis.ConvertTexture2DToBitmap(texture);
+            bitmap.MakeTransparent(Color.Magenta);
 
             LoadSpriteSheet(bitmap, pad, spacing);
         }
@@ -109,7 +94,7 @@ namespace STG.Engine.Graphics {
         /// <param name="bmp">ビットマップ</param>
         /// <param name="padX">X方向のパディング</param>
         /// <param name="padY">Y方向のパディング</param>
-        void LoadSpriteSheet(Bitmap bmp, Point pad,Point spacing) {
+        void LoadSpriteSheet(Bitmap bmp, Point pad, Point spacing) {
             int count = 0;
 
             for (int y = 0; y < NumY; y++) {
@@ -126,7 +111,7 @@ namespace STG.Engine.Graphics {
                         bitmap.MakeTransparent(Color.FromArgb(255, 0, 255));
 
                         GraphicsUltis.ConvertBitmapToTexture2D(bitmap, out Texture2D texture);
-                        
+
                         //不要になったBitmapは解放する
                         bitmap.Dispose();
 
@@ -161,7 +146,7 @@ namespace STG.Engine.Graphics {
 
                     sheet.SpriteTextures.Add(new SpriteTexture(sprite.texture, x, y));
                 }
-                
+
                 spriteSheets[y] = sheet;
             }
 

@@ -50,7 +50,7 @@ namespace STG {
             _spriteBatch = new SpriteBatch(GraphicsDevice);
 
             // TODO: use this.Content to load your game content here
-            gameManager.Initialize(GraphicsDevice, _spriteBatch);
+            gameManager.Initialize(GraphicsDevice, Content);
         }
 
         protected override void Update(GameTime gameTime) {

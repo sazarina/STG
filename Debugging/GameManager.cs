@@ -1,7 +1,8 @@
 ﻿using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
-using STG.Engine.Debugging.Scripts;
 using STG.Engine.Component;
+using STG.Engine.Debugging.Scripts;
 using STG.Engine.Graphics;
 
 namespace STG.Engine.Debugging {
