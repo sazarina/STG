@@ -35,15 +35,35 @@ namespace STG.Engine.Component {
 
         #endregion
 
+        public void Initialize(GraphicsDevice graphicsDevice) {
+            GraphicsDevice = graphicsDevice;
+            SpriteBatch = new SpriteBatch(graphicsDevice);
+
+            camera = GameObject.Instantiate(0, 0, "Camera").AddComponent<Camera>();
+
+            Debug.Log("RenderManager.Initialize()");
+        }
+
         internal SpriteBatch SpriteBatch { get; private set; }
 
-        internal GraphicsDevice GraphicsDevice { get; private set; }
+        internal GraphicsDevice GraphicsDevice {
+            get {
+                if (graphicsDevice == null) { 
+                    throw new NullReferenceException("GraphicsDeviceがnullです。RenderManager.Initialize()が呼び出されていることを確認してください。");
+                }
+                return graphicsDevice;
+            }
+            private set {
+                graphicsDevice = value;
+            }
+        }
+
+        GraphicsDevice graphicsDevice = null;
 
         public Dictionary<string, LayerGroup> Layers { get; set; } = new Dictionary<string, LayerGroup>();
 
         //List<SpriteRenderer> renderers = new List<SpriteRenderer>();
         Dictionary<int, List<SpriteRenderer>> layerList = new Dictionary<int, List<SpriteRenderer>>();
-
 
         //Debug用
         public Dictionary<int, List<SpriteRenderer>> LayerList => layerList;
