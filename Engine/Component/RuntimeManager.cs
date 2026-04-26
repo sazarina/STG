@@ -7,19 +7,38 @@ namespace STG.Engine.Component {
     /// 
     /// </summary>
     public class RuntimeManager {
-        public void Initialize<T>(GraphicsDevice graphicsDevice, SpriteBatch spriteBatch) where T : GameObjectManager {
-            EntityManager.Instance().Initialize<T>();
-            RenderManager.Instance(graphicsDevice, spriteBatch);
+        AssetManager assetManager;
+        EntityManager entityManager;
+        RenderManager renderManager;
+
+        public void Initialize<T>(GraphicsDevice graphicsDevice, ContentManager content) where T : GameObjectManager {
+            InitializeInternal<T>(graphicsDevice, content);
+        }
+
+        public void Initialize(GraphicsDevice graphicsDevice, ContentManager content) {
+            InitializeInternal<GameObjectManager>(graphicsDevice, content);
+        }
+
+        void InitializeInternal<T>(GraphicsDevice graphicsDevice, ContentManager content) where T : GameObjectManager {
+            assetManager = AssetManager.Instance;
+            assetManager.Initialize(content);
+
+            entityManager = EntityManager.Instance;
+            entityManager.Initialize<T>();
+
+            renderManager = RenderManager.Instance;
+            renderManager.Initialize(graphicsDevice);
+
             Debug.Log("RuntimeManager initialize().");
         }
 
         public void Update(GameTime gameTime) {
-            EntityManager.Instance().Update(gameTime);
-            RenderManager.Instance().Update();
+            entityManager.Update(gameTime);
+            renderManager.Update();
         }
 
         public void Draw() {
-            RenderManager.Instance().Draw();
+            renderManager.Draw();
         }
     }
 }

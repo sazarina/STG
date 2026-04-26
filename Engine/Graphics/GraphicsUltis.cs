@@ -27,7 +27,7 @@ namespace STG.Engine.Graphics {
             var sourceRect = new Rectangle(new Point(0, 0), new Point(texture.Width, texture.Height));
             var color = Color.White;
             //spriteBatch.Draw(texture, sourceRect, vec, Position, color);
-            var spriteBatch = RenderManager.Instance().SpriteBatch;
+            var spriteBatch = RenderManager.Instance.SpriteBatch;
             spriteBatch.Draw(texture, transform.position, null, color, 0f, new Vector2(texture.Width / 2, texture.Height / 2), 1f, SpriteEffects.None, 0f);
         }
 
@@ -39,7 +39,7 @@ namespace STG.Engine.Graphics {
             //origin と scaleが追加されている
             var origin = new Vector2(texture.Width / 2, texture.Height / 2);
 
-            var spriteBatch = RenderManager.Instance().SpriteBatch;
+            var spriteBatch = RenderManager.Instance.SpriteBatch;
             spriteBatch.Draw(texture, position: position, sourceRectangle: sourceRect, color: color, rotation, origin, scale, effects: spriteEffects, 0);
         }
 
@@ -58,7 +58,7 @@ namespace STG.Engine.Graphics {
             var position = new Vector2(x, y) + center;
             var color = Color.White;
 
-            var spriteBatch = RenderManager.Instance().SpriteBatch;
+            var spriteBatch = RenderManager.Instance.SpriteBatch;
             spriteBatch.Draw(texture, position, sourceRect, color);
         }
 
@@ -67,7 +67,7 @@ namespace STG.Engine.Graphics {
                 color = Color.White;
             }
 
-            var spriteBatch = RenderManager.Instance().SpriteBatch;
+            var spriteBatch = RenderManager.Instance.SpriteBatch;
             spriteBatch.DrawString(spriteFont, text, vector, color);
         }
 
@@ -76,7 +76,7 @@ namespace STG.Engine.Graphics {
                 color = Color.White;
             }
 
-            var spriteBatch = RenderManager.Instance().SpriteBatch;
+            var spriteBatch = RenderManager.Instance.SpriteBatch;
             spriteBatch.DrawString(spriteFont, text.ToString(), vector, color);
         }
 
