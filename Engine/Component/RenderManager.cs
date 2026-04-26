@@ -13,7 +13,7 @@ namespace STG.Engine.Component {
         #region シングルトン
         static RenderManager self = null;
 
-        RenderManager(GraphicsDevice graphicsDevice, SpriteBatch spriteBatch) {
+        RenderManager() {
             //    OnLayerOrderChanged += (order, group) => {
             //    //    if (layerList.ContainsKey(order)) {
             //    //        layerList[order] =;
@@ -21,41 +21,52 @@ namespace STG.Engine.Component {
             //    //        layerList.Add(order, group);
             //    //    }
             //    //};
-            GraphicsDevice = graphicsDevice;
-            SpriteBatch = spriteBatch;
-
-            camera = GameObject.Instantiate(0, 0, "Camera").AddComponent<Camera>();
-
-            Debug.Log("RenderManager.ctor()");
         }
 
-        public static RenderManager Instance(GraphicsDevice graphicsDevice = null, SpriteBatch spriteBatch = null) {
-            if (self == null) {
-                if (graphicsDevice == null) {
-                    throw new ArgumentNullException(nameof(graphicsDevice), "GraphicsDeviceはnullにできません。");
-                }
-                if (spriteBatch == null) {
-                    throw new ArgumentNullException(nameof(spriteBatch), "SpriteBatchはnullにできません。");
+        public static RenderManager Instance {
+            get {
+                if (self == null) {
+                    self = new RenderManager();
                 }
 
-                self = new RenderManager(graphicsDevice, spriteBatch);
+                return self;
             }
-
-            return self;
         }
 
         #endregion
 
+        public void Initialize(GraphicsDevice graphicsDevice) {
+            GraphicsDevice = graphicsDevice;
+            SpriteBatch = new SpriteBatch(graphicsDevice);
+
+            camera = GameObject.Instantiate(0, 0, "Camera").AddComponent<Camera>();
+
+            Debug.Log("RenderManager.Initialize()");
+        }
+
         internal SpriteBatch SpriteBatch { get; private set; }
 
-        internal GraphicsDevice GraphicsDevice { get; private set; }
+        internal GraphicsDevice GraphicsDevice {
+            get {
+                if (graphicsDevice == null) { 
+                    throw new NullReferenceException("GraphicsDeviceがnullです。RenderManager.Initialize()が呼び出されていることを確認してください。");
+                }
+                return graphicsDevice;
+            }
+            private set {
+                graphicsDevice = value;
+            }
+        }
+
+        GraphicsDevice graphicsDevice = null;
 
         public Dictionary<string, LayerGroup> Layers { get; set; } = new Dictionary<string, LayerGroup>();
 
         //List<SpriteRenderer> renderers = new List<SpriteRenderer>();
         Dictionary<int, List<SpriteRenderer>> layerList = new Dictionary<int, List<SpriteRenderer>>();
 
-
+        //Debug用
+        public Dictionary<int, List<SpriteRenderer>> LayerList => layerList;
 
         internal void Register(SpriteRenderer renderer) {
             //renderers.Add(renderer);

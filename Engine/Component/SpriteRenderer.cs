@@ -10,7 +10,7 @@ namespace STG.Engine.Component {
                 return sortingLayer;
             } set {
                 sortingLayer = value;
-                RenderManager.Instance().Register(this);
+                RenderManager.Instance.Register(this);
             }
         }
 

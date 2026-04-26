@@ -56,7 +56,16 @@ namespace STG.Engine.Component {
         internal static GameObject Root;
         public static GameObject GetRoot() { return Root; }
 
-        internal static string RootlName => Root.name;
+        internal static string RootName {
+            get {
+                if (Root != null) {
+                    return Root.name;
+                } else {
+                    return "Root";
+                }
+            }
+        }
+
         protected Dictionary<Guid, GameObject> GameObjects = new Dictionary<Guid, GameObject>();
 
 
@@ -86,7 +95,7 @@ namespace STG.Engine.Component {
         //}
 
         public virtual void Initialize() {
-            Root = GameObject.Instantiate(0, 0, "OriginLocalPosition");
+            Root = GameObject.Instantiate(0, 0, "Root");
             Debug.Log("GameObjectManager.Initialize()");
         }
 
