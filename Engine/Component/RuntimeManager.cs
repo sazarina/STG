@@ -1,4 +1,5 @@
 ﻿using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
 using STG.Engine.Debugging;
 
@@ -29,6 +30,18 @@ namespace STG.Engine.Component {
             renderManager = RenderManager.Instance;
             renderManager.Initialize(graphicsDevice);
 
+            Debug.Log("RuntimeManager initialize().");
+        public void Initialize<T>(GraphicsDevice graphicsDevice, ContentManager content) where T : GameObjectManager {
+            InitializeInternal<T>(graphicsDevice, content);
+        }
+
+        public void Initialize(GraphicsDevice graphicsDevice, ContentManager content) {
+            InitializeInternal<GameObjectManager>(graphicsDevice, content);
+        }
+
+            entityManager.Initialize<GameObjectManager>();
+            renderManager.Instance(graphicsDevice, spriteBatch);
+        void InitializeInternal<T>(GraphicsDevice graphicsDevice, ContentManager content) where T : GameObjectManager {
             Debug.Log("RuntimeManager initialize().");
         }
 

@@ -9,6 +9,12 @@ namespace STG.Engine.Component {
         #region シングルトン
         static GameObjectManager self = null;
 
+        public GameObjectManager(ScriptController scriptController) {
+            this.scriptController = scriptController;
+            Debug.Log("Initialize/ctor()");
+        }
+
+
         public static GameObjectManager Instance(ScriptController scriptController = null) {
             if (self == null) {
                 if (scriptController == null) {
@@ -42,11 +48,6 @@ namespace STG.Engine.Component {
         }
 
         #endregion
-
-        protected GameObjectManager(ScriptController scriptController) {
-            this.scriptController = scriptController;
-            Debug.Log("GameObjectManager.ctor()");
-        }
 
         protected ScriptController scriptController;
 

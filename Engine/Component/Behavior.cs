@@ -28,7 +28,12 @@ namespace STG.Engine.Component {
 
         protected Texture2D LoadTexture(string path, string name) => GraphicsUltis.CreateTexture(path, name);
 
-        protected LayerGroup Layer(string name) => RenderManager.Instance().Layers[name];
+        protected Texture2D LoadTexture(string assetName) {
+            var asset = AssetManager.Instance;
+            return asset.Load(assetName);
+        }
+
+        protected LayerGroup Layer(string name) => RenderManager.Instance.Layers[name];
 
         public T AddComponent<T>() where T : Component, new() => gameObject.AddComponent<T>();
         public T GetComponent<T>() where T : Component, new() => gameObject.GetComponent<T>();
@@ -85,7 +90,7 @@ namespace STG.Engine.Component {
             yield return null;
         }
 
-        protected IEnumerator WaitForSecond(float second) {
+        protected IEnumerator WaitForSeconds(float second) {
             yield return coroutineRunner.Run(second, Empty()).Wait();
         }
     }
