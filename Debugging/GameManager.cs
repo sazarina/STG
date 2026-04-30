@@ -1,4 +1,4 @@
-﻿using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using STG.Engine.Debugging.Scripts;
 using STG.Engine.Component;
@@ -40,10 +40,7 @@ namespace STG.Engine.Debugging {
                 LayerOrder = 2,
             };
 
-
-            GameObject player = GameObject.Instantiate<Player>(0, 200, "player");
-
-            //GameObject.Instantiate<SortingLayerTest>(0, 0, "sortingLayerTest");
+            var test = GameObject.Instantiate<SortingLayerTest>(0, 200, "test");
 
             Debug.Log("GameManager.Initialize() Ended");
         }
