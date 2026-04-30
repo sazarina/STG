@@ -82,11 +82,12 @@ namespace STG.Engine.Graphics {
         }
 
         public static Bitmap LoadBitmap(string path) {
-            var fullPath = ContentFolderDirectory + path;
-            if(!File.Exists(fullPath)) {
-                throw new FileNotFoundException($"Bitmap file not found: {fullPath}");
+            path = Path.Combine(ContentFolderDirectory, path);
+            if (File.Exists(path)) {
+                return new Bitmap(path);
+            } else { 
+                throw new FileNotFoundException(path);
             }
-            return new Bitmap(fullPath);
         }
 
         public static Texture2D CreateTexture(string path, string name) {
@@ -110,21 +111,27 @@ namespace STG.Engine.Graphics {
             BitmapData bitmapData = bitmap.LockBits(
                 new System.Drawing.Rectangle(0, 0, bitmap.Width, bitmap.Height)
                 , ImageLockMode.ReadOnly, PixelFormat.Format32bppPArgb);
+
             int pointSize = bitmapData.Stride / bitmap.Width;
             int bufferSize1 = bitmapData.Stride * bitmapData.Height;
             byte[] bytes1 = new byte[bufferSize1];
+
+            // Bitmapのピクセルデータをbytes1にコピー
             Marshal.Copy(bitmapData.Scan0, bytes1, 0
                 , bufferSize1);
 
             int bufferSize2 = bitmap.Width * bitmap.Height * 4;
             byte[] bytes2 = new byte[bufferSize2];
+
             for (int y = 0; y < bitmap.Height; y++) {
                 for (int x = 0; x < bitmap.Width; x++) {
                     int adr2 = y * bitmap.Width * 4 + x * 4;
                     int adr1 = y * bitmapData.Stride + x * pointSize;
+
                     bytes2[adr2 + 0] = bytes1[adr1 + 2];//R
                     bytes2[adr2 + 1] = bytes1[adr1 + 1];//G
                     bytes2[adr2 + 2] = bytes1[adr1 + 0];//B
+
                     if (pointSize == 4) {
                         bytes2[adr2 + 3] = bytes1[adr1 + 3];//A
                     } else {
@@ -133,10 +140,52 @@ namespace STG.Engine.Graphics {
                 }
             }
 
-            var graphicsDevice = RenderManager.Instance().GraphicsDevice;
+            var graphicsDevice = RenderManager.Instance.GraphicsDevice;
+
             texture = new Texture2D(graphicsDevice, bitmap.Width, bitmap.Height);
             texture.SetData(bytes2);
             bitmap.UnlockBits(bitmapData);
+        }
+
+        /// <summary>
+        /// Texture2DをBitmapに変換する。
+        /// </summary>
+        /// <param name="texture"></param>
+        /// <returns></returns>
+        public static Bitmap ConvertTexture2DToBitmap(Texture2D texture) {
+            // ピクセル取得
+            Color[] data = new Color[texture.Width * texture.Height];
+            texture.GetData(data);
+
+            // Bitmap作成
+            Bitmap bitmap = new Bitmap(texture.Width, texture.Height, PixelFormat.Format32bppArgb);
+
+            BitmapData bitmapData = bitmap.LockBits(
+                new System.Drawing.Rectangle(0, 0, texture.Width, texture.Height),
+                ImageLockMode.WriteOnly,
+                PixelFormat.Format32bppArgb);
+
+            // Bitmapのピクセルデータを格納するバッファ
+            int bufferSize = bitmapData.Stride * bitmapData.Height;
+            byte[] bytes = new byte[bufferSize];
+
+            for (int y = 0; y < texture.Height; y++) {
+                for (int x = 0; x < texture.Width; x++) {
+                    int adr1 = y * texture.Width + x;
+                    int adr2 = y * bitmapData.Stride + x * 4;
+
+                    bytes[adr2 + 0] = data[adr1].B; // B
+                    bytes[adr2 + 1] = data[adr1].G; // G
+                    bytes[adr2 + 2] = data[adr1].R; // R
+                    bytes[adr2 + 3] = data[adr1].A; // A
+                }
+            }
+
+            // Bitmapにピクセルデータをコピー
+            Marshal.Copy(bytes, 0, bitmapData.Scan0, bufferSize);
+            bitmap.UnlockBits(bitmapData);
+
+            return bitmap;
         }
     }
 }
