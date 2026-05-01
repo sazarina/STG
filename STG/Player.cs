@@ -1,10 +1,10 @@
-﻿using STG.Engine.Component;
+﻿using System.Collections;
+using STG.Engine;
+using STG.Engine.Component;
+using STG.Engine.Debugging;
 using STG.Engine.Graphics;
 using Point = Microsoft.Xna.Framework.Point;
 using Keys = Microsoft.Xna.Framework.Input.Keys;
-using STG.Engine;
-using System.Collections;
-using Microsoft.Xna.Framework.Graphics;
 
 namespace STG {
     class Player : Behavior {
@@ -12,7 +12,7 @@ namespace STG {
         Texture2D[] textures = new Texture2D[2];
 
         override public void Start() {
-            SpriteSheet sheet = new SpriteSheet("/mat_021.png", "planes", 8, 2, new Point(32, 32), new Point(8, 8), new Point(16, 8));
+            SpriteSheet sheet = new SpriteSheet("mat_021", 8, 2, new Point(32, 32), new Point(8, 8), new Point(16, 8));
             var sprite = sheet.SpriteTextures;
 
             textures[0] = sprite[2].texture;

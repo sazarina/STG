@@ -1,4 +1,5 @@
 ﻿using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
 using STG.Engine.Component;
 using STG.Engine.Debugging;
@@ -15,8 +16,8 @@ namespace STG {
         /// <summary>
         /// ゲームで使用するエンティティの初期化をここで行う。
         /// </summary>
-        public void Initialize(GraphicsDevice graphicsDevice, SpriteBatch spriteBatch)  {
-            runtimeManager.Initialize(graphicsDevice, spriteBatch);
+        public void Initialize(GraphicsDevice graphicsDevice, ContentManager content) {
+            runtimeManager.Initialize(graphicsDevice, content);
 
             var layers = RenderManager.Instance().Layers;
             layers["Default"] = new LayerGroup() {

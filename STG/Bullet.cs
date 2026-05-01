@@ -22,6 +22,7 @@ namespace STG {
         public override void Start() {
 
 
+            var spritesheet = new SpriteSheet("shot", 4, 1, new Point(12, 48));
         }
 
         public override void Update() {
