@@ -35,7 +35,6 @@ namespace STG {
         }
 
         public override void Update() {
-            speed = (float)(new Random().NextDouble() * speed);
             var position = transform.position;
             position.X += (float)Math.Cos(angle) * speed;
             position.Y += (float)Math.Sin(angle) * speed;
