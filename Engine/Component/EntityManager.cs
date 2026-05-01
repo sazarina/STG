@@ -10,36 +10,27 @@ namespace STG.Engine.Component {
     public class EntityManager {
         static EntityManager instance;
 
-        internal static EntityManager Instance(SpriteBatch spriteBatch = null) {
-            if (instance == null) {
-                instance = new EntityManager(spriteBatch);
+        internal static EntityManager Instance {
+            get {
+                if (instance == null) {
+                    instance = new EntityManager();
+                }
+                return instance;
             }
-            return instance;
         }
 
-
-        internal SpriteBatch spriteBatch;
         internal ScriptController scriptController = ScriptController.Instance();
         public ScriptController ScriptController => scriptController;
 
         internal GameObjectManager gameObjectManager = null;
 
-        FPSCounter fPSCounter;
 
-        EntityManager(SpriteBatch spriteBatch) {
-            this.spriteBatch = spriteBatch;
-
-            fPSCounter = new FPSCounter();
-
+        EntityManager() {
             //if (!isDebug) {
             //    gameObjectManager = GameObjectManager.Instance(this);
             //} else {
             //    gameObjectManager = GameObjectManager.Instance<>(this);
             //}
-
-
-            
-            
         }
 
         public virtual void Initialize<T>()where T:GameObjectManager {
@@ -67,7 +58,6 @@ namespace STG.Engine.Component {
 
             //gameObjectManager.Draw();
             scriptController.Draw();
-            fPSCounter.Draw();
 
             DrawText($"{mouseState.X},{mouseState.Y}", mouseState.Position.ToVector2().Add(y: 15), Color.Yellow);
         }

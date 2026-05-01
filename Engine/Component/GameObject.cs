@@ -98,9 +98,9 @@ namespace STG.Engine.Component {
             //gameObject.CreateTransformFunc = () => {の前でもちゃんと実行されるか検証したい
             GameObjectManager.AddGameObjectToList(gameObject);
 
-            //何もParentが指定されていなかったらOriginLocalを親にする、もしくは指定されていたら、指定しているものを親にする
+            //何もParentが指定されていなかったらRootを親にする、もしくは指定されていたら、指定しているものを親にする
             if (parent == default) {
-                if (gameObject.name != "OriginLocalPosition") {
+                if (gameObject.name != GameObjectManager.RootName) {
                     gameObject.transform.SetParent(GameObjectManager.Root);
                 }
             } else {

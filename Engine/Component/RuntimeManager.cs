@@ -8,8 +8,28 @@ namespace STG.Engine.Component {
     /// 
     /// </summary>
     public class RuntimeManager {
-            EntityManager.Instance().Initialize<T>();
-            RenderManager.Instance(graphicsDevice, spriteBatch);
+        AssetManager assetManager;
+        EntityManager entityManager;
+        RenderManager renderManager;
+
+        public void Initialize<T>(GraphicsDevice graphicsDevice, ContentManager content) where T : GameObjectManager {
+            InitializeInternal<T>(graphicsDevice, content);
+        }
+
+        public void Initialize(GraphicsDevice graphicsDevice, ContentManager content) {
+            InitializeInternal<GameObjectManager>(graphicsDevice, content);
+        }
+
+        void InitializeInternal<T>(GraphicsDevice graphicsDevice, ContentManager content) where T : GameObjectManager {
+            assetManager = AssetManager.Instance;
+            assetManager.Initialize(content);
+
+            entityManager = EntityManager.Instance;
+            entityManager.Initialize<T>();
+
+            renderManager = RenderManager.Instance;
+            renderManager.Initialize(graphicsDevice);
+
             Debug.Log("RuntimeManager initialize().");
         public void Initialize<T>(GraphicsDevice graphicsDevice, ContentManager content) where T : GameObjectManager {
             InitializeInternal<T>(graphicsDevice, content);
@@ -19,19 +39,19 @@ namespace STG.Engine.Component {
             InitializeInternal<GameObjectManager>(graphicsDevice, content);
         }
 
-            EntityManager.Instance().Initialize<GameObjectManager>();
-            RenderManager.Instance(graphicsDevice, spriteBatch);
+            entityManager.Initialize<GameObjectManager>();
+            renderManager.Instance(graphicsDevice, spriteBatch);
         void InitializeInternal<T>(GraphicsDevice graphicsDevice, ContentManager content) where T : GameObjectManager {
             Debug.Log("RuntimeManager initialize().");
         }
 
         public void Update(GameTime gameTime) {
-            EntityManager.Instance().Update(gameTime);
-            RenderManager.Instance().Update();
+            entityManager.Update(gameTime);
+            renderManager.Update();
         }
 
         public void Draw() {
-            RenderManager.Instance().Draw();
+            renderManager.Draw();
         }
     }
 }

@@ -25,7 +25,7 @@ namespace STG.Engine.Debugging {
         public void Initialize<T>(GraphicsDevice graphicsDevice, ContentManager content) where T : GameObjectManager {
             runtimeManager.Initialize<T>(graphicsDevice, content);
 
-            var layers = RenderManager.Instance().Layers;
+            var layers = RenderManager.Instance.Layers;
             layers["Default"] = new LayerGroup() {
                 Name = "Default",
                 LayerOrder = 0,
