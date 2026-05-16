@@ -1,5 +1,4 @@
 ﻿using Microsoft.Xna.Framework;
-using Engine.Component;
 using Microsoft.Xna.Framework.Graphics;
 
 namespace STG.Engine.Component {

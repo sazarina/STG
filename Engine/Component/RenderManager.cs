@@ -53,9 +53,10 @@ namespace STG.Engine.Component {
         public Dictionary<string, LayerGroup> Layers { get; set; } = new Dictionary<string, LayerGroup>();
 
         //List<SpriteRenderer> renderers = new List<SpriteRenderer>();
-        Dictionary<int, List<SpriteRenderer>> layerList = new Dictionary<int, List<SpriteRenderer>>();
+        SortedDictionary<int, List<SpriteRenderer>> layerList = new SortedDictionary<int, List<SpriteRenderer>>();
 
-
+        //Debug用
+        public SortedDictionary<int, List<SpriteRenderer>> LayerList => layerList;
 
         internal void Register(SpriteRenderer renderer) {
             //renderers.Add(renderer);
@@ -67,7 +68,7 @@ namespace STG.Engine.Component {
                 var index = layerList[renderer.SortingLayer.LayerOrder].IndexOf(renderer);
                 Debug.Log(index);
 
-                if (layerList[renderer.SortingLayer.LayerOrder].IndexOf(renderer) != -1) {
+                if (index != -1) {
                     Debug.Log($"RenderManager: SpriteRenderer {renderer.gameObject.name} は既にレイヤー {renderer.SortingLayer.Name} に登録されています。");
                 } else {
                     layerList[renderer.SortingLayer.LayerOrder].Add(renderer);
