@@ -13,5 +13,7 @@ namespace STG.Engine.Component {
                 //原点(0,0)を画面の真ん中に持ってくる
                 Matrix.CreateTranslation(Screen.Width / 2f, Screen.Height / 2f, 0);
         }
+
+        public Vector2 ScreenToWorld(Vector2 screen) => Vector2.Transform(screen, Matrix.Invert(GetViewMatrix()));
     }
 }
