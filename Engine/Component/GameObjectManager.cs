@@ -9,43 +9,32 @@ namespace STG.Engine.Component {
         #region シングルトン
         static GameObjectManager self = null;
 
-        public GameObjectManager(ScriptController scriptController) {
-            this.scriptController = scriptController;
+        public GameObjectManager() {
             Debug.Log("Initialize/ctor()");
         }
 
 
-        public static GameObjectManager Instance(ScriptController scriptController = null) {
-            if (self == null) {
-                if (scriptController == null) {
-                    throw new InvalidOperationException("最初の呼び出し時は ScriptController  を渡す必要があります");
+        public static GameObjectManager Instance {
+            get {
+                if (self == null) {
+                    Debug.Log($"GameObjectManager を {typeof(GameObjectManager).Name} として初期化します。");
+                    self = new GameObjectManager();
                 }
 
-                Debug.Log($"GameObjectManager を {typeof(GameObjectManager).Name} として初期化します。");
-                self = new GameObjectManager(scriptController);
-            } else {
-                if (scriptController != null) {
-                    throw new InvalidOperationException($"GameObjectManager はすでに {self.GetType().Name} として初期化されています。");
-                }
+                return self;
             }
-
-            return self;
         }
-        public static GameObjectManager Instance<T>(ScriptController scriptController = null) where T : GameObjectManager {
-            if (self == null) {
-                if (scriptController == null) {
-                    throw new InvalidOperationException("最初の呼び出し時は ScriptController  を渡す必要があります");
-                }
 
-                Debug.Log($"GameObjectManager を {typeof(T).Name} として初期化します。");
-                self = (T)Activator.CreateInstance(typeof(T), scriptController);
-            } else {
-                if (scriptController != null) {
-                    throw new InvalidOperationException($"GameObjectManager はすでに {self.GetType().Name} として初期化されています。");
-                }
-            }
-            return self;
-        }
+        //public static T Instance<T>() where T : GameObjectManager {
+        //    if (self == null) {
+        //        Debug.Log($"GameObjectManager を {typeof(T).Name} として初期化します。");
+        //        self = (T)Activator.CreateInstance(typeof(T));
+        //    } else {
+        //        throw new InvalidOperationException($"GameObjectManager はすでに {self.GetType().Name} として初期化されています。");
+        //    }
+
+        //    return (T)self;
+        //}
 
         #endregion
 
@@ -100,7 +89,13 @@ namespace STG.Engine.Component {
         //    }
         //}
 
-        public virtual void Initialize() {
+        public virtual void Initialize(ScriptController scriptController) {
+            if (scriptController == null) {
+                throw new InvalidOperationException("ScriptController が null です");
+            }
+            
+            this.scriptController = scriptController;
+
             Root = GameObject.Instantiate(0, 0, "Root");
             Debug.Log("GameObjectManager.Initialize()");
         }

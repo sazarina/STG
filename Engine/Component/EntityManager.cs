@@ -36,8 +36,8 @@ namespace STG.Engine.Component {
         public virtual void Initialize<T>()where T:GameObjectManager {
             scriptController.Initialize();
 
-            gameObjectManager = (T)GameObjectManager.Instance<T>(scriptController);
-            gameObjectManager.Initialize();
+            gameObjectManager = (T)GameObjectManager.Instance;
+            gameObjectManager.Initialize(scriptController);
             Debug.Log($"EntityManager.Initialize()");
         }
 

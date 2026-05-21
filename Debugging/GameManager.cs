@@ -11,7 +11,7 @@ namespace STG.Engine.Debugging {
         RuntimeManager runtimeManager = new RuntimeManager();
 
         public GameManager() {
-            debugClient = new DebugClient(ScriptController.Instance());
+            debugClient = new DebugClient();
         }
 
         /// <summary>
