@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using STG.Engine.Graphics;
 using STG.Engine.Debugging;
+using Microsoft.Xna.Framework.Input;
 
 namespace STG.Engine.Component {
     public class GameObjectManager {
@@ -111,8 +112,26 @@ namespace STG.Engine.Component {
                     }
                 }
             }
+
+            //if (KeyInput.IsReleased(Keys.Enter)) {
+            //    Debug.Log("登録されているGameObjectの数:" + GameObjects.Count);
+            //    Debug.Log("登録されているLayerの数:" + RenderManager.Instance.LayerList.Count);
+
+            //    var objects = GameObject.FindWithTags("Bullet");
+            //    if (objects != null && objects.Any()) {
+            //        Debug.Log("BulletタグのGameObjectの数:" + objects.Count());
+            //        objects.First().Destroy();
+            //    } else {
+            //        Debug.Log("BulletタグのGameObjectは見つかりませんでした");
+            //    }
+            //}
         }
 
+        /// <summary>
+        /// LateUpdateは、Updateの後に呼び出されるメソッドで、
+        /// Update中にGameObjectのコレクションが変更されるのを防ぐために、
+        /// 追加されたGameObjectをキューからGameObjectsリストに移動するために使用されます。
+        /// </summary>
         public virtual void LateUpdate() {
             //Debug.Log("que:"+addQueue.Count);
             while (addQueue.Count > 0) {
@@ -144,13 +163,16 @@ namespace STG.Engine.Component {
         //    });
         //}
 
-        public static void AddGameObjectToQue(GameObject gameObject) {
-            // すぐに追加すると、Update中にコレクションが変更される可能性があるため、キューに追加して後で処理する
+
+        /// <summary>
+        /// すぐに追加すると、Update中にコレクションが変更される可能性があるため、キューに追加して後で処理する
+        /// </summary>
+        internal static void AddGameObjectToQue(GameObject gameObject) {
             self.addQueue.Enqueue(gameObject);
         }
 
 
-        public IEnumerable<GameObject> FindWithTags(string tag) {
+        internal IEnumerable<GameObject> FindWithTags(string tag) {
             foreach (var gameObject in GameObjects.Values) {
                 if (gameObject.tag == tag) {
                     yield return gameObject;
@@ -176,7 +198,7 @@ namespace STG.Engine.Component {
             }
         }
 
-        public GameObject FindWithGuid(Guid guid) {
+        internal GameObject FindWithGuid(Guid guid) {
             if (!GameObjects.ContainsKey(guid)) {
                 throw new NullReferenceException("GameObjectが見つかりません");
             } else {
@@ -184,7 +206,7 @@ namespace STG.Engine.Component {
             }
         }
 
-        public void UpdateGameObjectList(GameObject gameObject) {
+        internal void UpdateGameObjectList(GameObject gameObject) {
             if (!GameObjects.ContainsKey(gameObject.Guid)) {
                 Debug.Log($"{gameObject.name}は登録されていません");
             } else {
@@ -192,7 +214,7 @@ namespace STG.Engine.Component {
             }
         }
 
-        public void Destroy(GameObject gameObject) {
+        internal void Destroy(GameObject gameObject) {
             GameObjects.Remove(gameObject.Guid);
         }
 
