@@ -61,6 +61,8 @@ namespace STG.Engine.Component {
         /// </summary>
         protected readonly Dictionary<Guid, GameObject> GameObjects = new Dictionary<Guid, GameObject>();
 
+        public int Count => GameObjects.Count;
+
         readonly Queue<GameObject> addQueue = new Queue<GameObject>();
         readonly Queue<GameObject> removeQueue = new Queue<GameObject>();
 
@@ -148,16 +150,30 @@ namespace STG.Engine.Component {
         }
 
 
-        public GameObject[] FindWithTags(string tag) {
-            return GameObjects.Values.Where(x => x.tag == tag).ToArray();
+        public IEnumerable<GameObject> FindWithTags(string tag) {
+            foreach (var gameObject in GameObjects.Values) {
+                if (gameObject.tag == tag) {
+                    yield return gameObject;
+                }
+            }
         }
 
-        public GameObject FindWithName(string name) {
-            if (!GameObjects.Values.Any(x => x.name == name)) {
-                return null;
+        internal GameObject Find(string name) {
+            foreach (var gameObject in GameObjects.Values) {
+                if (gameObject.name == name) {
+                    return gameObject;
+                }
             }
 
-            return GameObjects.Values.Where(x => x.name == name).First();
+            return null;
+        }
+
+        internal IEnumerable<GameObject> FindObjects(string name) {
+            foreach (var gameObject in GameObjects.Values) {
+                if (gameObject.name == name) {
+                    yield return gameObject;
+                }
+            }
         }
 
         public GameObject FindWithGuid(Guid guid) {

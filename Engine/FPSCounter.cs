@@ -33,7 +33,7 @@ namespace STG.Engine {
                 m_frameCount = 0;
                 m_updateTimer -= m_interval;
             }
-            var camera = GameObjectManager.Instance().FindWithName("Camera").GetComponent<Camera>();
+            var camera = GameObject.Find("Camera").GetComponent<Camera>();
             if (camera != null) {
                 // FPSの数値を描画する
                 GraphicsUltis.DrawText("FPS: " + FPS, camera.ScreenToWorld(new Vector2(20, 20)), Color.Firebrick);

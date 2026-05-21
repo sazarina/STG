@@ -33,8 +33,8 @@ namespace STG.Engine.Debugging {
         public GameObject GetSelectedGameObject() {
             var name = listBox1.SelectedItem as string;
 
-            GameObject gameObject = DebugClient.Instance().FindWithName(name);
-            Debug.Log($"GameObjectManagerIstance: {DebugClient.Instance()}"); ;
+            GameObject gameObject = GameObject.Find(name);
+            Debug.Log($"GameObjectManagerIstance: {DebugClient.Instance}"); ;
             textBox1.Text = $"{gameObject.transform.position}";
             return gameObject;
 

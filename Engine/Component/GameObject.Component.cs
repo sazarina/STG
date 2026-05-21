@@ -129,9 +129,14 @@ namespace STG.Engine.Component {
             return script;
         }
 
-        public static GameObject Find(string name) {
-            return GameObjectManager.Instance.FindWithName(name);
-        }
+        public static GameObject Find(string name) =>
+            GameObjectManager.Instance.Find(name);
+
+        public static IEnumerable<GameObject> FindObjects(string name) =>
+            GameObjectManager.Instance.FindObjects(name);
+
+        public static IEnumerable<GameObject> FindWithTags(string tag) => 
+            GameObjectManager.Instance.FindWithTags(tag);
 
         #endregion
         public void Destroy() {
