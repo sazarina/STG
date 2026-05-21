@@ -113,7 +113,7 @@ namespace STG.Engine.Component {
             this.center = center;
             this.gameObject = gameObject;
         }
-     
+
         #endregion
 
         #region 親子関係
@@ -126,9 +126,9 @@ namespace STG.Engine.Component {
             if (Children.Count == 0) {
                 ClearChildren();
             }
-            GameObjectManager.Instance().UpdateGameObjectList(gameObject);
+            GameObjectManager.Instance.UpdateGameObjectList(gameObject);
             child.ClearParent();
-            GameObjectManager.Instance().UpdateGameObjectList(child.gameObject);
+            GameObjectManager.Instance.UpdateGameObjectList(child.gameObject);
         }
 
         public void RemoveChildrenAll() {
@@ -136,12 +136,12 @@ namespace STG.Engine.Component {
                 throw new Exception("このオブジェクトには子はいません");
             }
             var children = Children;
-            
 
-            GameObjectManager.Instance().UpdateGameObjectList(gameObject);
+            GameObjectManager.Instance.UpdateGameObjectList(gameObject);
+            
             foreach (var child in children.Values) {
                 child.transform.ClearParent();
-                GameObjectManager.Instance().UpdateGameObjectList(child);
+                GameObjectManager.Instance.UpdateGameObjectList(child);
             }
             ClearChildren();
         }
@@ -160,56 +160,52 @@ namespace STG.Engine.Component {
             //position = position + Parent.position;
 
             ClearParent();
-            GameObjectManager.Instance().UpdateGameObjectList(gameObject);
+            GameObjectManager.Instance.UpdateGameObjectList(gameObject);
 
             parent.transform.Children.Remove(gameObject.Guid);
             if (parent.transform.Children.Count == 0) {
                 parent.transform.ClearChildren();
             }
-            GameObjectManager.Instance().UpdateGameObjectList(parent);
+            GameObjectManager.Instance.UpdateGameObjectList(parent);
             return parent;
         }
-        
+
         void ClearParent() {
-            SetParent(GameObjectManager.Root);
+            SetParent(GameObjectManager.Root.transform);
         }
 
         void ClearChildren() {
             Children.Clear();
         }
 
-        public void SetParent(GameObject parent) {
-            SetParent(parent.transform);
-        }
-
         public void SetChild(Transform child) {
-            Children.Add(child.gameObject.Guid,child.gameObject);
+            Children.Add(child.gameObject.Guid, child.gameObject);
 
-            GameObjectManager.Instance().UpdateGameObjectList(gameObject);
+            GameObjectManager.Instance.UpdateGameObjectList(gameObject);
             child.Parent = this;
             child.localPosition = -GetLocalPosition();
-            GameObjectManager.Instance().UpdateGameObjectList(child.gameObject);
+            GameObjectManager.Instance.UpdateGameObjectList(child.gameObject);
         }
 
         public void SetParent(Transform parent) {
             Parent = parent;
             if (!AddChild()) {
-                
+
                 return;
             }
-            GameObjectManager.Instance().UpdateGameObjectList(Parent.gameObject);
+            //GameObjectManager.Instance().UpdateGameObjectList(Parent.gameObject);
 
             localPosition = GetLocalPosition();
 
             //position = Parent.position + localPosition;
 
-            gameObject.transform = SetHierarchy(this,Parent.hierarchy+1);
-            GameObjectManager.Instance().UpdateGameObjectList(gameObject); 
-            
+            gameObject.transform = SetHierarchy(this, Parent.hierarchy + 1);
+            //GameObjectManager.Instance().UpdateGameObjectList(gameObject); 
+
 
         }
 
-        Transform SetHierarchy(Transform transform,int hierarchy) {
+        Transform SetHierarchy(Transform transform, int hierarchy) {
             transform.hierarchy = hierarchy;
             return transform;
         }

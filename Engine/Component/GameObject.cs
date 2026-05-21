@@ -55,34 +55,34 @@ namespace STG.Engine.Component {
         }
 
         #region Instantiate
-        public GameObject(Guid Guid, string name, string tag, Texture2D texture) {
+        GameObject(Guid Guid, string name, string tag, Texture2D texture) {
             this.Guid = Guid;
             this.name = name;
             this.tag = tag;
             //this.texture = texture;
         }
 
-        public static GameObject Instantiate(int x, int y, string name, Texture2D texture = null, string tag = "") {
-            GameObject gameObject = InstantiateInternal(x, y, name, texture, tag);
+        public static GameObject Instantiate(int x, int y, string name, Transform parent = null,Texture2D texture = null, string tag = "") {
+            GameObject gameObject = InstantiateInternal(x, y, name, parent, texture, tag);
             return gameObject;
         }
 
-        public static GameObject Instantiate<T>(int x, int y, string name, Texture2D texture = null, string tag = "") where T : Behavior, new() {
-            GameObject gameObject = InstantiateInternal(x, y, name, texture, tag);
+        public static GameObject Instantiate<T>(int x, int y, string name, Transform parent = null, Texture2D texture = null, string tag = "") where T : Behavior, new() {
+            GameObject gameObject = InstantiateInternal(x, y, name, parent, texture, tag);
             gameObject.AddComponent<T>();
             return gameObject;
         }
 
-        public static GameObject Instantiate<T>(string name = "", string tag = "") where T : Behavior, new() {
+        public static GameObject Instantiate<T>(string name = "", Transform parent = null, string tag = "") where T : Behavior, new() {
             if (name == "") {
                 name = typeof(T).Name;
             }
-            GameObject gameObject = InstantiateInternal(0, 0, name, null, tag);
+            GameObject gameObject = InstantiateInternal(0, 0, name, parent, null, tag);
             gameObject.AddComponent<T>();
             return gameObject;
         }
 
-        static GameObject InstantiateInternal(int x, int y, string name, Texture2D texture = null, string tag = "", Transform parent = default) {
+        static GameObject InstantiateInternal(int x, int y, string name, Transform parent,Texture2D texture = null, string tag = "") {
             GameObject gameObject = new GameObject(Guid.NewGuid(), name, tag, texture);
 
             Vector2 position = new Vector2(x, y);
@@ -91,22 +91,19 @@ namespace STG.Engine.Component {
 
             gameObject.transform = transform;
 
-            //gameObject.layerGroup.SetGameObject(gameObject);
-            //GameObjectManager.AddLayerGroup(gameObject);
-
-            //先にGameObjectを監視リストに追加しないと、
-            //transform.SetParentで親を指定をすることができない
-            //gameObject.CreateTransformFunc = () => {の前でもちゃんと実行されるか検証したい
-            GameObjectManager.AddGameObjectToList(gameObject);
+            GameObjectManager.AddGameObjectToQue(gameObject);
 
             //何もParentが指定されていなかったらRootを親にする、もしくは指定されていたら、指定しているものを親にする
-            if (parent == default) {
+            if (parent == null) {
                 if (gameObject.name != GameObjectManager.RootName) {
-                    gameObject.transform.SetParent(GameObjectManager.Root);
+                    gameObject.transform.
+                        SetParent(GameObjectManager.Root.transform);
                 }
             } else {
+      
                 gameObject.transform.SetParent(parent);
             }
+
 
             return gameObject;
         }
