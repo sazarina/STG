@@ -49,7 +49,9 @@ namespace STG.Engine.Component {
             KeyInput.CurrentMouseState = Mouse.GetState();
 
             scriptController.Update(gameTime);
+
             gameObjectManager.Update();
+            gameObjectManager.LateUpdate();
         }
 
 

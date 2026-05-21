@@ -130,12 +130,12 @@ namespace STG.Engine.Component {
         }
 
         public static GameObject Find(string name) {
-            return GameObjectManager.Instance().FindWithName(name);
+            return GameObjectManager.Instance.FindWithName(name);
         }
 
         #endregion
         public void Destroy() {
-            GameObjectManager.Instance().Destroy(this);
+            GameObjectManager.Instance.Destroy(this);
         }
     }
 }

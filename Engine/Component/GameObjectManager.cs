@@ -67,8 +67,13 @@ namespace STG.Engine.Component {
             }
         }
 
-        protected Dictionary<Guid, GameObject> GameObjects = new Dictionary<Guid, GameObject>();
+        /// <summary>
+        /// InstantiateされたすべてのGameObjectを管理するリスト
+        /// </summary>
+        protected readonly Dictionary<Guid, GameObject> GameObjects = new Dictionary<Guid, GameObject>();
 
+        readonly Queue<GameObject> addQueue = new Queue<GameObject>();
+        readonly Queue<GameObject> removeQueue = new Queue<GameObject>();
 
         protected List<LayerGroup> LayerList = new List<LayerGroup>();
         /// <summary>
@@ -101,8 +106,7 @@ namespace STG.Engine.Component {
         }
 
         public virtual void Update() {
-            var Objects = GameObjects.Values;
-            foreach (var gameObject in Objects) {
+            foreach (var gameObject in GameObjects.Values) {
                 if (gameObject.active) {
                     gameObject.Update();
                     foreach (var component in gameObject.GetComponents().Values) {
@@ -111,6 +115,17 @@ namespace STG.Engine.Component {
                 }
             }
         }
+
+        public virtual void LateUpdate() {
+            //Debug.Log("que:"+addQueue.Count);
+            while (addQueue.Count > 0) {
+                var gameObject = addQueue.Dequeue();
+                self.GameObjects.Add(gameObject.Guid, gameObject);
+            }
+
+            //Debug.Log("que:"+addQueue.Count);
+        }
+
         /// <summary>
         /// <para>レイヤー機能</para>
         /// まずlayerOrderで昇順にソートしてから、GroupごとにorderInLayerで昇順にして描画
@@ -132,9 +147,11 @@ namespace STG.Engine.Component {
         //    });
         //}
 
-        public static void AddGameObjectToList(GameObject gameObject) {
-            Instance().GameObjects.Add(gameObject.Guid, gameObject);
+        public static void AddGameObjectToQue(GameObject gameObject) {
+            // すぐに追加すると、Update中にコレクションが変更される可能性があるため、キューに追加して後で処理する
+            self.addQueue.Enqueue(gameObject);
         }
+
 
         public GameObject[] FindWithTags(string tag) {
             return GameObjects.Values.Where(x => x.tag == tag).ToArray();
