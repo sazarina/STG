@@ -1,21 +1,19 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using STG.Engine.Graphics;
 using STG.Engine.Debugging;
-using Microsoft.Xna.Framework.Input;
 
 namespace STG.Engine.Component {
     public class GameObjectManager {
         #region シングルトン
         static GameObjectManager self = null;
 
-        public GameObjectManager() {
+        protected GameObjectManager() {
             Debug.Log("Initialize/ctor()");
         }
 
 
-        public static GameObjectManager Instance {
+        internal static GameObjectManager Instance {
             get {
                 if (self == null) {
                     Debug.Log($"GameObjectManager を {typeof(GameObjectManager).Name} として初期化します。");
@@ -44,8 +42,7 @@ namespace STG.Engine.Component {
         /// <summary>
         /// すべてのInstantiateされるオブジェクトの既定の親
         /// </summary>
-        internal static GameObject Root;
-        public static GameObject GetRoot() { return Root; }
+        public static GameObject Root;
 
         internal static string RootName {
             get {

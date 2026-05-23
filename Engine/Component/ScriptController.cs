@@ -13,11 +13,13 @@ namespace STG.Engine.Component {
             Debug.Log("ScriptController.ctor()");
         }
 
-        public static ScriptController Instance() {
-            if (self == null) {
-                self = new ScriptController();
+        public static ScriptController Instance {
+            get {
+                if (self == null) {
+                    self = new ScriptController();
+                }
+                return self;
             }
-            return self;
         }
 
         #endregion

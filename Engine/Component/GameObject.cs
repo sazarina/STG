@@ -7,6 +7,11 @@ namespace STG.Engine.Component {
     public partial class GameObject {
         internal ScriptController scriptController;
 
+        /// <summary>
+        /// InstantiateされているGameObjectの数
+        /// </summary>
+        public static int Count => GameObjectManager.Instance.Count;
+
         public Guid Guid { get; private set; }
 
         public string name { get; set; }

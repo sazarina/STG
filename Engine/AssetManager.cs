@@ -13,7 +13,7 @@ namespace STG.Engine {
 
         Dictionary<string,Texture2D> assets = new Dictionary<string, Texture2D>();
 
-        public static AssetManager Instance {
+        internal static AssetManager Instance {
             get {
                 if (self == null) {
                     self = new AssetManager();
@@ -31,12 +31,12 @@ namespace STG.Engine {
             this.content = content;
         }
 
-        public Texture2D Load(string assetName) {
-            if (assets.ContainsKey(assetName)) {
-                return assets[assetName];
+        public static Texture2D Load(string assetName) {
+            if (Instance.assets.ContainsKey(assetName)) {
+                return Instance.assets[assetName];
             } else {
-                var texture = content.Load<Texture2D>(assetName);
-                assets[assetName] = texture;
+                var texture = Instance.content.Load<Texture2D>(assetName);
+                Instance.assets[assetName] = texture;
                 return texture;
             }
         }

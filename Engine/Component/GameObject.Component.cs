@@ -123,7 +123,7 @@ namespace STG.Engine.Component {
         Component AttachScript(Type type) {
            var script = (Behavior)Activator.CreateInstance(type);
             Debug.Log($"スクリプト:{type.Name}を{name}にアタッチします");
-            script.Initialize(ScriptController.Instance(), this);
+            script.Initialize(ScriptController.Instance, this);
             script.Start();
             AttachedScripts.Add(type, script);
             return script;

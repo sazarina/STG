@@ -77,8 +77,7 @@ namespace STG.Engine.Graphics {
             Size = spriteSize.CastToSize();
             Spacing = spacing;
 
-            var asset = AssetManager.Instance;
-            var texture = asset.Load(name);
+            var texture = AssetManager.Load(name);
 
             var bitmap = GraphicsUltis.ConvertTexture2DToBitmap(texture);
             bitmap.MakeTransparent(Color.Magenta);

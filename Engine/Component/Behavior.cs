@@ -29,8 +29,7 @@ namespace STG.Engine.Component {
         protected Texture2D LoadTexture(string path, string name) => GraphicsUltis.CreateTexture(path, name);
 
         protected Texture2D LoadTexture(string assetName) {
-            var asset = AssetManager.Instance;
-            return asset.Load(assetName);
+            return AssetManager.Load(assetName);
         }
 
         protected LayerGroup Layer(string name) => RenderManager.Instance.Layers[name];

@@ -8,6 +8,37 @@ using STG.Engine.Graphics;
 
 namespace STG.Engine.Component {
     public class RenderManager {
+        SpriteBatch spriteBatch;
+        internal static SpriteBatch SpriteBatch => Instance.spriteBatch;
+
+
+        GraphicsDevice graphicsDevice = null;
+        internal static GraphicsDevice GraphicsDevice {
+            get {
+                if (Instance.graphicsDevice == null) {
+                    throw new NullReferenceException("GraphicsDeviceがnullです。RenderManager.Initialize()が呼び出されていることを確認してください。");
+                }
+                return Instance.graphicsDevice;
+            }
+        }
+
+
+        Dictionary<string, LayerGroup> layers = new Dictionary<string, LayerGroup>();
+        /// <summary>
+        /// 
+        /// </summary>
+        public static Dictionary<string, LayerGroup> Layers => Instance.layers;
+
+
+        Dictionary<int, List<SpriteRenderer>> layerList = new Dictionary<int, List<SpriteRenderer>>();
+
+        /// <summary>
+        /// RenderManagerに登録されているSpriteRendererをレイヤー順で管理するリスト
+        /// </summary>
+        internal static Dictionary<int, List<SpriteRenderer>> LayerList => Instance.layerList;
+
+        public Action<int, LayerGroup> OnLayerOrderChanged;
+
         Camera camera;
         FPSCounter fpsCounter = new FPSCounter();
 
@@ -24,7 +55,7 @@ namespace STG.Engine.Component {
             //    //};
         }
 
-        public static RenderManager Instance {
+        internal static RenderManager Instance {
             get {
                 if (self == null) {
                     self = new RenderManager();
@@ -37,37 +68,13 @@ namespace STG.Engine.Component {
         #endregion
 
         public void Initialize(GraphicsDevice graphicsDevice) {
-            GraphicsDevice = graphicsDevice;
-            SpriteBatch = new SpriteBatch(graphicsDevice);
+            this.graphicsDevice = graphicsDevice;
+            spriteBatch = new SpriteBatch(graphicsDevice);
 
             camera = GameObject.Instantiate(0, 0, "Camera").AddComponent<Camera>();
 
             Debug.Log("RenderManager.Initialize()");
         }
-
-        internal SpriteBatch SpriteBatch { get; private set; }
-
-        internal GraphicsDevice GraphicsDevice {
-            get {
-                if (graphicsDevice == null) { 
-                    throw new NullReferenceException("GraphicsDeviceがnullです。RenderManager.Initialize()が呼び出されていることを確認してください。");
-                }
-                return graphicsDevice;
-            }
-            private set {
-                graphicsDevice = value;
-            }
-        }
-
-        GraphicsDevice graphicsDevice = null;
-
-        public Dictionary<string, LayerGroup> Layers { get; set; } = new Dictionary<string, LayerGroup>();
-
-        //List<SpriteRenderer> renderers = new List<SpriteRenderer>();
-        Dictionary<int, List<SpriteRenderer>> layerList = new Dictionary<int, List<SpriteRenderer>>();
-
-        //Debug用
-        public Dictionary<int, List<SpriteRenderer>> LayerList => layerList;
 
         internal void Register(SpriteRenderer renderer) {
             //renderers.Add(renderer);
@@ -97,15 +104,13 @@ namespace STG.Engine.Component {
             }
         }
 
-        public Action<int, LayerGroup> OnLayerOrderChanged;
-
         public void Update() {
 
         }
 
         public void Draw() {
-            GraphicsDevice.Clear(Color.White);
-            SpriteBatch.Begin(transformMatrix: camera.GetViewMatrix());
+            graphicsDevice.Clear(Color.White);
+            spriteBatch.Begin(transformMatrix: camera.GetViewMatrix());
 
             fpsCounter.Draw();
 
@@ -118,7 +123,7 @@ namespace STG.Engine.Component {
                 }
             }
 
-            SpriteBatch.End();
+            spriteBatch.End();
         }
     }
 }
