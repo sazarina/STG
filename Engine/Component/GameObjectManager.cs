@@ -24,35 +24,9 @@ namespace STG.Engine.Component {
             }
         }
 
-        //public static T Instance<T>() where T : GameObjectManager {
-        //    if (self == null) {
-        //        Debug.Log($"GameObjectManager を {typeof(T).Name} として初期化します。");
-        //        self = (T)Activator.CreateInstance(typeof(T));
-        //    } else {
-        //        throw new InvalidOperationException($"GameObjectManager はすでに {self.GetType().Name} として初期化されています。");
-        //    }
-
-        //    return (T)self;
-        //}
-
         #endregion
 
         protected ScriptController scriptController;
-
-        /// <summary>
-        /// すべてのInstantiateされるオブジェクトの既定の親
-        /// </summary>
-        public static GameObject Root;
-
-        internal static string RootName {
-            get {
-                if (Root != null) {
-                    return Root.name;
-                } else {
-                    return "Root";
-                }
-            }
-        }
 
         /// <summary>
         /// InstantiateされたすべてのGameObjectを管理するリスト
@@ -65,29 +39,6 @@ namespace STG.Engine.Component {
         readonly Queue<GameObject> removeQueue = new Queue<GameObject>();
 
         protected List<LayerGroup> LayerList = new List<LayerGroup>();
-        /// <summary>
-        /// 監視レイヤーリスト
-        /// </summary>
-        //public Dictionary<GameObject, LayerGroup> Layers = new Dictionary<GameObject, LayerGroup>();
-        /// <summary>
-        /// GameObjectの監視レイヤーを追加する
-        /// </summary>
-        /// <param name="gameObject">追加するオブジェクト</param>
-        //public static void AddLayerGroup(GameObject gameObject) {
-        //    Instance().Layers.Add(gameObject, gameObject.layerGroup);
-        //}
-        /// <summary>
-        /// GameObjectの監視レイヤーを更新する
-        /// </summary>
-        /// <param name="gameObject">更新するオブジェクト</param>
-        /// <param name="layerGroup">更新するオブジェクトのレイヤー</param>
-        //public static void UpdateLayerGroup(GameObject gameObject, LayerGroup layerGroup) {
-        //    if (Instance().Layers.ContainsKey(gameObject)) {
-        //        Instance().Layers[gameObject] = layerGroup;
-        //    } else {
-        //        Debug.Log($"{layerGroup.Name}レイヤーは登録されていません");
-        //    }
-        //}
 
         public virtual void Initialize(ScriptController scriptController) {
             if (scriptController == null) {
@@ -96,7 +47,7 @@ namespace STG.Engine.Component {
             
             this.scriptController = scriptController;
 
-            Root = GameObject.Instantiate(0, 0, "Root");
+            GameObject.Root = GameObject.Instantiate(0, 0, "Root");
             Debug.Log("GameObjectManager.Initialize()");
         }
 
@@ -126,28 +77,6 @@ namespace STG.Engine.Component {
 
             //Debug.Log("que:"+addQueue.Count);
         }
-
-        /// <summary>
-        /// <para>レイヤー機能</para>
-        /// まずlayerOrderで昇順にソートしてから、GroupごとにorderInLayerで昇順にして描画
-        /// 
-        /// 廃止
-        /// 
-        /// </summary>
-        //public virtual void Draw() {
-        //    var groupList = Layers.Values.GroupBy(x => x.layeres.layerOrder).OrderBy(x => x.Key);
-        //    groupList.ForEach(group => {
-        //        var sorted = group.OrderBy(x => x.orderInLayer);
-        //        sorted.ForEach(layergroup => {
-        //            var gameObject = layergroup.gameObject;
-        //            if (gameObject.active) {
-        //                gameObject.Draw();
-        //                gameObject.GetComponents().Values.ForEach(component => component.Draw());
-        //            }
-        //        });
-        //    });
-        //}
-
 
         /// <summary>
         /// すぐに追加すると、Update中にコレクションが変更される可能性があるため、キューに追加して後で処理する

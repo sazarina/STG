@@ -25,8 +25,6 @@ namespace STG.Engine.Component {
                         //RenderManager.Instance().Register(component as SpriteRenderer);
                     }
 
-
-
                     ComponentList.Add(type, component);
                     return (T)component;
                 } else {
@@ -103,25 +101,17 @@ namespace STG.Engine.Component {
         #endregion
 
 
-        #region AttachScript
-
-        //internal static T CreateScirptInstance<T>(GameObject gameObject) where T : Behavior, new() {
-        //    T t = new T();
-        //    t.Initialize(ScriptController.Instance(), gameObject);
-        //    t.Start();
-        //    return t;
-        //}
-
-        
-        //public T AttachScript<T>() where T : Behavior, new() {
-        //    T t = CreateScirptInstance<T>(this);
-
-        //    AttachedScripts.Add(t.GetType(), t);
-        //    return t;
-        //}
-
+        /// <summary>
+        /// 指定された型のスクリプトをアタッチします。
+        /// </summary>
+        /// <param name="type"></param>
+        /// <returns></returns>
         Component AttachScript(Type type) {
-           var script = (Behavior)Activator.CreateInstance(type);
+            // ジェネリックにしない理由:
+            // コンパイラは呼び出し側で `T` を宣言された制約（ここでは `Component`）としてしか扱えないため、
+            // `Behavior` 固有のメンバーを直接呼ぶとコンパイルエラーになる。
+            // そのため `Activator.CreateInstance` で生成して `Behavior` にキャストしている。。
+            var script = (Behavior)Activator.CreateInstance(type);
             Debug.Log($"スクリプト:{type.Name}を{name}にアタッチします");
             script.Initialize(ScriptController.Instance, this);
             script.Start();
@@ -138,7 +128,6 @@ namespace STG.Engine.Component {
         public static IEnumerable<GameObject> FindWithTags(string tag) => 
             GameObjectManager.Instance.FindWithTags(tag);
 
-        #endregion
         public void Destroy() {
             GameObjectManager.Instance.Destroy(this);
         }

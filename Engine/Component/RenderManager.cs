@@ -23,11 +23,11 @@ namespace STG.Engine.Component {
         }
 
 
-        Dictionary<string, LayerGroup> layers = new Dictionary<string, LayerGroup>();
+        Dictionary<string, LayerGroup> sortingLayers = new Dictionary<string, LayerGroup>();
         /// <summary>
         /// 
         /// </summary>
-        public static Dictionary<string, LayerGroup> Layers => Instance.layers;
+        public static Dictionary<string, LayerGroup> SortingLayers => Instance.sortingLayers;
 
 
         Dictionary<int, List<SpriteRenderer>> layerList = new Dictionary<int, List<SpriteRenderer>>();

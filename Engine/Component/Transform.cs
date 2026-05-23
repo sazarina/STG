@@ -37,7 +37,7 @@ namespace STG.Engine.Component {
         public Vector2 position {
             get {
                 if (Parent != null) {
-                    if (Parent.Name == GameObjectManager.RootName) {
+                    if (Parent.Name == GameObject.Root.name) {
                         return _position;
                     } else {
                         return _position = Parent.position + localPosition;
@@ -49,7 +49,7 @@ namespace STG.Engine.Component {
             }
             set {
                 if (Parent != null) {
-                    if (Parent.Name == GameObjectManager.RootName) {
+                    if (Parent.Name == GameObject.Root.name) {
 
                     } else {
 
@@ -62,7 +62,7 @@ namespace STG.Engine.Component {
 
         public Vector2 localPosition {
             get {
-                if (Parent.Name == GameObjectManager.RootName) {
+                if (Parent.Name == GameObject.Root.name) {
                     //Debug.Log(_Debug.SetDebugInfo(),"NoParent");
                     return _position;
                 } else {
@@ -71,7 +71,7 @@ namespace STG.Engine.Component {
             }
             set {
                 //
-                if (Name == GameObjectManager.RootName) {
+                if (Name == GameObject.Root.name) {
                     //Debug.Log(_Debug.SetDebugInfo(), Parent.Name);
                     _localPosition = value;
                 } else {
@@ -89,7 +89,7 @@ namespace STG.Engine.Component {
         /// </summary>
         /// <returns></returns>
         public Vector2 GetLocalPosition() {
-            if (Parent.Name != GameObjectManager.RootName) {
+            if (Parent.Name != GameObject.Root.name) {
                 return _position - Parent._position;
             } else {
                 return _position;
@@ -171,7 +171,7 @@ namespace STG.Engine.Component {
         }
 
         void ClearParent() {
-            SetParent(GameObjectManager.Root.transform);
+            SetParent(GameObject.Root.transform);
         }
 
         void ClearChildren() {

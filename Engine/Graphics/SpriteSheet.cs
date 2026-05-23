@@ -119,11 +119,11 @@ namespace STG.Engine.Graphics {
                     }
                     count++;
 
-                    Debug.Log($"count:{count} {rect}");
+                    //Debug.Log($"count:{count} {rect}");
                 }
             }
             
-            Debug.Log(":" + SpriteTextures.Count);
+            //Debug.Log(":" + SpriteTextures.Count);
         }
 
         /// <summary>

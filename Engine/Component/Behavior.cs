@@ -3,6 +3,7 @@ using Microsoft.Xna.Framework.Graphics;
 using System.Collections;
 using STG.Engine.Debugging;
 using STG.Engine.Graphics;
+using System.Collections.Generic;
 
 namespace STG.Engine.Component {
     /// <summary>
@@ -32,7 +33,13 @@ namespace STG.Engine.Component {
             return AssetManager.Load(assetName);
         }
 
-        protected LayerGroup Layer(string name) => RenderManager.Instance.Layers[name];
+        protected LayerGroup Layer(string name) {
+            if(RenderManager.SortingLayers.ContainsKey(name)) {
+                return RenderManager.SortingLayers[name];
+            } else {
+                throw new KeyNotFoundException($"Layer '{name}' が見つかりません");
+            }
+        }
 
         public T AddComponent<T>() where T : Component, new() => gameObject.AddComponent<T>();
         public T GetComponent<T>() where T : Component, new() => gameObject.GetComponent<T>();

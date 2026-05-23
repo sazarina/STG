@@ -12,6 +12,11 @@ namespace STG.Engine.Component {
         /// </summary>
         public static int Count => GameObjectManager.Instance.Count;
 
+        /// <summary>
+        /// すべてのInstantiateされるオブジェクトの既定の親
+        /// </summary>
+        public static GameObject Root { get; internal set; }
+
         public Guid Guid { get; private set; }
 
         public string name { get; set; }
@@ -23,7 +28,6 @@ namespace STG.Engine.Component {
         public void SetActive(bool value) {
             active = value;
         }
-
 
         #region Mouse
         public bool IsMouseCursorPointed {
@@ -51,12 +55,6 @@ namespace STG.Engine.Component {
             foreach (var script in AttachedScripts.Values) {
                 script.Update();
             }
-        }
-
-        public void Draw() {
-            //foreach (var script in AttachedScripts.Values) {
-            //    script.Draw();
-            //}
         }
 
         #region Instantiate
@@ -100,21 +98,16 @@ namespace STG.Engine.Component {
 
             //何もParentが指定されていなかったらRootを親にする、もしくは指定されていたら、指定しているものを親にする
             if (parent == null) {
-                if (gameObject.name != GameObjectManager.RootName) {
-                    gameObject.transform.
-                        SetParent(GameObjectManager.Root.transform);
+                if (Root != null && gameObject.name != Root.name) {
+                    gameObject.transform.SetParent(Root.transform);
                 }
             } else {
-      
                 gameObject.transform.SetParent(parent);
             }
-
 
             return gameObject;
         }
         #endregion
-
-        Func<Transform> CreateTransformFunc;
 
         #endregion
 
