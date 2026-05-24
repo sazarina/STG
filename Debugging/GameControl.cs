@@ -29,7 +29,7 @@ namespace STG.Engine.Debugging {
             Debug.Log("GameControl.initialize()");
 
             gameManager = new GameManager();
-            gameManager.Initialize<DebugClient>(Editor.GraphicsDevice, Editor.spriteBatch);
+            gameManager.Initialize<DebugClient>(Editor.GraphicsDevice, Editor.Content);
         }
 
         /// <summary>

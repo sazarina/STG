@@ -1,20 +1,16 @@
 ﻿using STG.Engine.Component;
 
 namespace STG.Engine.Debugging {
-    public class DebugClient:GameObjectManager {
+    public class DebugClient : GameObjectManager {
         MainWindow window = MainWindow.self;
         TreeView treeView => window.treeView1;
 
         HierarchyManager hierarchyManager = new HierarchyManager();
 
-        public DebugClient(ScriptController scriptController) : base(scriptController) {
+        public override void Initialize(ScriptController scriptController) {
+            base.Initialize(scriptController);
+
             Debug.isDebug = true;
-
-            //Debugging.Log(DebugClient.Instance().GetType());
-        }
-
-        public override void Initialize() {
-            base.Initialize();
 
             var obj = GameObject.Instantiate(0,0, "HierarchyManager");
             hierarchyManager = obj.AddComponent<HierarchyManager>();
