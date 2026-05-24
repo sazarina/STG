@@ -14,7 +14,7 @@ namespace STG.Engine.Component {
                     var script = AttachScript(type);
                     ComponentList.Add(type, script);
                     return (T)script;
-                } else if (type.BaseType == typeof(Component)) {
+                } else if (typeof(Component).IsAssignableFrom(type)) {
                     Component component = new T();
                     component.gameObject = this;
 
@@ -37,27 +37,26 @@ namespace STG.Engine.Component {
         }
 
         public T GetComponent<T>() {
-            Type baseType = typeof(T).BaseType;
-
-            if (baseType == typeof(Behavior)) {
+            Type type = typeof(T);
+            if (typeof(Behavior).IsAssignableFrom(type)) {
                 if (IsRegisteredComponent<T>()) {
-                    return (T)(object)AttachedScripts[typeof(T)];
+                    return (T)(object)AttachedScripts[type];
                 } else {
-                    Debug.Log($"{typeof(T).Name}型のスクリプトはアタッチされていません");
+                    Debug.Log($"{type.Name}型のスクリプトはアタッチされていません");
                     return default;
                 }
 
-            } else if (baseType == typeof(Component)) {
+            } else if (typeof(Component).IsAssignableFrom(type)) {
                 if (IsRegisteredComponent<T>()) {
-                    return (T)(object)ComponentList[typeof(T)];
+                    return (T)(object)ComponentList[type];
 
                 } else {
-                    Debug.Log($"{typeof(T).Name}型のコンポーネントはアタッチされていません");
+                    Debug.Log($"{type.Name}型のコンポーネントはアタッチされていません");
                     return default;
                 }
 
             } else {
-                Debug.Log($"{baseType.Name}型の親を持つコンポーネントは見つかりません");
+                Debug.Log($"{type.Name}型の親を持つコンポーネントは見つかりません");
                 return default;
             }
         }
@@ -66,12 +65,11 @@ namespace STG.Engine.Component {
             => ComponentList;
 
         public bool IsRegisteredComponent<T>() {
-            Type baseType = typeof(T).BaseType;
-            if (baseType == typeof(Component)  || baseType == typeof(Behavior)) {
-                return ComponentList.ContainsKey(typeof(T));
-
+            Type type = typeof(T);
+            if (typeof(Component).IsAssignableFrom(type)) {
+                return ComponentList.ContainsKey(type);
             } else {
-                Debug.Log($"{baseType.Name}型の親を持つコンポーネントは見つかりません");
+                Debug.Log($"{type.Name}型の親を持つコンポーネントは見つかりません");
                 return false;
             }
         }
