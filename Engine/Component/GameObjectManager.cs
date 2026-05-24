@@ -12,7 +12,6 @@ namespace STG.Engine.Component {
             Debug.Log("Initialize/ctor()");
         }
 
-
         internal static GameObjectManager Instance {
             get {
                 if (self == null) {
@@ -60,7 +59,6 @@ namespace STG.Engine.Component {
                     }
                 }
             }
-
         }
 
         /// <summary>
@@ -72,10 +70,14 @@ namespace STG.Engine.Component {
             //Debug.Log("que:"+addQueue.Count);
             while (addQueue.Count > 0) {
                 var gameObject = addQueue.Dequeue();
-                self.GameObjects.Add(gameObject.Guid, gameObject);
+                GameObjects.Add(gameObject.Guid, gameObject);
             }
 
-            //Debug.Log("que:"+addQueue.Count);
+            while (removeQueue.Count > 0) {
+                var gameObject = removeQueue.Dequeue();
+                gameObject.OnDestroy?.Invoke();
+                GameObjects.Remove(gameObject.Guid);
+            }
         }
 
         /// <summary>
@@ -83,6 +85,10 @@ namespace STG.Engine.Component {
         /// </summary>
         internal static void AddGameObjectToQue(GameObject gameObject) {
             self.addQueue.Enqueue(gameObject);
+        }
+
+        internal static void RemoveGameObjectToQue(GameObject gameObject) {
+            self.removeQueue.Enqueue(gameObject);
         }
 
 
@@ -113,24 +119,11 @@ namespace STG.Engine.Component {
         }
 
         internal GameObject FindWithGuid(Guid guid) {
-            if (!GameObjects.ContainsKey(guid)) {
-                throw new NullReferenceException("GameObjectが見つかりません");
+            if (!GameObjects.TryGetValue(guid, out GameObject value)) {
+                throw new KeyNotFoundException("GameObjectが見つかりません");
             } else {
-                return GameObjects[guid];
+                return value;
             }
         }
-
-        internal void UpdateGameObjectList(GameObject gameObject) {
-            if (!GameObjects.ContainsKey(gameObject.Guid)) {
-                Debug.Log($"{gameObject.name}は登録されていません");
-            } else {
-                GameObjects[gameObject.Guid] = gameObject;
-            }
-        }
-
-        internal void Destroy(GameObject gameObject) {
-            GameObjects.Remove(gameObject.Guid);
-        }
-
     }
 }

@@ -37,6 +37,9 @@ namespace STG.Engine.Component {
         #endregion
         public override void Initialize() {
             base.Initialize();
+            OnDestroy += () => {
+                RenderManager.LayerList[sortingLayer.LayerOrder].Remove(this);
+            };
         }
 
         public override void Update() {

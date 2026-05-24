@@ -126,9 +126,7 @@ namespace STG.Engine.Component {
             if (Children.Count == 0) {
                 ClearChildren();
             }
-            GameObjectManager.Instance.UpdateGameObjectList(gameObject);
             child.ClearParent();
-            GameObjectManager.Instance.UpdateGameObjectList(child.gameObject);
         }
 
         public void RemoveChildrenAll() {
@@ -136,12 +134,9 @@ namespace STG.Engine.Component {
                 throw new Exception("このオブジェクトには子はいません");
             }
             var children = Children;
-
-            GameObjectManager.Instance.UpdateGameObjectList(gameObject);
             
             foreach (var child in children.Values) {
                 child.transform.ClearParent();
-                GameObjectManager.Instance.UpdateGameObjectList(child);
             }
             ClearChildren();
         }
@@ -160,13 +155,11 @@ namespace STG.Engine.Component {
             //position = position + Parent.position;
 
             ClearParent();
-            GameObjectManager.Instance.UpdateGameObjectList(gameObject);
 
             parent.transform.Children.Remove(gameObject.Guid);
             if (parent.transform.Children.Count == 0) {
                 parent.transform.ClearChildren();
             }
-            GameObjectManager.Instance.UpdateGameObjectList(parent);
             return parent;
         }
 
@@ -181,10 +174,8 @@ namespace STG.Engine.Component {
         public void SetChild(Transform child) {
             Children.Add(child.gameObject.Guid, child.gameObject);
 
-            GameObjectManager.Instance.UpdateGameObjectList(gameObject);
             child.Parent = this;
             child.localPosition = -GetLocalPosition();
-            GameObjectManager.Instance.UpdateGameObjectList(child.gameObject);
         }
 
         public void SetParent(Transform parent) {
@@ -193,16 +184,11 @@ namespace STG.Engine.Component {
 
                 return;
             }
-            //GameObjectManager.Instance().UpdateGameObjectList(Parent.gameObject);
-
             localPosition = GetLocalPosition();
 
             //position = Parent.position + localPosition;
 
             gameObject.transform = SetHierarchy(this, Parent.hierarchy + 1);
-            //GameObjectManager.Instance().UpdateGameObjectList(gameObject); 
-
-
         }
 
         Transform SetHierarchy(Transform transform, int hierarchy) {
