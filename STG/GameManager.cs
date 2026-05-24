@@ -19,7 +19,7 @@ namespace STG {
         public void Initialize(GraphicsDevice graphicsDevice, ContentManager content) {
             runtimeManager.Initialize(graphicsDevice, content);
 
-            var layers = RenderManager.Layers;
+            var layers = RenderManager.SortingLayers;
             layers["Default"] = new LayerGroup() {
                 Name = "Default",
                 LayerOrder = 0,
