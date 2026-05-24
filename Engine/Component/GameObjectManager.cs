@@ -84,10 +84,16 @@ namespace STG.Engine.Component {
         /// すぐに追加すると、Update中にコレクションが変更される可能性があるため、キューに追加して後で処理する
         /// </summary>
         internal static void AddGameObjectToQue(GameObject gameObject) {
+            if (self == null) {
+                throw new InvalidOperationException("GameObjectManager が初期化されていません。Initialize() を先に呼び出してください。");
+            }
             self.addQueue.Enqueue(gameObject);
         }
 
         internal static void RemoveGameObjectToQue(GameObject gameObject) {
+            if (self == null) {
+                throw new InvalidOperationException("GameObjectManager が初期化されていません。Initialize() を先に呼び出してください。");
+            }
             self.removeQueue.Enqueue(gameObject);
         }
 
