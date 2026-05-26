@@ -8,8 +8,13 @@ namespace STG.Engine.Component {
         #region シングルトン
         static GameObjectManager self = null;
 
-        protected GameObjectManager() {
+        public GameObjectManager() {
             Debug.Log("Initialize/ctor()");
+        }
+
+        internal static T CreateInstance<T>() where T:GameObjectManager { 
+            self = (T)Activator.CreateInstance(typeof(T));
+            return (T)self;
         }
 
         internal static GameObjectManager Instance {

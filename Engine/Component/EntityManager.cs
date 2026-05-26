@@ -1,5 +1,4 @@
 ﻿using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using STG.Engine.Debugging;
 using STG.Engine.Helper;
@@ -36,7 +35,7 @@ namespace STG.Engine.Component {
         public virtual void Initialize<T>()where T:GameObjectManager {
             scriptController.Initialize();
 
-            gameObjectManager = (T)GameObjectManager.Instance;
+            gameObjectManager = GameObjectManager.CreateInstance<T>();
             gameObjectManager.Initialize(scriptController);
             Debug.Log($"EntityManager.Initialize()");
         }
