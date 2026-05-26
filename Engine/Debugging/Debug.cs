@@ -45,18 +45,18 @@ namespace STG.Engine.Debugging {
         }
 
         public static void Log(object text, string tag = "", [CallerFilePath] string filePath = "", [CallerLineNumber] int line = 0, [CallerMemberName] string memberName = "") {
-            AddListView(LogData.Get(filePath, line, memberName), LogType.Log, tag, text.ToString());
+            AddListView(LogData.Get(filePath, line, memberName), LogType.Log, tag, text==null ? "null" : text.ToString());
         }
 
         public static void Log(IEnumerable<object> objects,[CallerFilePath] string filePath = "", [CallerLineNumber] int line = 0, [CallerMemberName] string memberName = "") {
             foreach (var obj in objects) {
-                AddListView(LogData.Get(filePath, line, memberName), LogType.Log, "", obj.ToString());
+                AddListView(LogData.Get(filePath, line, memberName), LogType.Log, "", obj==null ? "null" : obj.ToString());
             }
         }
 
         public static void Log(IEnumerable<string> texts, [CallerFilePath] string filePath = "", [CallerLineNumber] int line = 0, [CallerMemberName] string memberName = "") {
             foreach (var text in texts) {
-                AddListView(LogData.Get(filePath, line, memberName), LogType.Log, "", text);
+                AddListView(LogData.Get(filePath, line, memberName), LogType.Log, "", text==null ? "null" : text);
             }
         }
 
