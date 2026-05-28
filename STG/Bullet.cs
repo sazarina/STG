@@ -1,5 +1,8 @@
-﻿using STG.Engine.Component;
-using System;
+﻿using System;
+using Microsoft.Xna.Framework;
+using STG.Engine.Component;
+using STG.Engine.Graphics;
+
 
 namespace STG {
     class Bullet : Behavior {
