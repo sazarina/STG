@@ -83,6 +83,7 @@ namespace STG.Engine.Graphics {
             bitmap.MakeTransparent(Color.Magenta);
 
             LoadSpriteSheet(bitmap, pad, spacing);
+            bitmap.Dispose();
         }
 
         public SpriteSheet() { }

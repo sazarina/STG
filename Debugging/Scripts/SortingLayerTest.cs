@@ -14,7 +14,7 @@ namespace STG.Engine.Debugging.Scripts {
             );
             Debug.Log(screenPos);
 
-            var sprite = new SpriteSheet("/mat_021.png", "planes", 8, 2, new Point(32, 32), new Point(8, 8), new Point(16, 8)).SpriteTextures;
+            var sprite = new SpriteSheet("planes", 8, 2, new Point(32, 32), new Point(8, 8), new Point(16, 8)).SpriteTextures;
 
             var obj = GameObject.Instantiate(0, 0, "enemy");
             var sr = obj.AddComponent<SpriteRenderer>();
