@@ -49,5 +49,9 @@ namespace STG.Engine.Debugging {
         public void Update(GameTime gameTime) {
             runtimeManager.Update(gameTime);
         }
+
+        public void Draw() {
+            runtimeManager.Draw();
+        }
     }
 }

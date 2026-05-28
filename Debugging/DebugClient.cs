@@ -40,7 +40,7 @@ namespace STG.Engine.Debugging {
             // ツリービューをクリア
             treeView.Nodes.Clear();
 
-            Transform root = Root.transform;
+            Transform root = GameObject.Root.transform;
             
             foreach (var transform in root.Children.Values.//GameObjects.Values.
                 Select(x => x.transform)) {
