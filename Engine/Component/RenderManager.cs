@@ -30,12 +30,12 @@ namespace STG.Engine.Component {
         public static Dictionary<string, LayerGroup> SortingLayers => Instance.sortingLayers;
 
 
-        Dictionary<int, List<SpriteRenderer>> layerList = new Dictionary<int, List<SpriteRenderer>>();
+        SortedDictionary<int, List<SpriteRenderer>> layerList = new SortedDictionary<int, List<SpriteRenderer>>();
 
         /// <summary>
         /// RenderManagerに登録されているSpriteRendererをレイヤー順で管理するリスト
         /// </summary>
-        internal static Dictionary<int, List<SpriteRenderer>> LayerList => Instance.layerList;
+        internal static SortedDictionary<int, List<SpriteRenderer>> LayerList => Instance.layerList;
 
         public Action<int, LayerGroup> OnLayerOrderChanged;
 
