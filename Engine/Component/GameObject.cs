@@ -8,6 +8,7 @@ namespace STG.Engine.Component {
     public class GameObject {
         internal ScriptController scriptController;
 
+
         /// <summary>
         /// InstantiateされているGameObjectの数
         /// </summary>
@@ -51,9 +52,7 @@ namespace STG.Engine.Component {
 
         #region Functions
         public void Update() {
-            foreach (var script in AttachedScripts.Values) {
-                script.Update();
-            }
+
         }
 
         #region Instantiate
@@ -217,9 +216,10 @@ namespace STG.Engine.Component {
             // `Behavior` 固有のメンバーを直接呼ぶとコンパイルエラーになる。
             // そのため `Activator.CreateInstance` で生成して `Behavior` にキャストしている。。
             var script = (Behavior)Activator.CreateInstance(type);
-            Debug.Log($"スクリプト:{type.Name}を{name}にアタッチします");
             script.Initialize(ScriptController.Instance, this);
-            script.Start();
+
+            //ScriptControllerのLateUpdateで遅延してStartを呼び出すようにする
+            ScriptController.Register(script);
             AttachedScripts.Add(type, script);
             return script;
         }

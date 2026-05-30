@@ -60,7 +60,9 @@ namespace STG.Engine.Component {
                 if (gameObject.active) {
                     gameObject.Update();
                     foreach (var component in gameObject.GetComponents().Values) {
-                        component.Update();
+                        if (component is not Behavior) {
+                            component.Update();
+                        }
                     }
                 }
             }

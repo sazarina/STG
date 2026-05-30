@@ -30,11 +30,14 @@ namespace STG.Engine.Component {
             renderManager = RenderManager.Instance;
             renderManager.Initialize(graphicsDevice);
 
+            //cameraなどのコンポーネントの追加をLateUpdateで行う
+            entityManager.LateUpdate();
             Debug.Log("RuntimeManager initialize().");
         }
 
         public void Update(GameTime gameTime) {
             entityManager.Update(gameTime);
+            entityManager.LateUpdate();
             renderManager.Update();
         }
 

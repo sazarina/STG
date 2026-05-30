@@ -47,18 +47,17 @@ namespace STG.Engine.Component {
             KeyInput.OldMouseState = KeyInput.CurrentMouseState;
             KeyInput.CurrentMouseState = Mouse.GetState();
 
-            scriptController.Update(gameTime);
-
             gameObjectManager.Update();
-            gameObjectManager.LateUpdate();
+            scriptController.Update(gameTime);
         }
 
+        internal void LateUpdate() {
+            gameObjectManager.LateUpdate();
+            scriptController.LateUpdate();
+        }
 
         public virtual void Draw() {
             MouseState mouseState = Mouse.GetState();
-
-            //gameObjectManager.Draw();
-            scriptController.Draw();
 
             DrawText($"{mouseState.X},{mouseState.Y}", mouseState.Position.ToVector2().Add(y: 15), Color.Yellow);
         }

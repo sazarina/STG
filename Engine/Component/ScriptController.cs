@@ -1,8 +1,8 @@
 ﻿using ChevyRay.Coroutines;
 using Microsoft.Xna.Framework;
+using STG.Engine.Debugging;
 using System.Collections;
 using System.Collections.Generic;
-using STG.Engine.Debugging;
 
 namespace STG.Engine.Component {
     public class ScriptController {
@@ -39,24 +39,38 @@ namespace STG.Engine.Component {
 
 
         List<Behavior> ScriptList = new List<Behavior>();
+        Queue<Behavior> AddScriptQueue = new Queue<Behavior>();
+
         public void AddScript<T>(T t) where T : Behavior, new() {
             t.Initialize(this,null);
             t.Start();
             ScriptList.Add(t);
         }
 
+        internal static void Register(Behavior Script) { 
+            Instance.AddScriptQueue.Enqueue(Script);
+        }
+
         public void Initialize() {
-            Debug.Log("ScriptContoller.Initalize()");
+            Debug.Log("ScriptController.Initialize()");
         }
         //どうしようかなアタッチするってことはScriptController_Updateメソッドでは実行しないように変更しようかな
         public void Update(GameTime gameTime) {
             coroutineRunner.Update((float)gameTime.ElapsedGameTime.TotalSeconds);
 
-            //ScriptList.ForEach(script => script.Update());
+            foreach (Behavior script in ScriptList) {
+                if (script.isActive) {
+                    script.Update();
+                }
+            }
         }
 
-        public void Draw() {
-            //ScriptList.ForEach(script => script.Draw());
+        public void LateUpdate() {
+            while (AddScriptQueue.Count > 0) {
+                var script = AddScriptQueue.Dequeue();
+                script.Start();
+                ScriptList.Add(script);
+            }
         }
     }
 }

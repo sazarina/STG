@@ -6,7 +6,7 @@ using STG.Engine.Debugging;
 using STG.Engine.Graphics;
 
 namespace STG {
-    class GameManager {
+    public class GameManager {
         RuntimeManager runtimeManager = new RuntimeManager();
 
         public GameManager() {
@@ -16,8 +16,8 @@ namespace STG {
         /// <summary>
         /// ゲームで使用するエンティティの初期化をここで行う。
         /// </summary>
-        public void Initialize(GraphicsDevice graphicsDevice, ContentManager content) {
-            runtimeManager.Initialize(graphicsDevice, content);
+        public void Initialize<T>(GraphicsDevice graphicsDevice, ContentManager content) where T : GameObjectManager {
+            runtimeManager.Initialize<T>(graphicsDevice, content);
 
             var layers = RenderManager.SortingLayers;
             layers["Default"] = new LayerGroup() {
