@@ -12,15 +12,15 @@ namespace STG.Engine.Component {
         EntityManager entityManager;
         RenderManager renderManager;
 
+        /// <summary>
+        ///  EntityManagerでT型の`GameObjectManager`のインスタンスを作成する。
+        /// ゲームで使用するエンティティの初期化もここで行う。
+        /// </summary>
+        /// <typeparam name="T">
+        /// GameObjectManagerのインスタンスの型。
+        /// 例: フォームデバッグ時は `DebugClient`、
+        /// 通常実行時は `GameObjectManager`。</typeparam>
         public void Initialize<T>(GraphicsDevice graphicsDevice, ContentManager content) where T : GameObjectManager {
-            InitializeInternal<T>(graphicsDevice, content);
-        }
-
-        public void Initialize(GraphicsDevice graphicsDevice, ContentManager content) {
-            InitializeInternal<GameObjectManager>(graphicsDevice, content);
-        }
-
-        void InitializeInternal<T>(GraphicsDevice graphicsDevice, ContentManager content) where T : GameObjectManager {
             assetManager = AssetManager.Instance;
             assetManager.Initialize(content);
 
