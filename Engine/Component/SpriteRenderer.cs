@@ -38,7 +38,7 @@ namespace STG.Engine.Component {
         public override void Initialize() {
             base.Initialize();
             OnDestroy += () => {
-                RenderManager.LayerList[sortingLayer.LayerOrder].Remove(this);
+            RenderManager.Instance.Unregister(this);
             };
         }
 
