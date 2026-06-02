@@ -6,11 +6,15 @@ using System.Collections.Generic;
 namespace STG.Engine.Component {
     public class Transform : Component {
         public Dictionary<Guid, GameObject> Children { get; private set; } = new Dictionary<Guid, GameObject>();
+
+        /// <summary>
+        /// Parentがnullの場合はRootが親になる
+        /// </summary>
         public Transform Parent { get; private set; } = null;
         /// <summary>
         /// 階層保持用
         /// </summary>
-        internal int hierarchy = 0;
+        internal int Hierarchy { get; private set; } = 0;
 
         public string parentName {
             get {
@@ -21,9 +25,6 @@ namespace STG.Engine.Component {
                 }
             }
         }
-
-        public static Transform Empty => new Transform { Name = "Empty" };
-        public static Transform Origin => new Transform { Name = "Origin" };
 
         public int ChildCount {
             get {
@@ -36,24 +37,17 @@ namespace STG.Engine.Component {
 
         public Vector2 position {
             get {
-                if (Parent != null) {
-                    if (Parent.Name == GameObject.Root.name) {
-                        return _position;
-                    } else {
-                        return _position = Parent.position + localPosition;
-                    }
-                } else {
-                    //Root
+                if (Parent == GameObject.Root || Parent == null) {
                     return _position;
+                } else {
+                    return _position = Parent.position + localPosition;
                 }
             }
             set {
-                if (Parent != null) {
-                    if (Parent.Name == GameObject.Root.name) {
+                if (Parent == GameObject.Root || Parent == null) {
 
-                    } else {
+                } else {
 
-                    }
                 }
                 _localPosition = value;
                 _position = value;
@@ -62,7 +56,7 @@ namespace STG.Engine.Component {
 
         public Vector2 localPosition {
             get {
-                if (Parent.Name == GameObject.Root.name) {
+                if (Parent == GameObject.Root || Parent == null) {
                     //Debug.Log(_Debug.SetDebugInfo(),"NoParent");
                     return _position;
                 } else {
@@ -71,12 +65,12 @@ namespace STG.Engine.Component {
             }
             set {
                 //
-                if (Name == GameObject.Root.name) {
+                if (Parent == GameObject.Root || Parent == null) {
                     //Debug.Log(_Debug.SetDebugInfo(), Parent.Name);
                     _localPosition = value;
                 } else {
                     //Debug.Log(_Debug.SetDebugInfo(), Name);
-
+                    
                     _localPosition = value;
                     _position = Parent._position + localPosition;
                 }
@@ -89,21 +83,21 @@ namespace STG.Engine.Component {
         /// </summary>
         /// <returns></returns>
         public Vector2 GetLocalPosition() {
-            if (Parent.Name != GameObject.Root.name) {
-                return _position - Parent._position;
-            } else {
+            if (Parent == GameObject.Root || Parent == null) {
                 return _position;
+            } else {
+                return _position - Parent._position;
             }
         }
 
         public Vector2 center { get; private set; } = new Vector2(0, 0);
 
         #region Constructors
-        public Transform() {
+        internal Transform() {
 
         }
 
-        public Transform(Vector2 position, GameObject gameObject = null, Vector2 center = default) {
+        internal Transform(Vector2 position, GameObject gameObject = null, Vector2 center = default) {
             if (center == default) {
                 center = new Vector2(0, 0);
             }
@@ -112,6 +106,15 @@ namespace STG.Engine.Component {
 
             this.center = center;
             this.gameObject = gameObject;
+
+            OnDestroy += () => {
+                //if (Parent != null) {
+                //    RemoveParent_Internal(Parent.gameObject);
+                //}
+                //if (Children.Count > 0) {
+                //    RemoveChildrenAll();
+                //}
+            };
         }
 
         #endregion
@@ -141,30 +144,22 @@ namespace STG.Engine.Component {
             ClearChildren();
         }
 
-        public GameObject RemoveParent() {
-            if (Parent == null) {
-                Debug.Log("このオブジェクトには親がいません");
-                return null;
+        public void RemoveParent() {
+            if (Parent == null || Parent == GameObject.Root) {
+                throw new InvalidOperationException("このオブジェクトには親がいません");
             }
-            GameObject parent = Parent.gameObject;
-            RemoveParent_Internal(parent);
-            return parent;
-        }
-
-        public GameObject RemoveParent_Internal(GameObject parent) {
             //position = position + Parent.position;
 
-            ClearParent();
-
-            parent.transform.Children.Remove(gameObject.Guid);
-            if (parent.transform.Children.Count == 0) {
-                parent.transform.ClearChildren();
+            Parent.Children.Remove(gameObject.Guid);
+            if (Parent.Children.Count == 0) {
+                Parent.ClearChildren();
             }
-            return parent;
+            
+            SetParent(GameObject.Root);
         }
 
         void ClearParent() {
-            SetParent(GameObject.Root.transform);
+            SetParent(GameObject.Root);
         }
 
         void ClearChildren() {
@@ -188,12 +183,8 @@ namespace STG.Engine.Component {
 
             //position = Parent.position + localPosition;
 
-            gameObject.transform = SetHierarchy(this, Parent.hierarchy + 1);
-        }
-
-        Transform SetHierarchy(Transform transform, int hierarchy) {
-            transform.hierarchy = hierarchy;
-            return transform;
+            //階層を更新
+            Hierarchy = Parent.Hierarchy + 1;
         }
 
         /// <summary>
@@ -203,7 +194,8 @@ namespace STG.Engine.Component {
         bool AddChild() {
             if (!Parent.Children.ContainsKey(gameObject.Guid)) {
 
-                gameObject.transform = SetHierarchy(this, Parent.hierarchy + 1);
+                //階層を更新
+                Hierarchy = Parent.Hierarchy + 1;
 
                 Parent.Children.Add(gameObject.Guid, gameObject);
                 return true;

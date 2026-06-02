@@ -17,7 +17,7 @@ namespace STG.Engine.Component {
         /// <summary>
         /// すべてのInstantiateされるオブジェクトの既定の親
         /// </summary>
-        public static GameObject Root { get; internal set; }
+        public static Transform Root { get; internal set; }
 
         public Guid Guid { get; private set; }
 
@@ -102,8 +102,8 @@ namespace STG.Engine.Component {
 
             //何もParentが指定されていなかったらRootを親にする、もしくは指定されていたら、指定しているものを親にする
             if (parent == null) {
-                if (Root != null && gameObject.name != Root.name) {
-                    gameObject.transform.SetParent(Root.transform);
+                if (Root != null && gameObject.name != Root.Name) {
+                    gameObject.transform.SetParent(Root);
                 }
             } else {
                 gameObject.transform.SetParent(parent);
@@ -187,7 +187,7 @@ namespace STG.Engine.Component {
         public T[] GetComponentInChildren<T>() {
             List<T> components = new List<T>();
 
-            if (transform.Children == null) {
+            if (transform.Children == default) {
                 return null;
             }
 

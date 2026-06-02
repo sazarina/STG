@@ -51,7 +51,7 @@ namespace STG.Engine.Component {
             
             this.scriptController = scriptController;
 
-            GameObject.Root = GameObject.Instantiate(0, 0, "Root");
+            GameObject.Root = GameObject.Instantiate(0, 0, "Root").transform;
             Debug.Log("GameObjectManager.Initialize()");
         }
 

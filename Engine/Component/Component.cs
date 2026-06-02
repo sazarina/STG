@@ -10,19 +10,17 @@ namespace STG.Engine.Component {
                 if (gameObject != null) {
                     return gameObject.name;
                 } else {
-                    return name;
+                    throw new InvalidOperationException("GameObjectにアタッチされていません");
                 }
             }
             set {
-                name = value;
-
                 if (gameObject != null) {
                     gameObject.name = value;
+                } else { 
+                    throw new InvalidOperationException("GameObjectにアタッチされていません");
                 }
             }
         }
-
-        string name;
 
         public bool isActive { get; protected set; }
         public virtual void Initialize() {
