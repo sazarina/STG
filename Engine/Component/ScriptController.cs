@@ -1,6 +1,7 @@
 ﻿using ChevyRay.Coroutines;
 using Microsoft.Xna.Framework;
 using STG.Engine.Debugging;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 
@@ -13,7 +14,7 @@ namespace STG.Engine.Component {
             Debug.Log("ScriptController.ctor()");
         }
 
-        public static ScriptController Instance {
+        internal static ScriptController Instance {
             get {
                 if (self == null) {
                     self = new ScriptController();

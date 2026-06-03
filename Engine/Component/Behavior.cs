@@ -13,16 +13,15 @@ namespace STG.Engine.Component {
         /// <summary>
         /// スクリプトを管理するクラス
         /// </summary>
-        ScriptController scriptController;
+        ScriptController ScriptController => ScriptController.Instance;
         /// <summary>
         /// ChevyRay.Coroutinesのコルーチンを実行するクラス
         /// </summary>
         CoroutineRunner coroutineRunner;
 
-        public void Initialize(ScriptController scriptController, GameObject gameObject) {
-            this.scriptController = scriptController;
+        public void Initialize(GameObject gameObject) {
             this.gameObject = gameObject;
-            coroutineRunner = scriptController.coroutineRunner;
+            coroutineRunner = ScriptController.coroutineRunner;
         }
 
         public virtual void Start() { }
@@ -49,13 +48,13 @@ namespace STG.Engine.Component {
 
         #region ChevyRay.Coroutinesのラッパー関数
         protected void AddCoroutine(IEnumerator routine, CoroutineHandle coroutineHandle) =>
-            scriptController.AddCoroutine(routine, coroutineHandle);
+            ScriptController.AddCoroutine(routine, coroutineHandle);
 
         protected void UpdateCoroutine(IEnumerator routine, CoroutineHandle coroutineHandle) =>
-            scriptController.UpdateCoroutine(routine, coroutineHandle);
+            ScriptController.UpdateCoroutine(routine, coroutineHandle);
 
         protected CoroutineHandle GetCoroutine(IEnumerator routine) =>
-            scriptController.GetCoroutine(routine);
+            ScriptController.GetCoroutine(routine);
         /// <summary>
         /// コルーチン実行
         /// </summary>

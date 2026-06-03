@@ -6,9 +6,6 @@ using System.Collections.Generic;
 
 namespace STG.Engine.Component {
     public class GameObject {
-        internal ScriptController scriptController;
-
-
         /// <summary>
         /// InstantiateされているGameObjectの数
         /// </summary>
@@ -208,23 +205,7 @@ namespace STG.Engine.Component {
         /// <summary>
         /// 指定された型のスクリプトをアタッチします。
         /// </summary>
-        /// <param name="type"></param>
-        /// <returns></returns>
-        Component AttachScript(Type type) {
-            // ジェネリックにしない理由:
-            // コンパイラは呼び出し側で `T` を宣言された制約（ここでは `Component`）としてしか扱えないため、
-            // `Behavior` 固有のメンバーを直接呼ぶとコンパイルエラーになる。
-            // そのため `Activator.CreateInstance` で生成して `Behavior` にキャストしている。。
-            var script = (Behavior)Activator.CreateInstance(type);
-            script.Initialize(ScriptController.Instance, this);
-
-            //ScriptControllerのLateUpdateで遅延してStartを呼び出すようにする
-            ScriptController.Register(script);
-            AttachedScripts.Add(type, script);
-            return script;
-        }
-
-        public static GameObject Find(string name) =>
+        public static GameObject? Find(string name) =>
             GameObjectManager.Instance.Find(name);
 
         public static IEnumerable<GameObject> FindObjects(string name) =>

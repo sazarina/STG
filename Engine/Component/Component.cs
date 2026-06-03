@@ -22,7 +22,7 @@ namespace STG.Engine.Component {
             }
         }
 
-        public bool isActive { get; protected set; }
+        public bool isActive { get; internal set; }
         public virtual void Initialize() {
 
         } 
