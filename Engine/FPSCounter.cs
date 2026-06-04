@@ -1,5 +1,7 @@
-﻿using Microsoft.Xna.Framework;
+﻿using System;
+using Microsoft.Xna.Framework;
 using STG.Engine.Component;
+using STG.Engine.Debugging;
 using STG.Engine.Graphics;
 
 namespace STG.Engine {
@@ -33,10 +35,20 @@ namespace STG.Engine {
                 m_frameCount = 0;
                 m_updateTimer -= m_interval;
             }
-            var camera = GameObject.Find("Camera").GetComponent<Camera>();
+
+            var cameraObject = GameObject.Find("Camera");
+
+            if (cameraObject == null) {
+                Debug.LogException("FPSCounter", new Exception("Cameraオブジェクトが見つかりませんでした。FPSを描画できません。"));
+                return;
+            }
+
+            var camera = cameraObject.GetComponent<Camera>();
             if (camera != null) {
                 // FPSの数値を描画する
                 GraphicsUltis.DrawText("FPS: " + FPS, camera.ScreenToWorld(new Vector2(20, 20)), Color.Firebrick);
+            } else {
+                Debug.LogException("FPSCounter", new Exception("Cameraコンポーネントが見つかりませんでした。FPSを描画できません。"));
             }
         }
     }
