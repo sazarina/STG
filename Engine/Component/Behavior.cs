@@ -17,7 +17,7 @@ namespace STG.Engine.Component {
         /// <summary>
         /// ChevyRay.Coroutinesのコルーチンを実行するクラス
         /// </summary>
-        CoroutineRunner coroutineRunner;
+        protected CoroutineRunner coroutineRunner;
 
         public void Initialize(GameObject gameObject) {
             this.gameObject = gameObject;
