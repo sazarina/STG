@@ -9,7 +9,14 @@ using STG.Engine.Graphics;
 namespace STG.Engine.Component {
     public class RenderManager {
         SpriteBatch spriteBatch;
-        internal static SpriteBatch SpriteBatch => Instance.spriteBatch;
+        internal static SpriteBatch SpriteBatch { 
+            get {
+                if (Instance.spriteBatch == null) { 
+                    throw new NullReferenceException("SpriteBatchがnullです。RenderManager.Initialize()が呼び出されていることを確認してください。");
+                }    
+                return Instance.spriteBatch;
+            }
+        }
 
 
         GraphicsDevice graphicsDevice = null;
