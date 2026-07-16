@@ -6,25 +6,31 @@ using STG.Engine.Debugging;
 namespace STG.Engine.Component {
     public class GameObjectManager {
         #region シングルトン
-        static GameObjectManager self = null;
+        static GameObjectManager instance = null;
 
         public GameObjectManager() {
             Debug.Log("Initialize/ctor()");
         }
 
         internal static T CreateInstance<T>() where T:GameObjectManager { 
-            self = (T)Activator.CreateInstance(typeof(T));
-            return (T)self;
+            var ctor = typeof(T).GetConstructor(Type.EmptyTypes);
+            if(ctor == null) {
+                throw new InvalidOperationException($"型 {typeof(T).Name} にパラメータなしのコンストラクタが存在しません。");
+            }
+            
+            T instance = (T)ctor.Invoke(null);
+            GameObjectManager.instance = instance;
+            return instance;
         }
 
         internal static GameObjectManager Instance {
             get {
-                if (self == null) {
+                if (instance == null) {
                     Debug.Log($"GameObjectManager を {typeof(GameObjectManager).Name} として初期化します。");
-                    self = new GameObjectManager();
+                    instance = new GameObjectManager();
                 }
 
-                return self;
+                return instance;
             }
         }
 
@@ -91,17 +97,17 @@ namespace STG.Engine.Component {
         /// すぐに追加すると、Update中にコレクションが変更される可能性があるため、キューに追加して後で処理する
         /// </summary>
         internal static void AddGameObjectToQue(GameObject gameObject) {
-            if (self == null) {
+            if (instance == null) {
                 throw new InvalidOperationException("GameObjectManager が初期化されていません。Initialize() を先に呼び出してください。");
             }
-            self.addQueue.Enqueue(gameObject);
+            instance.addQueue.Enqueue(gameObject);
         }
 
         internal static void RemoveGameObjectToQue(GameObject gameObject) {
-            if (self == null) {
+            if (instance == null) {
                 throw new InvalidOperationException("GameObjectManager が初期化されていません。Initialize() を先に呼び出してください。");
             }
-            self.removeQueue.Enqueue(gameObject);
+            instance.removeQueue.Enqueue(gameObject);
         }
 
 
