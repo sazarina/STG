@@ -2,12 +2,21 @@
 
 namespace STG.Engine.Debugging {
     public partial class MainWindow : Form {
-        public static MainWindow self;
+        public static MainWindow Instance {
+            get {
+                if (instance == null) {
+                    throw new InvalidOperationException("MainWindow instance has not been initialized.");
+                }
+                return instance;
+            }
+        }
+
+        static MainWindow instance;
 
         DebugWindowForm debugWindow = new DebugWindowForm();
 
         public MainWindow() {
-            self = this;
+            instance = this;
 
             InitializeComponent();
             debugWindow.Show();

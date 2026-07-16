@@ -50,7 +50,7 @@ namespace STG.Engine.Component {
         FPSCounter fpsCounter = new FPSCounter();
 
         #region シングルトン
-        static RenderManager self = null;
+        static RenderManager instance = null;
 
         RenderManager() {
             //    OnLayerOrderChanged += (order, group) => {
@@ -64,11 +64,11 @@ namespace STG.Engine.Component {
 
         internal static RenderManager Instance {
             get {
-                if (self == null) {
-                    self = new RenderManager();
+                if (instance == null) {
+                    instance = new RenderManager();
                 }
 
-                return self;
+                return instance;
             }
         }
 

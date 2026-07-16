@@ -8,7 +8,7 @@ namespace STG.Engine.Debugging {
     public class Debug {
         public static bool isDebug = false;
 
-        public static DebugWindowForm self;
+        public static DebugWindowForm instance;
 
         #region BaseFunctions
 
@@ -23,7 +23,7 @@ namespace STG.Engine.Debugging {
         }
 
         public static void Init(DebugWindowForm own) {
-            Debug.self = own;
+            Debug.instance = own;
         }
 
         internal static LogData Default => new LogData();
@@ -74,8 +74,8 @@ namespace STG.Engine.Debugging {
         static void AddListView(LogData info, LogType debugType, string tag, string message) {
             info.debugType = debugType;
             string[] lst = { GetEnumString(debugType), tag, message, info.fileRelativePath, info.member, info.line };
-            self.listView1.Items.Insert(0, new ListViewItem(lst));
-            //self.OriginItemCorection.Add(new ListViewItem(lst));
+            instance.listView1.Items.Insert(0, new ListViewItem(lst));
+            //instance.OriginItemCorection.Add(new ListViewItem(lst));
         }
 
     }
