@@ -2,6 +2,7 @@
 using Microsoft.Xna.Framework.Input;
 using STG.Engine.Debugging;
 using STG.Engine.Helper;
+using System;
 using static STG.Engine.Graphics.GraphicsUltis;
 
 
@@ -25,11 +26,7 @@ namespace STG.Engine.Component {
 
 
         EntityManager() {
-            //if (!isDebug) {
-            //    gameObjectManager = GameObjectManager.Instance(this);
-            //} else {
-            //    gameObjectManager = GameObjectManager.Instance<>(this);
-            //}
+            
         }
 
         public virtual void Initialize<T>()where T:GameObjectManager {
@@ -47,11 +44,20 @@ namespace STG.Engine.Component {
             KeyInput.OldMouseState = KeyInput.CurrentMouseState;
             KeyInput.CurrentMouseState = Mouse.GetState();
 
+            if(gameObjectManager == null) {
+                throw new InvalidOperationException("GameObjectManager が初期化されていません。Initialize() を先に呼び出してください。");
+            }
+
             gameObjectManager.Update();
+
             scriptController.Update(gameTime);
         }
 
         internal void LateUpdate() {
+            if (gameObjectManager == null) {
+                throw new InvalidOperationException("GameObjectManager が初期化されていません。Initialize() を先に呼び出してください。");
+            }
+
             gameObjectManager.LateUpdate();
             scriptController.LateUpdate();
         }
