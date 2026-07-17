@@ -21,7 +21,8 @@ namespace STG {
             var position = transform.position;
 
             if (KeyInput.IsHeld(Keys.Space)) {
-                GameObject.Instantiate<Bullet>((int)position.X, (int)position.Y, "playerBullet");
+                var bullet = GameObject.Instantiate<Bullet>((int)position.X, (int)position.Y, "playerBullet");
+                bullet.Shot(Bullet.Type.PlayerBullet, 0);
             }
 
             if (KeyInput.IsHeld(Keys.W)) {

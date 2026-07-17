@@ -23,20 +23,25 @@ namespace STG {
             layers["Default"] = new LayerGroup() {
                 Name = "Default",
                 LayerOrder = 0,
+            };  
+
+            layers["Bullet"] = new LayerGroup() {
+                Name = "Bullet",
+                LayerOrder = 1,
             };
 
             layers["Character"] = new LayerGroup() {
                 Name = "Character",
-                LayerOrder = 1,
+                LayerOrder = 2,
             };
 
             layers["UI"] = new LayerGroup() {
                 Name = "UI",
-                LayerOrder = 2,
+                LayerOrder = 3,
             };
 
 
-            GameObject player = GameObject.Instantiate<Player>(0, 200, "player");
+            var player = GameObject.Instantiate<Player>(0, 200, "player");
 
             //GameObject.Instantiate<SortingLayerTest>(0, 0, "sortingLayerTest");
 
