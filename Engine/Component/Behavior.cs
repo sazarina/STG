@@ -3,7 +3,7 @@ using Microsoft.Xna.Framework.Graphics;
 using System.Collections;
 using STG.Engine.Debugging;
 using STG.Engine.Graphics;
-using System.Collections.Generic;
+using System;
 
 namespace STG.Engine.Component {
     /// <summary>
@@ -36,7 +36,10 @@ namespace STG.Engine.Component {
             if(RenderManager.SortingLayers.ContainsKey(name)) {
                 return RenderManager.SortingLayers[name];
             } else {
-                throw new KeyNotFoundException($"Layer '{name}' が見つかりません");
+                Debug.LogError("LayerGroup", $"LayerGroup '{name}' is not registered. Using default LayerGroup.");
+
+                RenderManager.SortingLayers.Add(name, LayerGroup.Default);
+                return LayerGroup.Default;
             }
         }
 

@@ -66,8 +66,8 @@ namespace STG.Engine.Debugging {
             AddListView(LogData.Get(filePath, line, memberName), LogType.Exception, tag, e.Message);
         }
 
-        public static void LogError(string tag, ErrorEventArgs e, [CallerFilePath] string filePath = "", [CallerLineNumber] int line = 0, [CallerMemberName] string memberName = "") {
-            AddListView(LogData.Get(filePath, line, memberName), LogType.Exception, tag, e.ToString());
+        public static void LogError(string tag, string message, [CallerFilePath] string filePath = "", [CallerLineNumber] int line = 0, [CallerMemberName] string memberName = "") {
+            AddListView(LogData.Get(filePath, line, memberName), LogType.Error, tag, message);
         }
 
 
