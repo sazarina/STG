@@ -42,10 +42,27 @@ namespace STG.Engine.Component {
         List<Behavior> ScriptList = new List<Behavior>();
         Queue<Behavior> AddScriptQueue = new Queue<Behavior>();
 
-        public void AddScript<T>(T t) where T : Behavior, new() {
-            t.Initialize(this,null);
-            t.Start();
-            ScriptList.Add(t);
+        /// <summary>
+        /// 指定された型のスクリプトをアタッチします。
+        /// </summary>
+        /// <param name="type"></param>
+        /// <returns></returns>
+        internal static Component AttachScript(Type type, GameObject gameObject) {
+            // ジェネリックにしない理由:
+            // コンパイラは呼び出し側で `T` を宣言された制約（ここでは `Component`）としてしか扱えないため、
+            // `Behavior` 固有のメンバーを直接呼ぶとコンパイルエラーになるので、
+            // そのため `Activator.CreateInstance` で生成して `Behavior` にキャストしている
+            var script = (Behavior?)Activator.CreateInstance(type);
+            if (script == null) {
+                throw new InvalidOperationException($"Failed to create instance of type {type.FullName}");
+            }
+
+            script.Initialize(gameObject);
+
+            //ScriptControllerのLateUpdateで遅延してStartを呼び出すようにする
+            Register(script);
+            gameObject.AttachedScripts.Add(type, script);
+            return script;
         }
 
         internal static void Register(Behavior Script) { 
@@ -55,7 +72,7 @@ namespace STG.Engine.Component {
         public void Initialize() {
             Debug.Log("ScriptController.Initialize()");
         }
-        //どうしようかなアタッチするってことはScriptController_Updateメソッドでは実行しないように変更しようかな
+
         public void Update(GameTime gameTime) {
             coroutineRunner.Update((float)gameTime.ElapsedGameTime.TotalSeconds);
 
@@ -69,7 +86,9 @@ namespace STG.Engine.Component {
         public void LateUpdate() {
             while (AddScriptQueue.Count > 0) {
                 var script = AddScriptQueue.Dequeue();
+                script.isActive = true;
                 script.Start();
+
                 ScriptList.Add(script);
             }
         }

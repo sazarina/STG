@@ -16,7 +16,7 @@ namespace STG.Engine.Component {
         /// </summary>
         public static Transform Root { get; internal set; }
 
-        public Guid Guid { get; private set; }
+        internal Guid Guid { get; private set; }
 
         public string name { get; set; }
         public string tag { get; set; }
@@ -44,8 +44,8 @@ namespace STG.Engine.Component {
         public bool IsMouseCursorClicked => IsMouseCursorPointed && KeyInput.MouseJustPressed(KeyInput.Mouses.LeftMouse);
         #endregion
 
-        Dictionary<Type, Behavior> AttachedScripts = new Dictionary<Type, Behavior>();
-        Dictionary<Type, Component> ComponentList = new Dictionary<Type, Component>();
+        internal Dictionary<Type, Behavior> AttachedScripts { get; set; } = new Dictionary<Type, Behavior>();
+        Dictionary<Type, Component> ComponentList { get; set; } = new Dictionary<Type, Component>();
 
         #region Functions
         public void Update() {
@@ -116,7 +116,7 @@ namespace STG.Engine.Component {
 
             if (!IsRegisteredComponent<T>()) {
                 if (typeof(Behavior).IsAssignableFrom(type)) {
-                    var script = AttachScript(type);
+                    var script = ScriptController.AttachScript(type, this);
                     ComponentList.Add(type, script);
                     return (T)script;
                 } else if (typeof(Component).IsAssignableFrom(type)) {
@@ -201,9 +201,6 @@ namespace STG.Engine.Component {
 
         #endregion
 
-        /// <summary>
-        /// 指定された型のスクリプトをアタッチします。
-        /// </summary>
         public static GameObject? Find(string name) =>
             GameObjectManager.Instance.Find(name);
 
