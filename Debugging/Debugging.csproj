@@ -25,6 +25,7 @@
 
 	<ItemGroup>
 	  <ProjectReference Include="..\Engine\Engine.csproj" />
+	  <ProjectReference Include="..\STG\STG.csproj" />
 	</ItemGroup>
 
 </Project>

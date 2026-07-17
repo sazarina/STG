@@ -39,10 +39,14 @@ namespace STG.Engine.Debugging {
         /// </summary>
         /// <param name="gameTime">Provides a snapshot of timing values.</param>
         protected override void Update(GameTime gameTime) {
-            
             TimeManager.Update(gameTime);
             if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.Escape))
                 Application.Exit();
+
+            if (gameManager == null) {
+                throw new InvalidOperationException("GameManager is not initialized.");
+            }
+
             gameManager.Update(gameTime);
         }
 
@@ -50,6 +54,10 @@ namespace STG.Engine.Debugging {
         /// This is called when the game should draw itself.
         /// </summary>
         protected override void Draw() {
+            if (gameManager == null) {
+                throw new InvalidOperationException("GameManager is not initialized.");
+            }
+
             gameManager.Draw();
         }
     }
