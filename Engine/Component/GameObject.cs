@@ -53,10 +53,15 @@ namespace STG.Engine.Component {
         }
 
         #region Instantiate
-        GameObject(Guid Guid, string name, string tag, Texture2D texture) {
+        GameObject(Guid Guid, string name, string tag, int x, int y, Texture2D texture) {
             this.Guid = Guid;
             this.name = name;
             this.tag = tag;
+
+            Vector2 position = new Vector2(x, y);
+            transform = new Transform(position, this, Vector2.Zero);
+            ComponentList.Add(typeof(Transform), transform);
+
             //this.texture = texture;
 
             OnDestroy += () => {
@@ -87,13 +92,7 @@ namespace STG.Engine.Component {
         }
 
         static GameObject InstantiateInternal(int x, int y, string name, Transform parent, Texture2D texture = null, string tag = "") {
-            GameObject gameObject = new GameObject(Guid.NewGuid(), name, tag, texture);
-
-            Vector2 position = new Vector2(x, y);
-            Transform transform = new Transform(position, gameObject, Vector2.Zero);
-            gameObject.ComponentList.Add(typeof(Transform), transform);
-
-            gameObject.transform = transform;
+            GameObject gameObject = new GameObject(Guid.NewGuid(), name, tag, x, y, texture);
 
             GameObjectManager.AddGameObjectToQue(gameObject);
 
