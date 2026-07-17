@@ -76,19 +76,17 @@ namespace STG.Engine.Component {
             return gameObject;
         }
 
-        public static GameObject Instantiate<T>(int x, int y, string name, Transform parent = null, Texture2D texture = null, string tag = "") where T : Behavior, new() {
+        public static T Instantiate<T>(int x, int y, string name, Transform parent = null, Texture2D texture = null, string tag = "") where T : Behavior, new() {
             GameObject gameObject = InstantiateInternal(x, y, name, parent, texture, tag);
-            gameObject.AddComponent<T>();
-            return gameObject;
+            return gameObject.AddComponent<T>();
         }
 
-        public static GameObject Instantiate<T>(string name = "", Transform parent = null, string tag = "") where T : Behavior, new() {
+        public static T Instantiate<T>(string name = "", Transform parent = null, string tag = "") where T : Behavior, new() {
             if (name == "") {
                 name = typeof(T).Name;
             }
             GameObject gameObject = InstantiateInternal(0, 0, name, parent, null, tag);
-            gameObject.AddComponent<T>();
-            return gameObject;
+            return gameObject.AddComponent<T>();
         }
 
         static GameObject InstantiateInternal(int x, int y, string name, Transform parent, Texture2D texture = null, string tag = "") {
