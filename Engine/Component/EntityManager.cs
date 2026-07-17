@@ -8,7 +8,7 @@ using static STG.Engine.Graphics.GraphicsUltis;
 
 namespace STG.Engine.Component {
     internal class EntityManager {
-        static EntityManager instance;
+        static EntityManager? instance = null;
 
         internal static EntityManager Instance {
             get {
@@ -22,7 +22,7 @@ namespace STG.Engine.Component {
         internal ScriptController scriptController = ScriptController.Instance;
         public ScriptController ScriptController => scriptController;
 
-        internal GameObjectManager gameObjectManager = null;
+        internal GameObjectManager? gameObjectManager = null;
 
 
         EntityManager() {

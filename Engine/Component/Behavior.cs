@@ -47,7 +47,7 @@ namespace STG.Engine.Component {
         }
 
         public T AddComponent<T>() where T : Component, new() => gameObject.AddComponent<T>();
-        public T GetComponent<T>() where T : Component, new() => gameObject.GetComponent<T>();
+        public T? GetComponent<T>() where T : Component, new() => gameObject.GetComponent<T>();
         public bool IsRegisteredComponent<T>() where T : Component => gameObject.IsRegisteredComponent<T>();
 
 

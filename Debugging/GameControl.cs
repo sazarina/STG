@@ -7,7 +7,7 @@ using Keys = Microsoft.Xna.Framework.Input.Keys;
 
 namespace STG.Engine.Debugging {
     public class GameControl :  MonoGameControl{
-        GameManager gameManager;
+        GameManager? gameManager;
 
         /// <summary>
         /// Allows the game to perform any initialization it needs to before starting to run.

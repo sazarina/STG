@@ -8,8 +8,8 @@ using System.Threading.Tasks;
 
 namespace STG.Engine {
     public class AssetManager {
-        static AssetManager instance = null;
-        ContentManager content = null;
+        static AssetManager? instance = null;
+        ContentManager? content = null;
 
         Dictionary<string,Texture2D> assets = new Dictionary<string, Texture2D>();
 

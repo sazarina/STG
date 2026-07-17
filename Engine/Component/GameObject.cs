@@ -14,7 +14,7 @@ namespace STG.Engine.Component {
         /// <summary>
         /// すべてのInstantiateされるオブジェクトの既定の親
         /// </summary>
-        public static Transform Root { get; internal set; }
+        public static Transform? Root { get; internal set; }
 
         internal Guid Guid { get; private set; }
 
@@ -31,9 +31,12 @@ namespace STG.Engine.Component {
         #region Mouse
         public bool IsMouseCursorPointed {
             get {
-                SpriteRenderer sr;
                 if (IsRegisteredComponent<SpriteRenderer>()) {
-                    sr = GetComponent<SpriteRenderer>();
+                    SpriteRenderer? sr = GetComponent<SpriteRenderer>();
+                    if (sr == null) {
+                        Debug.LogException("GameObject", new Exception($"GameObject {name} に SpriteRenderer コンポーネントが登録されているのに、GetComponent<SpriteRenderer>() が null を返しました。"));
+                        return false;
+                    }
                     return sr.texture != null && sr.Rect.Contains(KeyInput.CurrentMouseState.Position);
                 } else {
                     return false;
@@ -53,7 +56,7 @@ namespace STG.Engine.Component {
         }
 
         #region Instantiate
-        GameObject(Guid Guid, string name, string tag, int x, int y, Texture2D texture) {
+        GameObject(Guid Guid, string name, string tag, int x, int y, Texture2D? texture) {
             this.Guid = Guid;
             this.name = name;
             this.tag = tag;
@@ -71,17 +74,17 @@ namespace STG.Engine.Component {
             };
         }
 
-        public static GameObject Instantiate(int x, int y, string name, Transform parent = null, Texture2D texture = null, string tag = "") {
+        public static GameObject Instantiate(int x, int y, string name, Transform?   parent = null, Texture2D? texture = null, string tag = "") {
             GameObject gameObject = InstantiateInternal(x, y, name, parent, texture, tag);
             return gameObject;
         }
 
-        public static T Instantiate<T>(int x, int y, string name, Transform parent = null, Texture2D texture = null, string tag = "") where T : Behavior, new() {
+        public static T Instantiate<T>(int x, int y, string name, Transform? parent = null, Texture2D? texture = null, string tag = "") where T : Behavior, new() {
             GameObject gameObject = InstantiateInternal(x, y, name, parent, texture, tag);
             return gameObject.AddComponent<T>();
         }
 
-        public static T Instantiate<T>(string name = "", Transform parent = null, string tag = "") where T : Behavior, new() {
+        public static T Instantiate<T>(string name = "", Transform? parent = null, string tag = "") where T : Behavior, new() {
             if (name == "") {
                 name = typeof(T).Name;
             }
@@ -89,7 +92,7 @@ namespace STG.Engine.Component {
             return gameObject.AddComponent<T>();
         }
 
-        static GameObject InstantiateInternal(int x, int y, string name, Transform parent, Texture2D texture = null, string tag = "") {
+        static GameObject InstantiateInternal(int x, int y, string name, Transform? parent, Texture2D? texture = null, string tag = "") {
             GameObject gameObject = new GameObject(Guid.NewGuid(), name, tag, x, y, texture);
 
             GameObjectManager.AddGameObjectToQue(gameObject);
@@ -140,7 +143,7 @@ namespace STG.Engine.Component {
             }
         }
 
-        public T GetComponent<T>() {
+        public T? GetComponent<T>() {
             Type type = typeof(T);
             if (typeof(Behavior).IsAssignableFrom(type)) {
                 if (IsRegisteredComponent<T>()) {
@@ -175,10 +178,15 @@ namespace STG.Engine.Component {
             }
         }
 
-        public T GetComponentInParent<T>() where T : Component, new() =>
-            transform.Parent.gameObject.GetComponent<T>();
+        public T? GetComponentInParent<T>() where T : Component, new() {
+            if (transform.Parent == null) {
+                Debug.LogException("GameObject", new Exception($"GameObject {name} の親が存在しません。"));
+                return default;   
+            }
+            return transform.Parent?.gameObject.GetComponent<T>();
+        }
 
-        public T[] GetComponentInChildren<T>() {
+        public T[]? GetComponentInChildren<T>() {
             List<T> components = new List<T>();
 
             if (transform.Children == default) {
@@ -187,7 +195,7 @@ namespace STG.Engine.Component {
 
             foreach (var child in transform.Children.Values) {
                 if (child.IsRegisteredComponent<T>()) {
-                    T t = child.GetComponent<T>();
+                    T? t = child.GetComponent<T>();
                     if (t != null) {
                         components.Add(t);
                     }

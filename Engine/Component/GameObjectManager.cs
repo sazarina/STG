@@ -36,7 +36,7 @@ namespace STG.Engine.Component {
 
         #endregion
 
-        protected ScriptController scriptController;
+        protected ScriptController? scriptController;
 
         /// <summary>
         /// InstantiateされたすべてのGameObjectを管理するリスト
@@ -119,7 +119,7 @@ namespace STG.Engine.Component {
             }
         }
 
-        internal GameObject Find(string name) {
+        internal GameObject? Find(string name) {
             foreach (var gameObject in GameObjects.Values) {
                 if (gameObject.name == name) {
                     return gameObject;
@@ -137,12 +137,14 @@ namespace STG.Engine.Component {
             }
         }
 
-        internal GameObject FindWithGuid(Guid guid) {
-            if (!GameObjects.TryGetValue(guid, out GameObject value)) {
-                throw new KeyNotFoundException("GameObjectが見つかりません");
+        internal GameObject? FindWithGuid(Guid guid) {
+            if (!GameObjects.TryGetValue(guid, out GameObject? value)) {
+               Debug.LogException("FindWithGuid", new KeyNotFoundException("GameObjectが見つかりません"));
+                return null;
             } else {
                 return value;
             }
+            
         }
     }
 }

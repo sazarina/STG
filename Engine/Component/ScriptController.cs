@@ -8,7 +8,7 @@ using System.Collections.Generic;
 namespace STG.Engine.Component {
     public class ScriptController {
         #region シングルトン
-        static ScriptController instance = null;
+        static ScriptController? instance = null;
 
         ScriptController() {
             Debug.Log("ScriptController.ctor()");

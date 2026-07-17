@@ -8,7 +8,7 @@ using STG.Engine.Graphics;
 
 namespace STG.Engine.Component {
     public class RenderManager {
-        SpriteBatch spriteBatch;
+        SpriteBatch? spriteBatch;
         internal static SpriteBatch SpriteBatch { 
             get {
                 if (Instance.spriteBatch == null) { 
@@ -19,7 +19,7 @@ namespace STG.Engine.Component {
         }
 
 
-        GraphicsDevice graphicsDevice = null;
+        GraphicsDevice? graphicsDevice = null;
         internal static GraphicsDevice GraphicsDevice {
             get {
                 if (Instance.graphicsDevice == null) {
@@ -46,11 +46,11 @@ namespace STG.Engine.Component {
 
         public Action<int, LayerGroup> OnLayerOrderChanged;
 
-        Camera camera;
+        Camera? camera;
         FPSCounter fpsCounter = new FPSCounter();
 
         #region シングルトン
-        static RenderManager instance = null;
+        static RenderManager? instance = null;
 
         RenderManager() {
             //    OnLayerOrderChanged += (order, group) => {
