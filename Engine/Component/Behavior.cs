@@ -17,11 +17,14 @@ namespace STG.Engine.Component {
         /// <summary>
         /// ChevyRay.Coroutinesのコルーチンを実行するクラス
         /// </summary>
-        protected CoroutineRunner coroutineRunner;
+        protected CoroutineRunner CoroutineRunner {
+            get {
+                return ScriptController.coroutineRunner;
+            }
+        }
 
         public void Initialize(GameObject gameObject) {
             this.gameObject = gameObject;
-            coroutineRunner = ScriptController.coroutineRunner;
         }
 
         public virtual void Start() { }
@@ -65,7 +68,7 @@ namespace STG.Engine.Component {
         /// <param name="coroutine"></param>
         /// <returns></returns>
         protected CoroutineHandle StartCoroutine(float delay, IEnumerator coroutine) {
-            var handle = coroutineRunner.Run(delay, coroutine);
+            var handle = CoroutineRunner.Run(delay, coroutine);
             AddCoroutine(coroutine, handle);
             Debug.Log(coroutine);
             return handle;
@@ -79,19 +82,19 @@ namespace STG.Engine.Component {
             StartCoroutine(0f, coroutine);
 
         protected void StopCoroutine(IEnumerator coroutine) {
-            coroutineRunner.Stop(coroutine);
+            CoroutineRunner.Stop(coroutine);
         }
         protected void StopAll() {
-            coroutineRunner.StopAll();
+            CoroutineRunner.StopAll();
         }
 
         protected bool IsRunning(CoroutineHandle coroutineHandle) =>
-            coroutineRunner.IsRunning(coroutineHandle);
+            CoroutineRunner.IsRunning(coroutineHandle);
 
         protected bool IsRunning(IEnumerator routine) =>
-             coroutineRunner.IsRunning(routine);
+             CoroutineRunner.IsRunning(routine);
 
-        protected int CoroutineCount => coroutineRunner.Count;
+        protected int CoroutineCount => CoroutineRunner.Count;
         #endregion
 
         public static IEnumerator Empty() {
@@ -99,7 +102,7 @@ namespace STG.Engine.Component {
         }
 
         protected IEnumerator WaitForSeconds(float second) {
-            yield return coroutineRunner.Run(second, Empty()).Wait();
+            yield return CoroutineRunner.Run(second, Empty()).Wait();
         }
     }
 }
