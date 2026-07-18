@@ -44,8 +44,6 @@ namespace STG.Engine.Component {
         /// </summary>
         internal static SortedDictionary<int, List<SpriteRenderer>> LayerList => Instance.layerList;
 
-        public Action<int, LayerGroup> OnLayerOrderChanged;
-
         Camera? camera;
         FPSCounter fpsCounter = new FPSCounter();
 
@@ -53,13 +51,7 @@ namespace STG.Engine.Component {
         static RenderManager? instance = null;
 
         RenderManager() {
-            //    OnLayerOrderChanged += (order, group) => {
-            //    //    if (layerList.ContainsKey(order)) {
-            //    //        layerList[order] =;
-            //    //    } else {
-            //    //        layerList.Add(order, group);
-            //    //    }
-            //    //};
+            
         }
 
         internal static RenderManager Instance {
@@ -84,16 +76,13 @@ namespace STG.Engine.Component {
         }
 
         internal void Register(SpriteRenderer renderer) {
-            //renderers.Add(renderer);
             //LayerListに登録されていない場合
             if (!layerList.ContainsKey(renderer.SortingLayer.LayerOrder)) {
                 layerList.Add(renderer.SortingLayer.LayerOrder, new List<SpriteRenderer> { renderer });
                 
             } else {
                 var index = layerList[renderer.SortingLayer.LayerOrder].IndexOf(renderer);
-                Debug.Log(index);
-
-                if (layerList[renderer.SortingLayer.LayerOrder].IndexOf(renderer) != -1) {
+                if (index != -1) {
                     Debug.Log($"RenderManager: SpriteRenderer {renderer.gameObject.name} は既にレイヤー {renderer.SortingLayer.Name} に登録されています。");
                 } else {
                     layerList[renderer.SortingLayer.LayerOrder].Add(renderer);
@@ -116,8 +105,13 @@ namespace STG.Engine.Component {
         }
 
         public void Draw() {
-            graphicsDevice.Clear(Color.White);
-            spriteBatch.Begin(transformMatrix: camera.GetViewMatrix());
+            GraphicsDevice.Clear(Color.White);
+
+            if (camera == null) { 
+                throw new InvalidOperationException("Cameraがnullです。RenderManager.Initialize()でCameraを設定してください。");
+            }
+
+            SpriteBatch.Begin(transformMatrix: camera.GetViewMatrix());
 
             fpsCounter.Draw();
 
@@ -130,7 +124,7 @@ namespace STG.Engine.Component {
                 }
             }
 
-            spriteBatch.End();
+            SpriteBatch.End();
         }
     }
 }

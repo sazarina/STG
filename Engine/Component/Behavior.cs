@@ -35,7 +35,7 @@ namespace STG.Engine.Component {
             return AssetManager.Load(assetName);
         }
 
-        protected LayerGroup Layer(string name) {
+        public static LayerGroup Layer(string name) {
             if(RenderManager.SortingLayers.ContainsKey(name)) {
                 return RenderManager.SortingLayers[name];
             } else {
