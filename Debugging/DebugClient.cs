@@ -9,8 +9,7 @@ namespace STG.Engine.Debugging {
 
             Debug.isDebug = true;
 
-            var obj = GameObject.Instantiate(0,0, "HierarchyManager");
-            obj.AddComponent<HierarchyManager>();
+            GameObject.Instantiate<HierarchyManager>(0, 0, "HierarchyManager");
 
             Debug.Log($"DebugClient.Initialize()"); ;
         }
