@@ -5,7 +5,7 @@ using Keys = Microsoft.Xna.Framework.Input.Keys;
 using Point = Microsoft.Xna.Framework.Point;
 
 namespace STG {
-    class Player : Behavior {
+    public class Player : Behavior {
         override public void Start() {
             SpriteSheet sheet = new SpriteSheet("planes", 8, 2, new Point(32, 32), new Point(8, 8), new Point(16, 8));
             var sprite = sheet.SpriteTextures;
