@@ -2,15 +2,16 @@
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
 using STG.Engine.Debugging;
+using System;
 
 namespace STG.Engine.Component {
     /// <summary>
     /// 
     /// </summary>
     public class RuntimeManager {
-        AssetManager assetManager;
-        EntityManager entityManager;
-        RenderManager renderManager;
+        AssetManager? assetManager;
+        EntityManager? entityManager;
+        RenderManager? renderManager;
 
         /// <summary>
         ///  EntityManagerでT型の`GameObjectManager`のインスタンスを作成する。
@@ -36,12 +37,19 @@ namespace STG.Engine.Component {
         }
 
         public void Update(GameTime gameTime) {
+            if(entityManager == null || renderManager == null) {
+                throw new InvalidOperationException("RuntimeManager is not initialized. Call Initialize() before Update().");
+            }
+
             entityManager.Update(gameTime);
             entityManager.LateUpdate();
             renderManager.Update();
         }
 
         public void Draw() {
+            if(renderManager == null) {
+                throw new InvalidOperationException("RuntimeManager is not initialized. Call Initialize() before Draw().");
+            }
             renderManager.Draw();
         }
     }

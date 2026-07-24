@@ -6,7 +6,9 @@ using STG.Engine.Debugging;
 namespace STG.Engine.Component {
     public class GameObjectManager {
         #region シングルトン
-        static GameObjectManager instance = null;
+        static GameObjectManager? instance = null;
+
+        bool isInitialized = false;
 
         public GameObjectManager() {
             Debug.Log("Initialize/ctor()");
@@ -54,18 +56,25 @@ namespace STG.Engine.Component {
             if (scriptController == null) {
                 throw new InvalidOperationException("ScriptController が null です");
             }
-            
+
             this.scriptController = scriptController;
 
             GameObject.Root = GameObject.Instantiate(0, 0, "Root").transform;
             Debug.Log("GameObjectManager.Initialize()");
         }
 
+        /// <summary>
+        /// 初回のLateUpdateが呼ばれたときに、OnInitializedイベントを発火させる
+        /// </summary>
+        public event Action OnInitialized = delegate { };
+
+        public virtual void Awake() { }
+
         public virtual void Update() {
             foreach (var gameObject in GameObjects.Values) {
                 if (gameObject.active) {
                     gameObject.Update();
-                    foreach (var component in gameObject.GetComponents().Values) {
+                    foreach (var component in gameObject.GetComponents()) {
                         if (component is not Behavior) {
                             component.Update();
                         }
@@ -90,6 +99,11 @@ namespace STG.Engine.Component {
                 var gameObject = removeQueue.Dequeue();
                 gameObject.OnDestroy?.Invoke();
                 GameObjects.Remove(gameObject.Guid);
+            }
+
+            if (!isInitialized) {
+                isInitialized = true;
+                OnInitialized?.Invoke();
             }
         }
 

@@ -8,7 +8,7 @@ namespace STG.Engine.Debugging {
     public class Debug {
         public static bool isDebug = false;
 
-        public static DebugWindowForm instance;
+        public static DebugWindowForm? instance;
 
         #region BaseFunctions
 
@@ -19,7 +19,12 @@ namespace STG.Engine.Debugging {
         }
 
         public static string GetEnumString(LogType debugType) {
-            return Enum.GetName(typeof(LogType), debugType);
+            var name = Enum.GetName(typeof(LogType), debugType);
+            if (name == null) {
+                return "Unknown";
+            } else {
+                return name;
+            }
         }
 
         public static void Init(DebugWindowForm own) {
@@ -71,9 +76,14 @@ namespace STG.Engine.Debugging {
         }
 
 
-        static void AddListView(LogData info, LogType debugType, string tag, string message) {
+        static void AddListView(LogData info, LogType debugType, string tag, string? message) {
             info.debugType = debugType;
-            string[] lst = { GetEnumString(debugType), tag, message, info.fileRelativePath, info.member, info.line };
+            string[] lst = { GetEnumString(debugType), tag, message==null ? "null" : message, info.fileRelativePath, info.member, info.line };
+
+            if (instance == null) {
+                throw new Exception("Debug instance is not initialized.");
+            }
+
             instance.listView1.Items.Insert(0, new ListViewItem(lst));
             //instance.OriginItemCorection.Add(new ListViewItem(lst));
         }

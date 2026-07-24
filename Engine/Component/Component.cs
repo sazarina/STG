@@ -2,8 +2,16 @@
 
 namespace STG.Engine.Component {
     public class Component {
-        public GameObject gameObject { get; internal set; }
-        public Transform transform => gameObject.transform;
+        // GameObject.AddComponent<T>()で必ず設定されるため、ここではnull!で警告を抑制
+        public GameObject gameObject { get; internal set; } = null!;
+        public Transform transform {
+            get {
+                if (gameObject == null) {
+                    throw new InvalidOperationException("GameObjectにアタッチされていません");
+                }
+                return gameObject.transform;
+            }
+        }
 
         public string name {
             get {

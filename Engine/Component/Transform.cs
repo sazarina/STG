@@ -5,21 +5,30 @@ using System.Collections.Generic;
 
 namespace STG.Engine.Component {
     public class Transform : Component {
+        /// <summary>
+        /// Parentがnullの場合は自身がRoot
+        /// </summary>
+        public Transform? Parent { get; private set; } = null;
+
+        /// <summary>
+        /// 子供のTransformを保持するDictionary
+        /// </summary>
         public Dictionary<Guid, GameObject> Children { get; private set; } = new Dictionary<Guid, GameObject>();
 
         /// <summary>
-        /// Parentがnullの場合はRootが親になる
+        /// TransformがアタッチされているGameObjectのGuidを返す
         /// </summary>
-        public Transform Parent { get; private set; } = null;
+        public Guid Guid => gameObject.Guid;
+
         /// <summary>
         /// 階層保持用
         /// </summary>
         internal int Hierarchy { get; private set; } = 0;
 
-        public string parentName {
+        public string? parentName {
             get {
                 if (Parent != null) {
-                    return Parent.Name;
+                    return Parent.name;
                 } else {
                     return null;
                 }
@@ -66,10 +75,10 @@ namespace STG.Engine.Component {
             set {
                 //
                 if (Parent == GameObject.Root || Parent == null) {
-                    //Debug.Log(_Debug.SetDebugInfo(), Parent.Name);
+                    //Debug.Log(_Debug.SetDebugInfo(), Parent.name);
                     _localPosition = value;
                 } else {
-                    //Debug.Log(_Debug.SetDebugInfo(), Name);
+                    //Debug.Log(_Debug.SetDebugInfo(), name);
                     
                     _localPosition = value;
                     _position = Parent._position + localPosition;
@@ -97,7 +106,7 @@ namespace STG.Engine.Component {
 
         }
 
-        internal Transform(Vector2 position, GameObject gameObject = null, Vector2 center = default) {
+        internal Transform(Vector2 position, GameObject gameObject, Vector2 center = default) {
             if (center == default) {
                 center = new Vector2(0, 0);
             }
@@ -155,11 +164,11 @@ namespace STG.Engine.Component {
                 Parent.ClearChildren();
             }
             
-            SetParent(GameObject.Root);
+            SetParent(GameObject.Root!);
         }
 
         void ClearParent() {
-            SetParent(GameObject.Root);
+            SetParent(GameObject.Root!);
         }
 
         void ClearChildren() {
@@ -174,11 +183,28 @@ namespace STG.Engine.Component {
         }
 
         public void SetParent(Transform parent) {
-            Parent = parent;
-            if (!AddChild()) {
-
+            if (parent == null) {
+                Debug.LogException("Transform", new ArgumentNullException(nameof(parent), "親をnullにすることはできません"));
                 return;
             }
+
+            if (Parent != null) { //親がいる場合は親の子供リストから削除する
+                Parent.Children.Remove(gameObject.Guid);
+                if (Parent.Children.Count == 0) {
+                    Parent.ClearChildren();
+                }
+            }
+            Parent = parent;
+
+            //親の子供リストにまだ追加されていない場合は追加する
+            if (!Parent.Children.ContainsKey(gameObject.Guid)) {
+                Parent.Children.Add(gameObject.Guid, gameObject);
+                //親の子供リストに既に追加されている場合は上書きしない
+            } else {
+                Debug.LogError("Transform", $"{name}には既に親:{Parent.name}が設定されています");
+                return;
+            }
+
             localPosition = GetLocalPosition();
 
             //position = Parent.position + localPosition;
@@ -186,27 +212,6 @@ namespace STG.Engine.Component {
             //階層を更新
             Hierarchy = Parent.Hierarchy + 1;
         }
-
-        /// <summary>
-        /// childがParentを追加する、
-        /// </summary>
-        /// <returns></returns>
-        bool AddChild() {
-            if (!Parent.Children.ContainsKey(gameObject.Guid)) {
-
-                //階層を更新
-                Hierarchy = Parent.Hierarchy + 1;
-
-                Parent.Children.Add(gameObject.Guid, gameObject);
-                return true;
-            } else {
-                //上書きしないで置く
-                //Debug.Log(_Debug.SetDebugInfo(), $"{Name}には既に親:{Parent.Name}が設定されています", "上書きします");
-                //Parent.Children[gameObject.Guid] = gameObject;
-                return false;
-            }
-        }
-
         #endregion
     }
 }

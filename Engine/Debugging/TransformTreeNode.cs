@@ -8,9 +8,9 @@ namespace STG.Engine.Debugging {
 
         public TransformTreeNode(Transform transform) {
             this.transform = transform;
-            Text = transform.Name;
+            Text = transform.name;
             if (transform.Parent != null) {
-                Text += "," + transform.Parent.Name;
+                Text += "," + transform.Parent.name;
             }
         }
     }

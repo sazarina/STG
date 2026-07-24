@@ -12,6 +12,8 @@ namespace STG.Engine.Debugging {
             GameObject.Instantiate<HierarchyManager>(0, 0, "HierarchyManager");
 
             Debug.Log($"DebugClient.Initialize()"); ;
+            OnInitialized += () => {
+            };
         }
 
         public override void Update() {
@@ -24,6 +26,9 @@ namespace STG.Engine.Debugging {
                     window.SelectItem(obj);
                 }
             }
+        }
+        public override void LateUpdate() {
+            base.LateUpdate();
         }
     }
 }

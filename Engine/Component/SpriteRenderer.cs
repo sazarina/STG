@@ -4,8 +4,7 @@ using STG.Engine.Graphics;
 
 namespace STG.Engine.Component {
     public class SpriteRenderer : Component {
-        #region Texture
-        public Texture2D texture { get; set; }
+        public Texture2D? texture { get; set; } = null;
         public LayerGroup SortingLayer { 
             get {
                 return sortingLayer;
@@ -23,17 +22,24 @@ namespace STG.Engine.Component {
 
         public Rectangle Rect {
             get {
-                Rectangle rect = texture.Bounds;
-                rect.Location = transform.position.ToPoint();
-                return rect;
+                if (texture != null) {
+                    Rectangle rect = texture.Bounds;
+                    rect.Location = transform.position.ToPoint();
+                    return rect;
+                } else {
+                    return new Rectangle();
+                }
             }
         }
-        #endregion
-        public override void Initialize() {
-            base.Initialize();
+
+        public SpriteRenderer() {
             OnDestroy += () => {
             RenderManager.Instance.Unregister(this);
             };
+        }
+
+        public override void Initialize() {
+            base.Initialize();
         }
 
         public override void Update() {
