@@ -3,7 +3,6 @@ using Microsoft.Xna.Framework.Graphics;
 using System.Collections;
 using STG.Engine.Debugging;
 using STG.Engine.Graphics;
-using System;
 
 namespace STG.Engine.Component {
     /// <summary>

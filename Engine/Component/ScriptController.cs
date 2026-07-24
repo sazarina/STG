@@ -41,13 +41,14 @@ namespace STG.Engine.Component {
 
         List<Behavior> ScriptList = new List<Behavior>();
         Queue<Behavior> AddScriptQueue = new Queue<Behavior>();
+        Queue<Behavior> RemoveScriptQueue = new Queue<Behavior>();
 
         /// <summary>
         /// 指定された型のスクリプトをアタッチします。
         /// </summary>
         /// <param name="type"></param>
         /// <returns></returns>
-        internal static Component AttachScript(Type type, GameObject gameObject) {
+        internal Behavior AttachScript(Type type, GameObject gameObject) {
             // ジェネリックにしない理由:
             // コンパイラは呼び出し側で `T` を宣言された制約（ここでは `Component`）としてしか扱えないため、
             // `Behavior` 固有のメンバーを直接呼ぶとコンパイルエラーになるので、
@@ -67,6 +68,10 @@ namespace STG.Engine.Component {
 
         internal static void Register(Behavior Script) { 
             Instance.AddScriptQueue.Enqueue(Script);
+        }
+
+        internal static void Unregister(Behavior Script) {
+            Instance.RemoveScriptQueue.Enqueue(Script);
         }
 
         public void Initialize() {

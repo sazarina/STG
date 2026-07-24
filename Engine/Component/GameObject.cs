@@ -3,6 +3,7 @@ using Microsoft.Xna.Framework.Graphics;
 using STG.Engine.Debugging;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace STG.Engine.Component {
     public class GameObject {
@@ -92,10 +93,15 @@ namespace STG.Engine.Component {
             //this.texture = texture;
 
             OnDestroy += () => {
-                foreach (var component in GetComponents().Values) {
+                foreach (var component in GetComponents()) {
                     component.OnDestroy?.Invoke();
                 }
             };
+        }
+
+        public static GameObject Instantiate(string name, Transform? parent = null, Texture2D? texture = null, string tag = "") {
+            GameObject gameObject = InstantiateInternal(0, 0, name, parent, texture, tag);
+            return gameObject;
         }
 
         public static GameObject Instantiate(int x, int y, string name, Transform?   parent = null, Texture2D? texture = null, string tag = "") {
@@ -145,13 +151,14 @@ namespace STG.Engine.Component {
 
             if (!IsRegisteredComponent<T>()) {
                 if (typeof(Behavior).IsAssignableFrom(type)) {
-                    var script = ScriptController.AttachScript(type, this);
-                    ComponentList.Add(type, script);
-                    return (T)script;
+                    var script = ScriptController.Instance.AttachScript(type, this);
+                    return (T)(object)script;
                 } else if (typeof(Component).IsAssignableFrom(type)) {
-                    Component component = new T();
+                    Component component = new T {
+                        gameObject = this
+                    };
+
                     component.Initialize();
-                    component.gameObject = this;
 
                     if (type == typeof(SpriteRenderer)) {
                         //これではSortingLayer:Defaultで登録されてしまうので、
@@ -167,7 +174,9 @@ namespace STG.Engine.Component {
                 }
 
             } else {
-                throw new ArgumentException($"{type.Name}は既にコンポーネントが登録されています");
+                Debug.LogError("GameObject", $"{type.Name}は既にコンポーネントが登録されています");
+                //戻り値がnullになることはないので、null許容型を外すために!をつける
+                return GetComponent<T>()!;
             }
         }
 
@@ -193,13 +202,20 @@ namespace STG.Engine.Component {
             }
         }
 
-        public Dictionary<Type, Component> GetComponents()
-            => ComponentList;
+        public Component[] GetComponents() {
+            var components = Components.Values.ToList();
+            components.AddRange(Scripts.Values);
+            return components.ToArray();
+        }
+
 
         public bool IsRegisteredComponent<T>() {
             Type type = typeof(T);
-            if (typeof(Component).IsAssignableFrom(type)) {
-                return ComponentList.ContainsKey(type);
+            // Behavior (スクリプト) と Component を区別して登録有無を確認する
+            if (typeof(Behavior).IsAssignableFrom(type)) {
+                return Scripts.ContainsKey(type);
+            } else if (typeof(Component).IsAssignableFrom(type)) {
+                return Components.ContainsKey(type);
             } else {
                 Debug.Log($"コンポーネント {type.Name} は登録されていません");
                 return false;
