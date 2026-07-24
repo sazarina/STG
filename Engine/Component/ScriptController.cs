@@ -61,7 +61,7 @@ namespace STG.Engine.Component {
 
             //ScriptControllerのLateUpdateで遅延してStartを呼び出すようにする
             Register(script);
-            gameObject.AttachedScripts.Add(type, script);
+            gameObject.Scripts.Add(type, script);
             return script;
         }
 

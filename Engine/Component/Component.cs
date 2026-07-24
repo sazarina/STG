@@ -5,7 +5,7 @@ namespace STG.Engine.Component {
         public GameObject gameObject { get; internal set; }
         public Transform transform => gameObject.transform;
 
-        public string Name {
+        public string name {
             get {
                 if (gameObject != null) {
                     return gameObject.name;
@@ -23,6 +23,16 @@ namespace STG.Engine.Component {
         }
 
         public bool isActive { get; internal set; }
+
+        internal Component() {
+            OnInitialize += () => {
+
+            };
+            OnDestroy += () => {
+
+            };
+        }
+
         public virtual void Initialize() {
 
         } 

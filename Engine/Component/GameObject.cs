@@ -15,20 +15,38 @@ namespace STG.Engine.Component {
         /// すべてのInstantiateされるオブジェクトの既定の親
         /// </summary>
         public static Transform? Root { get; internal set; }
-
-        internal Guid Guid { get; private set; }
-
+        /// <summary>
+        /// GameObjectの一意な識別子
+        /// </summary>
+        public Guid Guid { get; private set; }
+        /// <summary>
+        /// GameObjectの名前
+        /// </summary>
         public string name { get; set; }
+        /// <summary>
+        /// GameObjectのタグ
+        /// </summary>
         public string tag { get; set; }
-
+        /// <summary>
+        /// GameObjectの位置、回転、スケールを管理するTransformコンポーネント
+        /// </summary>
         public Transform transform { get; set; }
-
+        /// <summary>
+        /// GameObjectがアクティブかどうかを示すフラグ
+        /// </summary>
         public bool active { get; private set; } = true;
+        /// <summary>
+        /// GameObjectのアクティブ状態を設定します
+        /// </summary>
+        /// <param name="value"></param>
         public void SetActive(bool value) {
             active = value;
         }
 
         #region Mouse
+        /// <summary>
+        /// マウスカーソルがGameObjectのSpriteRendererの範囲内にあるかどうかを示すフラグ
+        /// </summary>
         public bool IsMouseCursorPointed {
             get {
                 if (IsRegisteredComponent<SpriteRenderer>()) {
@@ -46,9 +64,15 @@ namespace STG.Engine.Component {
 
         public bool IsMouseCursorClicked => IsMouseCursorPointed && KeyInput.MouseJustPressed(KeyInput.Mouses.LeftMouse);
         #endregion
-
-        internal Dictionary<Type, Behavior> AttachedScripts { get; set; } = new Dictionary<Type, Behavior>();
-        Dictionary<Type, Component> ComponentList { get; set; } = new Dictionary<Type, Component>();
+        /// <summary>
+        /// GameObjectにアタッチされているBehaviorのリスト
+        /// </summary>
+        internal Dictionary<Type, Behavior> Scripts { get; set; } = new Dictionary<Type, Behavior>();
+        /// <summary>
+        /// GameObjectにアタッチされているComponentのリスト
+        /// BehaviorとComponentを区別して管理するため、BehaviorはScriptsに、ComponentはComponentsに格納される
+        /// </summary>
+        Dictionary<Type, Component> Components { get; set; } = new Dictionary<Type, Component>();
 
         #region Functions
         public void Update() {
@@ -63,7 +87,7 @@ namespace STG.Engine.Component {
 
             Vector2 position = new Vector2(x, y);
             transform = new Transform(position, this, Vector2.Zero);
-            ComponentList.Add(typeof(Transform), transform);
+            Components.Add(typeof(Transform), transform);
 
             //this.texture = texture;
 
@@ -99,7 +123,7 @@ namespace STG.Engine.Component {
 
             //何もParentが指定されていなかったらRootを親にする、もしくは指定されていたら、指定しているものを親にする
             if (parent == null) {
-                if (Root != null && gameObject.name != Root.Name) {
+                if (Root != null && gameObject.name != Root.name) {
                     gameObject.transform.SetParent(Root);
                 }
             } else {
@@ -111,7 +135,11 @@ namespace STG.Engine.Component {
         #endregion
 
         #region Component 
-
+        /// <summary>
+        /// GameObjectにコンポーネントを追加します。
+        /// </summary>
+        /// <typeparam name="T">追加するコンポーネントの型</typeparam>
+        /// <returns>追加されたコンポーネントのインスタンス</returns>
         public T AddComponent<T>() where T : Component, new() {
             Type type = typeof(T);
 
@@ -132,10 +160,10 @@ namespace STG.Engine.Component {
                         //RenderManager.Instance().Register(component as SpriteRenderer);
                     }
 
-                    ComponentList.Add(type, component);
+                    Components.Add(type, component);
                     return (T)component;
                 } else {
-                    throw new NotImplementedException($"{type.Name}型のは実装されていません");
+                    throw new NotImplementedException($"{type.Name}型のコンポーネントは実装されていません");
                 }
 
             } else {
@@ -147,14 +175,14 @@ namespace STG.Engine.Component {
             Type type = typeof(T);
             if (typeof(Behavior).IsAssignableFrom(type)) {
                 if (IsRegisteredComponent<T>()) {
-                    return (T)(object)AttachedScripts[type];
+                    return (T)(object)Scripts[type];
                 } else {
                     Debug.Log($"{type.Name}型のスクリプトはアタッチされていません");
                     return default;
                 }
             } else if (typeof(Component).IsAssignableFrom(type)) {
                 if (IsRegisteredComponent<T>()) {
-                    return (T)(object)ComponentList[type];
+                    return (T)(object)Components[type];
                 } else {
                     Debug.Log($"{type.Name}型のコンポーネントはアタッチされていません");
                     return default;
@@ -173,7 +201,7 @@ namespace STG.Engine.Component {
             if (typeof(Component).IsAssignableFrom(type)) {
                 return ComponentList.ContainsKey(type);
             } else {
-                Debug.Log($"{type.Name}型の親を持つコンポーネントは見つかりません");
+                Debug.Log($"コンポーネント {type.Name} は登録されていません");
                 return false;
             }
         }
