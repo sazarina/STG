@@ -209,7 +209,7 @@ namespace STG.Engine.Component {
         }
 
 
-        public bool IsRegisteredComponent<T>() {
+        public bool IsRegisteredComponent<T>() where T : Component {
             Type type = typeof(T);
             // Behavior (スクリプト) と Component を区別して登録有無を確認する
             if (typeof(Behavior).IsAssignableFrom(type)) {
@@ -222,22 +222,22 @@ namespace STG.Engine.Component {
             }
         }
 
-        public T? GetComponentInParent<T>() where T : Component, new() {
+        public T? GetComponentInParent<T>() where T : Component {
             if (transform.Parent == null) {
                 Debug.LogException("GameObject", new Exception($"GameObject {name} の親が存在しません。"));
                 return default;   
             }
-            return transform.Parent?.gameObject.GetComponent<T>();
+            return transform.Parent?.GetComponent<T>();
         }
 
-        public T[]? GetComponentInChildren<T>() {
+        public T[]? GetComponentInChildren<T>() where T : Component {
             List<T> components = new List<T>();
 
             if (transform.Children == default) {
                 return null;
             }
 
-            foreach (var child in transform.Children.Values) {
+            foreach (var child in transform.Children) {
                 if (child.IsRegisteredComponent<T>()) {
                     T? t = child.GetComponent<T>();
                     if (t != null) {

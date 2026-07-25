@@ -46,10 +46,10 @@ namespace STG.Engine.Component {
         }
 
         public T AddComponent<T>() where T : Component, new() => gameObject.AddComponent<T>();
-        public T? GetComponent<T>() where T : Component, new() => gameObject.GetComponent<T>();
+        public T? GetComponent<T>() where T : Component=> gameObject.GetComponent<T>();
         public bool IsRegisteredComponent<T>() where T : Component => gameObject.IsRegisteredComponent<T>();
-
-
+        public Component[] GetComponents<T>() where T : Component => gameObject.GetComponents();
+        public T? GetComponentInParent<T>() where T : Component => gameObject.GetComponentInParent<T>();
 
         #region ChevyRay.Coroutinesのラッパー関数
         protected void AddCoroutine(IEnumerator routine, CoroutineHandle coroutineHandle) =>

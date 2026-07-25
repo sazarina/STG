@@ -79,7 +79,7 @@ namespace STG.Engine.Component {
                     _localPosition = value;
                 } else {
                     //Debug.Log(_Debug.SetDebugInfo(), name);
-                    
+
                     _localPosition = value;
                     _position = Parent._position + localPosition;
                 }
@@ -146,7 +146,7 @@ namespace STG.Engine.Component {
                 throw new Exception("このオブジェクトには子はいません");
             }
             var children = Children;
-            
+
             foreach (var child in children) {
                 child.ClearParent();
             }
@@ -163,7 +163,7 @@ namespace STG.Engine.Component {
             if (Parent.Children.Count == 0) {
                 Parent.ClearChildren();
             }
-            
+
             SetParent(GameObject.Root!);
         }
 
@@ -213,5 +213,63 @@ namespace STG.Engine.Component {
             Hierarchy = Parent.Hierarchy + 1;
         }
         #endregion
+
+
+        public T AddComponent<T>() where T : Component, new() => gameObject.AddComponent<T>();
+        public T? GetComponent<T>() where T : Component => gameObject.GetComponent<T>();
+        public bool IsRegisteredComponent<T>() where T : Component => gameObject.IsRegisteredComponent<T>();
+        public Component[] GetComponents() => gameObject.GetComponents();
+        public T? GetComponentInParent<T>() where T : Component => gameObject.GetComponentInParent<T>();
+
+        /// <summary>
+        /// 見つからなければ再帰的に子供のTransformを探索する
+        /// </summary>
+        /// <param name="name"></param>
+        /// <returns>最初に見つかった一致するTransform</returns>
+        public Transform? Find(string name) {
+            Transform? result = null;
+            foreach (var child in Children) {
+                if (child.name == name) {
+                    result = child;
+                    return result;
+                }
+            }
+
+            //子供のTransformを再帰的に探索する
+            if (result == null) {
+                foreach (var child in Children) {
+                    result = child.Find(name);
+                    if (result != null) {
+                        break;
+                    }
+                }
+            }
+
+            return result;
+        }
+
+        /// <summary>
+        /// 見つからなければ再帰的に子供のTransformを探索する
+        /// </summary>
+        /// <param name="name"></param>
+        /// <returns>すべての一致するTransform</returns>
+        public Transform[] Finds(string name) {
+            List<Transform> results = new List<Transform>();
+            foreach (var child in Children) {
+                if (child.name == name) {
+                    results.Add(child);
+                }
+            }
+
+            //子供のTransformを再帰的に探索する
+            foreach (var child in Children) {
+                var childResult = child.Finds(name);
+                if (childResult.Length > 0) {
+                    results.AddRange(childResult);
+                }
+            }
+
+            return results.ToArray();
+        }
     }
 }
