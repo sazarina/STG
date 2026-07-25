@@ -11,9 +11,9 @@ namespace STG.Engine.Component {
         public Transform? Parent { get; private set; } = null;
 
         /// <summary>
-        /// 子供のTransformを保持するDictionary
+        /// 子供のTransformを保持するList
         /// </summary>
-        public Dictionary<Guid, GameObject> Children { get; private set; } = new Dictionary<Guid, GameObject>();
+        public List<Transform> Children { get; private set; } = new List<Transform>();
 
         /// <summary>
         /// TransformがアタッチされているGameObjectのGuidを返す
@@ -134,7 +134,7 @@ namespace STG.Engine.Component {
             if (Children.Count == 0) {
                 throw new Exception("このオブジェクトには子はいません");
             }
-            Children.Remove(child.gameObject.Guid);
+            Children.Remove(child);
             if (Children.Count == 0) {
                 ClearChildren();
             }
@@ -147,8 +147,8 @@ namespace STG.Engine.Component {
             }
             var children = Children;
             
-            foreach (var child in children.Values) {
-                child.transform.ClearParent();
+            foreach (var child in children) {
+                child.ClearParent();
             }
             ClearChildren();
         }
@@ -159,7 +159,7 @@ namespace STG.Engine.Component {
             }
             //position = position + Parent.position;
 
-            Parent.Children.Remove(gameObject.Guid);
+            Parent.Children.Remove(this);
             if (Parent.Children.Count == 0) {
                 Parent.ClearChildren();
             }
@@ -176,7 +176,7 @@ namespace STG.Engine.Component {
         }
 
         public void SetChild(Transform child) {
-            Children.Add(child.gameObject.Guid, child.gameObject);
+            Children.Add(child);
 
             child.Parent = this;
             child.localPosition = -GetLocalPosition();
@@ -189,7 +189,7 @@ namespace STG.Engine.Component {
             }
 
             if (Parent != null) { //親がいる場合は親の子供リストから削除する
-                Parent.Children.Remove(gameObject.Guid);
+                Parent.Children.Remove(this);
                 if (Parent.Children.Count == 0) {
                     Parent.ClearChildren();
                 }
@@ -197,8 +197,8 @@ namespace STG.Engine.Component {
             Parent = parent;
 
             //親の子供リストにまだ追加されていない場合は追加する
-            if (!Parent.Children.ContainsKey(gameObject.Guid)) {
-                Parent.Children.Add(gameObject.Guid, gameObject);
+            if (!Parent.Children.Contains(this)) {
+                Parent.Children.Add(this);
                 //親の子供リストに既に追加されている場合は上書きしない
             } else {
                 Debug.LogError("Transform", $"{name}には既に親:{Parent.name}が設定されています");

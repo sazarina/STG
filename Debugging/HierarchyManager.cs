@@ -6,12 +6,13 @@ namespace STG.Engine.Debugging {
         TreeView treeView => MainWindow.Instance.treeView1;
 
         public override void Start() {
+            InitializeHierarchy();
             StartCoroutine(DebugLoop(5f));
         }
 
         IEnumerator DebugLoop(float delay) {
             while (true) {
-                ShowHierarchy();
+                //InitializeHierarchy();
                 yield return WaitForSeconds(delay);
             }
         }
@@ -19,28 +20,18 @@ namespace STG.Engine.Debugging {
         /// <summary>
         /// 階層構造の表示を更新するメソッド。GameObject.Root から始まり、すべての子オブジェクトをツリービューに追加します。
         /// </summary>
-        public void ShowHierarchy() {
-            // ツリービューをクリア
-            treeView.Nodes.Clear();
-
+        public void InitializeHierarchy() {
             if (GameObject.Root == null) {
                 Debug.LogException("HierarchyManager", new Exception("GameObject.Rootはnullです。"));
                 return;
             }
 
-            foreach (var transform in GameObject.Root.Children.Values.
-                Select(x => x.transform)) {
-
-                var trees = treeView.Nodes.Find(transform.parentName, true);
-
-                // 最初だけ実行されるはず
-                if (trees.Length == 0) {
-                    treeView.Nodes.Add(transform.Name, transform.Name);
-                }
-                // 親のノードが見つかった
-                if (trees.Length > 0) {
-                    var parentNode = trees[0];
-                    parentNode.Nodes.Add(transform.Name, transform.Name);
+            foreach (var transform in GameObject.Root.Children) { 
+                var tree = treeView.Nodes.Add(transform.Guid.ToString(), transform.name);
+                if (transform.Children.Count > 0) {
+                    foreach (var child in transform.Children) {
+                        tree.Nodes.Add(child.Guid.ToString(), child.name);
+                    }
                 }
             }
         }
