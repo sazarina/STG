@@ -180,7 +180,7 @@ namespace STG.Engine.Component {
             }
         }
 
-        public T? GetComponent<T>() {
+        public T? GetComponent<T>() where T : Component {
             Type type = typeof(T);
             if (typeof(Behavior).IsAssignableFrom(type)) {
                 if (IsRegisteredComponent<T>()) {
