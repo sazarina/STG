@@ -8,67 +8,81 @@ using STG.Engine.Graphics;
 
 namespace STG.Engine.Component {
     public class RenderManager {
-        Camera camera;
+        SpriteBatch? spriteBatch;
+        internal static SpriteBatch SpriteBatch { 
+            get {
+                if (Instance.spriteBatch == null) { 
+                    throw new NullReferenceException("SpriteBatchがnullです。RenderManager.Initialize()が呼び出されていることを確認してください。");
+                }    
+                return Instance.spriteBatch;
+            }
+        }
+
+
+        GraphicsDevice? graphicsDevice = null;
+        internal static GraphicsDevice GraphicsDevice {
+            get {
+                if (Instance.graphicsDevice == null) {
+                    throw new NullReferenceException("GraphicsDeviceがnullです。RenderManager.Initialize()が呼び出されていることを確認してください。");
+                }
+                return Instance.graphicsDevice;
+            }
+        }
+
+
+        Dictionary<string, LayerGroup> sortingLayers = new Dictionary<string, LayerGroup>();
+        /// <summary>
+        /// 
+        /// </summary>
+        public static Dictionary<string, LayerGroup> SortingLayers => Instance.sortingLayers;
+
+
+        SortedDictionary<int, List<SpriteRenderer>> layerList = new SortedDictionary<int, List<SpriteRenderer>>();
+
+        /// <summary>
+        /// RenderManagerに登録されているSpriteRendererをレイヤー順で管理するリスト
+        /// </summary>
+        internal static SortedDictionary<int, List<SpriteRenderer>> LayerList => Instance.layerList;
+
+        Camera? camera;
         FPSCounter fpsCounter = new FPSCounter();
 
         #region シングルトン
-        static RenderManager self = null;
+        static RenderManager? instance = null;
 
-        RenderManager(GraphicsDevice graphicsDevice, SpriteBatch spriteBatch) {
-            //    OnLayerOrderChanged += (order, group) => {
-            //    //    if (layerList.ContainsKey(order)) {
-            //    //        layerList[order] =;
-            //    //    } else {
-            //    //        layerList.Add(order, group);
-            //    //    }
-            //    //};
-            GraphicsDevice = graphicsDevice;
-            SpriteBatch = spriteBatch;
-
-            camera = GameObject.Instantiate(0, 0, "Camera").AddComponent<Camera>();
-
-            Debug.Log("RenderManager.ctor()");
+        RenderManager() {
+            
         }
 
-        public static RenderManager Instance(GraphicsDevice graphicsDevice = null, SpriteBatch spriteBatch = null) {
-            if (self == null) {
-                if (graphicsDevice == null) {
-                    throw new ArgumentNullException(nameof(graphicsDevice), "GraphicsDeviceはnullにできません。");
-                }
-                if (spriteBatch == null) {
-                    throw new ArgumentNullException(nameof(spriteBatch), "SpriteBatchはnullにできません。");
+        internal static RenderManager Instance {
+            get {
+                if (instance == null) {
+                    instance = new RenderManager();
                 }
 
-                self = new RenderManager(graphicsDevice, spriteBatch);
+                return instance;
             }
-
-            return self;
         }
 
         #endregion
 
-        internal SpriteBatch SpriteBatch { get; private set; }
+        public void Initialize(GraphicsDevice graphicsDevice) {
+            this.graphicsDevice = graphicsDevice;
+            spriteBatch = new SpriteBatch(graphicsDevice);
 
-        internal GraphicsDevice GraphicsDevice { get; private set; }
+            camera = GameObject.Instantiate(0, 0, "Camera").AddComponent<Camera>();
 
-        public Dictionary<string, LayerGroup> Layers { get; set; } = new Dictionary<string, LayerGroup>();
-
-        //List<SpriteRenderer> renderers = new List<SpriteRenderer>();
-        Dictionary<int, List<SpriteRenderer>> layerList = new Dictionary<int, List<SpriteRenderer>>();
-
-
+            Debug.Log("RenderManager.Initialize()");
+        }
 
         internal void Register(SpriteRenderer renderer) {
-            //renderers.Add(renderer);
             //LayerListに登録されていない場合
             if (!layerList.ContainsKey(renderer.SortingLayer.LayerOrder)) {
                 layerList.Add(renderer.SortingLayer.LayerOrder, new List<SpriteRenderer> { renderer });
                 
             } else {
                 var index = layerList[renderer.SortingLayer.LayerOrder].IndexOf(renderer);
-                Debug.Log(index);
-
-                if (layerList[renderer.SortingLayer.LayerOrder].IndexOf(renderer) != -1) {
+                if (index != -1) {
                     Debug.Log($"RenderManager: SpriteRenderer {renderer.gameObject.name} は既にレイヤー {renderer.SortingLayer.Name} に登録されています。");
                 } else {
                     layerList[renderer.SortingLayer.LayerOrder].Add(renderer);
@@ -86,14 +100,17 @@ namespace STG.Engine.Component {
             }
         }
 
-        public Action<int, LayerGroup> OnLayerOrderChanged;
-
         public void Update() {
 
         }
 
         public void Draw() {
             GraphicsDevice.Clear(Color.White);
+
+            if (camera == null) { 
+                throw new InvalidOperationException("Cameraがnullです。RenderManager.Initialize()でCameraを設定してください。");
+            }
+
             SpriteBatch.Begin(transformMatrix: camera.GetViewMatrix());
 
             fpsCounter.Draw();

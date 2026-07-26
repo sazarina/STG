@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Linq;
+using System.Text;
 using System.Windows.Forms;
 
 namespace STG.Engine.Debugging {
@@ -17,6 +19,7 @@ namespace STG.Engine.Debugging {
         public DebugWindowForm() {
             InitializeComponent();
             Init_ListView();
+            Init_ListViewCopy();
             Debug.Init(this);
         }
 
@@ -33,7 +36,19 @@ namespace STG.Engine.Debugging {
 
         }
 
-        public void Update() {
+        private void Init_ListViewCopy() {
+            listView1.MultiSelect = true;
+            listView1.KeyDown += (sender, e) => {
+                if (e.Control && e.KeyCode == Keys.C) {
+                    if (listView1.SelectedItems.Count > 0) {
+                        StringBuilder sb = new StringBuilder();
+                        foreach (ListViewItem item in listView1.SelectedItems) {
+                                sb.AppendLine(string.Join("\t", item.SubItems.Cast<ListViewItem.ListViewSubItem>().Select(si => si.Text)));
+                        }
+                        Clipboard.SetText(sb.ToString());
+                    }
+                }
+            };
         }
 
         private void FilterButton_Click(object sender, EventArgs e) {

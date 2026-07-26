@@ -2,6 +2,7 @@
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using STG.Engine;
+using STG.Engine.Component;
 using STG.Engine.Debugging;
 using STG.Engine.Graphics;
 
@@ -50,7 +51,7 @@ namespace STG {
             _spriteBatch = new SpriteBatch(GraphicsDevice);
 
             // TODO: use this.Content to load your game content here
-            gameManager.Initialize(GraphicsDevice, _spriteBatch);
+            gameManager.Initialize<GameObjectManager>(GraphicsDevice, Content);
         }
 
         protected override void Update(GameTime gameTime) {

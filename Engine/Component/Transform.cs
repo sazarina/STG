@@ -5,25 +5,35 @@ using System.Collections.Generic;
 
 namespace STG.Engine.Component {
     public class Transform : Component {
-        public Dictionary<Guid, GameObject> Children { get; private set; } = new Dictionary<Guid, GameObject>();
-        public Transform Parent { get; private set; } = null;
+        /// <summary>
+        /// Parentがnullの場合は自身がRoot
+        /// </summary>
+        public Transform? Parent { get; private set; } = null;
+
+        /// <summary>
+        /// 子供のTransformを保持するList
+        /// </summary>
+        public List<Transform> Children { get; private set; } = new List<Transform>();
+
+        /// <summary>
+        /// TransformがアタッチされているGameObjectのGuidを返す
+        /// </summary>
+        public Guid Guid => gameObject.Guid;
+
         /// <summary>
         /// 階層保持用
         /// </summary>
-        internal int hierarchy = 0;
+        internal int Hierarchy { get; private set; } = 0;
 
-        public string parentName {
+        public string? parentName {
             get {
                 if (Parent != null) {
-                    return Parent.Name;
+                    return Parent.name;
                 } else {
-                    return "No";
+                    return null;
                 }
             }
         }
-
-        public static Transform Empty => new Transform { Name = "Empty" };
-        public static Transform Origin => new Transform { Name = "Origin" };
 
         public int ChildCount {
             get {
@@ -36,24 +46,17 @@ namespace STG.Engine.Component {
 
         public Vector2 position {
             get {
-                if (Parent != null) {
-                    if (Parent.Name == GameObjectManager.RootlName) {
-                        return _position;
-                    } else {
-                        return _position = Parent.position + localPosition;
-                    }
-                } else {
-                    //Root
+                if (Parent == GameObject.Root || Parent == null) {
                     return _position;
+                } else {
+                    return _position = Parent.position + localPosition;
                 }
             }
             set {
-                if (Parent != null) {
-                    if (Parent.Name == GameObjectManager.RootlName) {
+                if (Parent == GameObject.Root || Parent == null) {
 
-                    } else {
+                } else {
 
-                    }
                 }
                 _localPosition = value;
                 _position = value;
@@ -62,7 +65,7 @@ namespace STG.Engine.Component {
 
         public Vector2 localPosition {
             get {
-                if (Parent.Name == "OriginLocalPosition") {
+                if (Parent == GameObject.Root || Parent == null) {
                     //Debug.Log(_Debug.SetDebugInfo(),"NoParent");
                     return _position;
                 } else {
@@ -71,11 +74,11 @@ namespace STG.Engine.Component {
             }
             set {
                 //
-                if (Name == "OriginLocalPosition") {
-                    //Debug.Log(_Debug.SetDebugInfo(), Parent.Name);
+                if (Parent == GameObject.Root || Parent == null) {
+                    //Debug.Log(_Debug.SetDebugInfo(), Parent.name);
                     _localPosition = value;
                 } else {
-                    //Debug.Log(_Debug.SetDebugInfo(), Name);
+                    //Debug.Log(_Debug.SetDebugInfo(), name);
 
                     _localPosition = value;
                     _position = Parent._position + localPosition;
@@ -89,21 +92,21 @@ namespace STG.Engine.Component {
         /// </summary>
         /// <returns></returns>
         public Vector2 GetLocalPosition() {
-            if (Parent.Name != "OriginLocalPosition") {
-                return _position - Parent._position;
-            } else {
+            if (Parent == GameObject.Root || Parent == null) {
                 return _position;
+            } else {
+                return _position - Parent._position;
             }
         }
 
         public Vector2 center { get; private set; } = new Vector2(0, 0);
 
         #region Constructors
-        public Transform() {
+        internal Transform() {
 
         }
 
-        public Transform(Vector2 position, GameObject gameObject = null, Vector2 center = default) {
+        internal Transform(Vector2 position, GameObject gameObject, Vector2 center = default) {
             if (center == default) {
                 center = new Vector2(0, 0);
             }
@@ -112,8 +115,17 @@ namespace STG.Engine.Component {
 
             this.center = center;
             this.gameObject = gameObject;
+
+            OnDestroy += () => {
+                //if (Parent != null) {
+                //    RemoveParent_Internal(Parent.gameObject);
+                //}
+                //if (Children.Count > 0) {
+                //    RemoveChildrenAll();
+                //}
+            };
         }
-     
+
         #endregion
 
         #region 親子関係
@@ -122,13 +134,11 @@ namespace STG.Engine.Component {
             if (Children.Count == 0) {
                 throw new Exception("このオブジェクトには子はいません");
             }
-            Children.Remove(child.gameObject.Guid);
+            Children.Remove(child);
             if (Children.Count == 0) {
                 ClearChildren();
             }
-            GameObjectManager.Instance().UpdateGameObjectList(gameObject);
             child.ClearParent();
-            GameObjectManager.Instance().UpdateGameObjectList(child.gameObject);
         }
 
         public void RemoveChildrenAll() {
@@ -136,103 +146,130 @@ namespace STG.Engine.Component {
                 throw new Exception("このオブジェクトには子はいません");
             }
             var children = Children;
-            
 
-            GameObjectManager.Instance().UpdateGameObjectList(gameObject);
-            foreach (var child in children.Values) {
-                child.transform.ClearParent();
-                GameObjectManager.Instance().UpdateGameObjectList(child);
+            foreach (var child in children) {
+                child.ClearParent();
             }
             ClearChildren();
         }
 
-        public GameObject RemoveParent() {
-            if (Parent == null) {
-                Debug.Log("このオブジェクトには親がいません");
-                return null;
+        public void RemoveParent() {
+            if (Parent == null || Parent == GameObject.Root) {
+                throw new InvalidOperationException("このオブジェクトには親がいません");
             }
-            GameObject parent = Parent.gameObject;
-            RemoveParent_Internal(parent);
-            return parent;
-        }
-
-        public GameObject RemoveParent_Internal(GameObject parent) {
             //position = position + Parent.position;
 
-            ClearParent();
-            GameObjectManager.Instance().UpdateGameObjectList(gameObject);
-
-            parent.transform.Children.Remove(gameObject.Guid);
-            if (parent.transform.Children.Count == 0) {
-                parent.transform.ClearChildren();
+            Parent.Children.Remove(this);
+            if (Parent.Children.Count == 0) {
+                Parent.ClearChildren();
             }
-            GameObjectManager.Instance().UpdateGameObjectList(parent);
-            return parent;
+
+            SetParent(GameObject.Root!);
         }
-        
+
         void ClearParent() {
-            SetParent(GameObjectManager.Root);
+            SetParent(GameObject.Root!);
         }
 
         void ClearChildren() {
             Children.Clear();
         }
 
-        public void SetParent(GameObject parent) {
-            SetParent(parent.transform);
-        }
-
         public void SetChild(Transform child) {
-            Children.Add(child.gameObject.Guid,child.gameObject);
+            Children.Add(child);
 
-            GameObjectManager.Instance().UpdateGameObjectList(gameObject);
             child.Parent = this;
             child.localPosition = -GetLocalPosition();
-            GameObjectManager.Instance().UpdateGameObjectList(child.gameObject);
         }
 
         public void SetParent(Transform parent) {
-            Parent = parent;
-            if (!AddChild()) {
-                
+            if (parent == null) {
+                Debug.LogException("Transform", new ArgumentNullException(nameof(parent), "親をnullにすることはできません"));
                 return;
             }
-            GameObjectManager.Instance().UpdateGameObjectList(Parent.gameObject);
+
+            if (Parent != null) { //親がいる場合は親の子供リストから削除する
+                Parent.Children.Remove(this);
+                if (Parent.Children.Count == 0) {
+                    Parent.ClearChildren();
+                }
+            }
+            Parent = parent;
+
+            //親の子供リストにまだ追加されていない場合は追加する
+            if (!Parent.Children.Contains(this)) {
+                Parent.Children.Add(this);
+                //親の子供リストに既に追加されている場合は上書きしない
+            } else {
+                Debug.LogError("Transform", $"{name}には既に親:{Parent.name}が設定されています");
+                return;
+            }
 
             localPosition = GetLocalPosition();
 
             //position = Parent.position + localPosition;
 
-            gameObject.transform = SetHierarchy(this,Parent.hierarchy+1);
-            GameObjectManager.Instance().UpdateGameObjectList(gameObject); 
-            
-
+            //階層を更新
+            Hierarchy = Parent.Hierarchy + 1;
         }
+        #endregion
 
-        Transform SetHierarchy(Transform transform,int hierarchy) {
-            transform.hierarchy = hierarchy;
-            return transform;
+
+        public T AddComponent<T>() where T : Component, new() => gameObject.AddComponent<T>();
+        public T? GetComponent<T>() where T : Component => gameObject.GetComponent<T>();
+        public bool IsRegisteredComponent<T>() where T : Component => gameObject.IsRegisteredComponent<T>();
+        public Component[] GetComponents() => gameObject.GetComponents();
+        public T? GetComponentInParent<T>() where T : Component => gameObject.GetComponentInParent<T>();
+
+        /// <summary>
+        /// 見つからなければ再帰的に子供のTransformを探索する
+        /// </summary>
+        /// <param name="name"></param>
+        /// <returns>最初に見つかった一致するTransform</returns>
+        public Transform? Find(string name) {
+            Transform? result = null;
+            foreach (var child in Children) {
+                if (child.name == name) {
+                    result = child;
+                    return result;
+                }
+            }
+
+            //子供のTransformを再帰的に探索する
+            if (result == null) {
+                foreach (var child in Children) {
+                    result = child.Find(name);
+                    if (result != null) {
+                        break;
+                    }
+                }
+            }
+
+            return result;
         }
 
         /// <summary>
-        /// childがParentを追加する、
+        /// 見つからなければ再帰的に子供のTransformを探索する
         /// </summary>
-        /// <returns></returns>
-        bool AddChild() {
-            if (!Parent.Children.ContainsKey(gameObject.Guid)) {
-
-                gameObject.transform = SetHierarchy(this, Parent.hierarchy + 1);
-
-                Parent.Children.Add(gameObject.Guid, gameObject);
-                return true;
-            } else {
-                //上書きしないで置く
-                //Debug.Log(_Debug.SetDebugInfo(), $"{Name}には既に親:{Parent.Name}が設定されています", "上書きします");
-                //Parent.Children[gameObject.Guid] = gameObject;
-                return false;
+        /// <param name="name"></param>
+        /// <returns>すべての一致するTransform</returns>
+        public Transform[] Finds(string name) {
+            List<Transform> results = new List<Transform>();
+            foreach (var child in Children) {
+                if (child.name == name) {
+                    results.Add(child);
+                }
             }
-        }
 
-        #endregion
+            //子供のTransformを再帰的に探索する
+            foreach (var child in Children) {
+                var childResult = child.Finds(name);
+                if (childResult.Length > 0) {
+                    results.AddRange(childResult);
+                }
+            }
+
+            return results.ToArray();
+        }
     }
 }

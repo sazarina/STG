@@ -4,13 +4,15 @@ using STG.Engine.Graphics;
 
 namespace STG.Engine.Component {
     public class SpriteRenderer : Component {
-        #region Texture
-        public Texture2D texture { get; set; }
-        public LayerGroup SortingLayer { get {
+        public Texture2D? texture { get; set; } = null;
+        public LayerGroup SortingLayer { 
+            get {
                 return sortingLayer;
             } set {
+                // Unregisterは現在値(古いレイヤー)を見て削除するため、値の代入より前に呼ぶ必要がある
+                RenderManager.Instance.Unregister(this);
                 sortingLayer = value;
-                RenderManager.Instance().Register(this);
+                RenderManager.Instance.Register(this);
             }
         }
 
@@ -18,23 +20,24 @@ namespace STG.Engine.Component {
 
         public int SortingOrder { get; set; }
 
-
-        //使用するつもりはない。
-        void SetLayer(string layerName, int sortingOrder = 0) {
-            SortingLayer = new LayerGroup(layerName, sortingOrder, 0);
-            SortingOrder = sortingOrder;
-
-            //GameObjectManager.UpdateLayerGroup(gameObject, SortingLayer);
-        }
-
         public Rectangle Rect {
             get {
-                Rectangle rect = texture.Bounds;
-                rect.Location = transform.position.ToPoint();
-                return rect;
+                if (texture != null) {
+                    Rectangle rect = texture.Bounds;
+                    rect.Location = transform.position.ToPoint();
+                    return rect;
+                } else {
+                    return new Rectangle();
+                }
             }
         }
-        #endregion
+
+        public SpriteRenderer() {
+            OnDestroy += () => {
+            RenderManager.Instance.Unregister(this);
+            };
+        }
+
         public override void Initialize() {
             base.Initialize();
         }
