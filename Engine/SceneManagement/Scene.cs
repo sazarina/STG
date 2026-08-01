@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace STG.Engine.SceneManagement {
     class Scene {
-        string name;
+        string name = "";
         
         Dictionary<GameObject, LayerGroup> Layers = new Dictionary<GameObject, LayerGroup>();
 

@@ -5,7 +5,7 @@ using Point = Microsoft.Xna.Framework.Point;
 namespace STG.Engine.Debugging.Scripts {
     internal class SpriteSheetTest : Behavior {
         public override void Start() {
-            SpriteSheet sheet = new SpriteSheet("/mat_021.png", "planes", 8, 2, new Point(32, 32), new Point(8, 8), new Point(16, 8));
+            SpriteSheet sheet = new SpriteSheet("planes", 8, 2, new Point(32, 32), new Point(8, 8), new Point(16, 8));
 
             var pad = new Point(100, 100);
             for (int y = 0; y < sheet.NumY; y++) {

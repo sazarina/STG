@@ -1,11 +1,12 @@
 ﻿using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
 using STG.Engine.Component;
 using STG.Engine.Debugging;
 using STG.Engine.Graphics;
 
 namespace STG {
-    class GameManager {
+    public class GameManager {
         RuntimeManager runtimeManager = new RuntimeManager();
 
         public GameManager() {
@@ -15,31 +16,35 @@ namespace STG {
         /// <summary>
         /// ゲームで使用するエンティティの初期化をここで行う。
         /// </summary>
-        public void Initialize(GraphicsDevice graphicsDevice, SpriteBatch spriteBatch)  {
-            runtimeManager.Initialize(graphicsDevice, spriteBatch);
+        public void Initialize<T>(GraphicsDevice graphicsDevice, ContentManager content) where T : GameObjectManager {
+            runtimeManager.Initialize<T>(graphicsDevice, content);
 
-            var layers = RenderManager.Instance().Layers;
+            var layers = RenderManager.SortingLayers;
             layers["Default"] = new LayerGroup() {
                 Name = "Default",
                 LayerOrder = 0,
+            };  
+
+            layers["Bullet"] = new LayerGroup() {
+                Name = "Bullet",
+                LayerOrder = 1,
             };
 
             layers["Character"] = new LayerGroup() {
                 Name = "Character",
-                LayerOrder = 1,
+                LayerOrder = 2,
             };
 
             layers["UI"] = new LayerGroup() {
                 Name = "UI",
-                LayerOrder = 2,
+                LayerOrder = 3,
             };
 
 
-            GameObject player = GameObject.Instantiate<Player>(0, 200, "player");
+            var player = GameObject.Instantiate<Player>(0, 200, "player");
 
             //GameObject.Instantiate<SortingLayerTest>(0, 0, "sortingLayerTest");
-            var obj = GameObjectManager.Instance().FindWithName("player");
-            Debug.Log(obj);
+
 
             Debug.Log("GameManager.Initialize() Ended");
         }

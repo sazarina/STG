@@ -12,39 +12,54 @@ namespace STG.Engine.Component {
         /// <summary>
         /// スクリプトを管理するクラス
         /// </summary>
-        ScriptController scriptController;
+        ScriptController ScriptController => ScriptController.Instance;
         /// <summary>
         /// ChevyRay.Coroutinesのコルーチンを実行するクラス
         /// </summary>
-        CoroutineRunner coroutineRunner;
+        protected CoroutineRunner CoroutineRunner {
+            get {
+                return ScriptController.coroutineRunner;
+            }
+        }
 
-        public void Initialize(ScriptController scriptController, GameObject gameObject) {
-            this.scriptController = scriptController;
+        public void Initialize(GameObject gameObject) {
             this.gameObject = gameObject;
-            coroutineRunner = scriptController.coroutineRunner;
         }
 
         public virtual void Start() { }
 
         protected Texture2D LoadTexture(string path, string name) => GraphicsUltis.CreateTexture(path, name);
 
-        protected LayerGroup Layer(string name) => RenderManager.Instance().Layers[name];
+        protected Texture2D LoadTexture(string assetName) {
+            return AssetManager.Load(assetName);
+        }
+
+        public static LayerGroup Layer(string name) {
+            if(RenderManager.SortingLayers.ContainsKey(name)) {
+                return RenderManager.SortingLayers[name];
+            } else {
+                Debug.LogError("LayerGroup", $"LayerGroup '{name}' is not registered. Using default LayerGroup.");
+
+                RenderManager.SortingLayers.Add(name, LayerGroup.Default);
+                return LayerGroup.Default;
+            }
+        }
 
         public T AddComponent<T>() where T : Component, new() => gameObject.AddComponent<T>();
-        public T GetComponent<T>() where T : Component, new() => gameObject.GetComponent<T>();
+        public T? GetComponent<T>() where T : Component=> gameObject.GetComponent<T>();
         public bool IsRegisteredComponent<T>() where T : Component => gameObject.IsRegisteredComponent<T>();
-
-
+        public Component[] GetComponents() => gameObject.GetComponents();
+        public T? GetComponentInParent<T>() where T : Component => gameObject.GetComponentInParent<T>();
 
         #region ChevyRay.Coroutinesのラッパー関数
         protected void AddCoroutine(IEnumerator routine, CoroutineHandle coroutineHandle) =>
-            scriptController.AddCoroutine(routine, coroutineHandle);
+            ScriptController.AddCoroutine(routine, coroutineHandle);
 
         protected void UpdateCoroutine(IEnumerator routine, CoroutineHandle coroutineHandle) =>
-            scriptController.UpdateCoroutine(routine, coroutineHandle);
+            ScriptController.UpdateCoroutine(routine, coroutineHandle);
 
         protected CoroutineHandle GetCoroutine(IEnumerator routine) =>
-            scriptController.GetCoroutine(routine);
+            ScriptController.GetCoroutine(routine);
         /// <summary>
         /// コルーチン実行
         /// </summary>
@@ -52,7 +67,7 @@ namespace STG.Engine.Component {
         /// <param name="coroutine"></param>
         /// <returns></returns>
         protected CoroutineHandle StartCoroutine(float delay, IEnumerator coroutine) {
-            var handle = coroutineRunner.Run(delay, coroutine);
+            var handle = CoroutineRunner.Run(delay, coroutine);
             AddCoroutine(coroutine, handle);
             Debug.Log(coroutine);
             return handle;
@@ -66,19 +81,19 @@ namespace STG.Engine.Component {
             StartCoroutine(0f, coroutine);
 
         protected void StopCoroutine(IEnumerator coroutine) {
-            coroutineRunner.Stop(coroutine);
+            CoroutineRunner.Stop(coroutine);
         }
         protected void StopAll() {
-            coroutineRunner.StopAll();
+            CoroutineRunner.StopAll();
         }
 
         protected bool IsRunning(CoroutineHandle coroutineHandle) =>
-            coroutineRunner.IsRunning(coroutineHandle);
+            CoroutineRunner.IsRunning(coroutineHandle);
 
         protected bool IsRunning(IEnumerator routine) =>
-             coroutineRunner.IsRunning(routine);
+             CoroutineRunner.IsRunning(routine);
 
-        protected int CoroutineCount => coroutineRunner.Count;
+        protected int CoroutineCount => CoroutineRunner.Count;
         #endregion
 
         public static IEnumerator Empty() {
@@ -86,7 +101,7 @@ namespace STG.Engine.Component {
         }
 
         protected IEnumerator WaitForSeconds(float second) {
-            yield return coroutineRunner.Run(second, Empty()).Wait();
+            yield return CoroutineRunner.Run(second, Empty()).Wait();
         }
     }
 }

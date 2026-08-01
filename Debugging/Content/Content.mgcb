@@ -2,7 +2,7 @@
 #----------------------------- Global Properties ----------------------------#
 
 /outputDir:..\bin\Debug\net8.0-windows\Content
-/intermediateDir:obj
+/intermediateDir:obj/$(Platform)
 /platform:Windows
 /config:
 /profile:Reach
@@ -13,10 +13,46 @@
 
 #---------------------------------- Content ---------------------------------#
 
-#begin DebugText.spritefont
+#begin ../../STG/Content/DebugText.spritefont
 /importer:FontDescriptionImporter
 /processor:FontDescriptionProcessor
 /processorParam:PremultiplyAlpha=True
 /processorParam:TextureFormat=Compressed
-/build:DebugText.spritefont
+/build:../../STG/Content/DebugText.spritefont;DebugText.spritefont
+
+#begin ../../STG/Content/planes.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:../../STG/Content/planes.png;planes.png
+
+#begin ../../STG/Content/shot.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:../../STG/Content/shot.png;shot.png
+
+#begin ../../STG/Content/shot.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:../../STG/Content/shot.png;shot.png
 

@@ -1,18 +1,18 @@
-﻿using STG.Engine.Component;
+﻿using STG.Engine;
+using STG.Engine.Component;
 using STG.Engine.Graphics;
-using Point = Microsoft.Xna.Framework.Point;
 using Keys = Microsoft.Xna.Framework.Input.Keys;
-using STG.Engine;
 using System.Collections;
 using Microsoft.Xna.Framework.Graphics;
+using Point = Microsoft.Xna.Framework.Point;
 
 namespace STG {
-    class Player : Behavior {
+    public class Player : Behavior {
         SpriteRenderer sr;
         Texture2D[] textures = new Texture2D[2];
 
         override public void Start() {
-            SpriteSheet sheet = new SpriteSheet("/mat_021.png", "planes", 8, 2, new Point(32, 32), new Point(8, 8), new Point(16, 8));
+            SpriteSheet sheet = new SpriteSheet("planes", 8, 2, new Point(32, 32), new Point(8, 8), new Point(16, 8));
             var sprite = sheet.SpriteTextures;
 
             textures[0] = sprite[2].texture;
@@ -44,7 +44,8 @@ namespace STG {
             var position = transform.position;
 
             if (KeyInput.IsHeld(Keys.Space)) {
-                GameObject.Instantiate<Bullet>((int)position.X, (int)position.Y, "playerBullet");
+                var bullet = GameObject.Instantiate<Bullet>((int)position.X, (int)position.Y, "playerBullet");
+                bullet.Shot(Bullet.Type.PlayerBullet, 0);
             }
 
             if (KeyInput.IsHeld(Keys.W)) {

@@ -1,23 +1,26 @@
 ﻿using ChevyRay.Coroutines;
 using Microsoft.Xna.Framework;
+using STG.Engine.Debugging;
+using System;
 using System.Collections;
 using System.Collections.Generic;
-using STG.Engine.Debugging;
 
 namespace STG.Engine.Component {
     public class ScriptController {
         #region シングルトン
-        static ScriptController self = null;
+        static ScriptController? instance = null;
 
         ScriptController() {
             Debug.Log("ScriptController.ctor()");
         }
 
-        public static ScriptController Instance() {
-            if (self == null) {
-                self = new ScriptController();
+        internal static ScriptController Instance {
+            get {
+                if (instance == null) {
+                    instance = new ScriptController();
+                }
+                return instance;
             }
-            return self;
         }
 
         #endregion
@@ -37,24 +40,62 @@ namespace STG.Engine.Component {
 
 
         List<Behavior> ScriptList = new List<Behavior>();
-        public void AddScript<T>(T t) where T : Behavior, new() {
-            t.Initialize(this,null);
-            t.Start();
-            ScriptList.Add(t);
+        Queue<Behavior> AddScriptQueue = new Queue<Behavior>();
+        Queue<Behavior> RemoveScriptQueue = new Queue<Behavior>();
+
+        /// <summary>
+        /// 指定された型のスクリプトをアタッチします。
+        /// </summary>
+        /// <param name="type"></param>
+        /// <returns></returns>
+        internal Behavior AttachScript(Type type, GameObject gameObject) {
+            // ジェネリックにしない理由:
+            // コンパイラは呼び出し側で `T` を宣言された制約（ここでは `Component`）としてしか扱えないため、
+            // `Behavior` 固有のメンバーを直接呼ぶとコンパイルエラーになるので、
+            // そのため `Activator.CreateInstance` で生成して `Behavior` にキャストしている
+            var script = (Behavior?)Activator.CreateInstance(type);
+            if (script == null) {
+                throw new InvalidOperationException($"Failed to create instance of type {type.FullName}");
+            }
+
+            script.Initialize(gameObject);
+
+            //ScriptControllerのLateUpdateで遅延してStartを呼び出すようにする
+            Register(script);
+            gameObject.Scripts.Add(type, script);
+            return script;
+        }
+
+        internal static void Register(Behavior Script) { 
+            Instance.AddScriptQueue.Enqueue(Script);
+        }
+
+        internal static void Unregister(Behavior Script) {
+            Instance.RemoveScriptQueue.Enqueue(Script);
         }
 
         public void Initialize() {
-            Debug.Log("ScriptContoller.Initalize()");
+            Debug.Log("ScriptController.Initialize()");
         }
-        //どうしようかなアタッチするってことはScriptController_Updateメソッドでは実行しないように変更しようかな
+
         public void Update(GameTime gameTime) {
             coroutineRunner.Update((float)gameTime.ElapsedGameTime.TotalSeconds);
 
-            //ScriptList.ForEach(script => script.Update());
+            foreach (Behavior script in ScriptList) {
+                if (script.isActive) {
+                    script.Update();
+                }
+            }
         }
 
-        public void Draw() {
-            //ScriptList.ForEach(script => script.Draw());
+        public void LateUpdate() {
+            while (AddScriptQueue.Count > 0) {
+                var script = AddScriptQueue.Dequeue();
+                script.isActive = true;
+                script.Start();
+
+                ScriptList.Add(script);
+            }
         }
     }
 }

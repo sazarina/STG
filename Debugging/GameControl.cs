@@ -7,7 +7,7 @@ using Keys = Microsoft.Xna.Framework.Input.Keys;
 
 namespace STG.Engine.Debugging {
     public class GameControl :  MonoGameControl{
-        GameManager gameManager;
+        GameManager? gameManager;
 
         /// <summary>
         /// Allows the game to perform any initialization it needs to before starting to run.
@@ -29,7 +29,7 @@ namespace STG.Engine.Debugging {
             Debug.Log("GameControl.initialize()");
 
             gameManager = new GameManager();
-            gameManager.Initialize<DebugClient>(Editor.GraphicsDevice, Editor.spriteBatch);
+            gameManager.Initialize<DebugClient>(Editor.GraphicsDevice, Editor.Content);
         }
 
         /// <summary>
@@ -39,10 +39,14 @@ namespace STG.Engine.Debugging {
         /// </summary>
         /// <param name="gameTime">Provides a snapshot of timing values.</param>
         protected override void Update(GameTime gameTime) {
-            
             TimeManager.Update(gameTime);
             if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.Escape))
                 Application.Exit();
+
+            if (gameManager == null) {
+                throw new InvalidOperationException("GameManager is not initialized.");
+            }
+
             gameManager.Update(gameTime);
         }
 
@@ -50,6 +54,10 @@ namespace STG.Engine.Debugging {
         /// This is called when the game should draw itself.
         /// </summary>
         protected override void Draw() {
+            if (gameManager == null) {
+                throw new InvalidOperationException("GameManager is not initialized.");
+            }
+
             gameManager.Draw();
         }
     }

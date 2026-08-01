@@ -1,163 +1,164 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using STG.Engine.Graphics;
 using STG.Engine.Debugging;
 
 namespace STG.Engine.Component {
     public class GameObjectManager {
         #region シングルトン
-        static GameObjectManager self = null;
+        static GameObjectManager? instance = null;
 
-        public GameObjectManager(ScriptController scriptController) {
-            this.scriptController = scriptController;
+        bool isInitialized = false;
+
+        public GameObjectManager() {
             Debug.Log("Initialize/ctor()");
         }
 
-
-        public static GameObjectManager Instance(ScriptController scriptController = null) {
-            if (self == null) {
-                if (scriptController == null) {
-                    throw new InvalidOperationException("最初の呼び出し時は ScriptController  を渡す必要があります");
-                }
-
-                Debug.Log($"GameObjectManager を {typeof(GameObjectManager).Name} として初期化します。");
-                self = new GameObjectManager(scriptController);
-            } else {
-                if (scriptController != null) {
-                    throw new InvalidOperationException($"GameObjectManager はすでに {self.GetType().Name} として初期化されています。");
-                }
+        internal static T CreateInstance<T>() where T:GameObjectManager { 
+            var ctor = typeof(T).GetConstructor(Type.EmptyTypes);
+            if(ctor == null) {
+                throw new InvalidOperationException($"型 {typeof(T).Name} にパラメータなしのコンストラクタが存在しません。");
             }
-
-            return self;
+            
+            T instance = (T)ctor.Invoke(null);
+            GameObjectManager.instance = instance;
+            return instance;
         }
-        public static GameObjectManager Instance<T>(ScriptController scriptController = null) where T : GameObjectManager {
-            if (self == null) {
-                if (scriptController == null) {
-                    throw new InvalidOperationException("最初の呼び出し時は ScriptController  を渡す必要があります");
+
+        internal static GameObjectManager Instance {
+            get {
+                if (instance == null) {
+                    Debug.Log($"GameObjectManager を {typeof(GameObjectManager).Name} として初期化します。");
+                    instance = new GameObjectManager();
                 }
 
-                Debug.Log($"GameObjectManager を {typeof(T).Name} として初期化します。");
-                self = (T)Activator.CreateInstance(typeof(T), scriptController);
-            } else {
-                if (scriptController != null) {
-                    throw new InvalidOperationException($"GameObjectManager はすでに {self.GetType().Name} として初期化されています。");
-                }
+                return instance;
             }
-            return self;
         }
 
         #endregion
 
-        protected ScriptController scriptController;
+        protected ScriptController? scriptController;
 
         /// <summary>
-        /// すべてのInstantiateされるオブジェクトの既定の親
+        /// InstantiateされたすべてのGameObjectを管理するリスト
         /// </summary>
-        internal static GameObject Root;
-        public static GameObject GetRoot() { return Root; }
+        protected readonly Dictionary<Guid, GameObject> GameObjects = new Dictionary<Guid, GameObject>();
 
-        internal static string RootlName => Root.name;
-        protected Dictionary<Guid, GameObject> GameObjects = new Dictionary<Guid, GameObject>();
+        public int Count => GameObjects.Count;
 
+        readonly Queue<GameObject> addQueue = new Queue<GameObject>();
+        readonly Queue<GameObject> removeQueue = new Queue<GameObject>();
 
         protected List<LayerGroup> LayerList = new List<LayerGroup>();
-        /// <summary>
-        /// 監視レイヤーリスト
-        /// </summary>
-        //public Dictionary<GameObject, LayerGroup> Layers = new Dictionary<GameObject, LayerGroup>();
-        /// <summary>
-        /// GameObjectの監視レイヤーを追加する
-        /// </summary>
-        /// <param name="gameObject">追加するオブジェクト</param>
-        //public static void AddLayerGroup(GameObject gameObject) {
-        //    Instance().Layers.Add(gameObject, gameObject.layerGroup);
-        //}
-        /// <summary>
-        /// GameObjectの監視レイヤーを更新する
-        /// </summary>
-        /// <param name="gameObject">更新するオブジェクト</param>
-        /// <param name="layerGroup">更新するオブジェクトのレイヤー</param>
-        //public static void UpdateLayerGroup(GameObject gameObject, LayerGroup layerGroup) {
-        //    if (Instance().Layers.ContainsKey(gameObject)) {
-        //        Instance().Layers[gameObject] = layerGroup;
-        //    } else {
-        //        Debug.Log($"{layerGroup.Name}レイヤーは登録されていません");
-        //    }
-        //}
 
-        public virtual void Initialize() {
-            Root = GameObject.Instantiate(0, 0, "OriginLocalPosition");
+        public virtual void Initialize(ScriptController scriptController) {
+            if (scriptController == null) {
+                throw new InvalidOperationException("ScriptController が null です");
+            }
+
+            this.scriptController = scriptController;
+
+            GameObject.Root = GameObject.Instantiate(0, 0, "Root").transform;
             Debug.Log("GameObjectManager.Initialize()");
         }
 
+        /// <summary>
+        /// 初回のLateUpdateが呼ばれたときに、OnInitializedイベントを発火させる
+        /// </summary>
+        public event Action OnInitialized = delegate { };
+
+        public virtual void Awake() { }
+
         public virtual void Update() {
-            var Objects = GameObjects.Values;
-            foreach (var gameObject in Objects) {
+            foreach (var gameObject in GameObjects.Values) {
                 if (gameObject.active) {
                     gameObject.Update();
-                    foreach (var component in gameObject.GetComponents().Values) {
-                        component.Update();
+                    foreach (var component in gameObject.GetComponents()) {
+                        if (component is not Behavior) {
+                            component.Update();
+                        }
                     }
                 }
             }
         }
+
         /// <summary>
-        /// <para>レイヤー機能</para>
-        /// まずlayerOrderで昇順にソートしてから、GroupごとにorderInLayerで昇順にして描画
-        /// 
-        /// 廃止
-        /// 
+        /// LateUpdateは、Updateの後に呼び出されるメソッドで、
+        /// Update中にGameObjectのコレクションが変更されるのを防ぐために、
+        /// 追加されたGameObjectをキューからGameObjectsリストに移動するために使用されます。
         /// </summary>
-        //public virtual void Draw() {
-        //    var groupList = Layers.Values.GroupBy(x => x.layeres.layerOrder).OrderBy(x => x.Key);
-        //    groupList.ForEach(group => {
-        //        var sorted = group.OrderBy(x => x.orderInLayer);
-        //        sorted.ForEach(layergroup => {
-        //            var gameObject = layergroup.gameObject;
-        //            if (gameObject.active) {
-        //                gameObject.Draw();
-        //                gameObject.GetComponents().Values.ForEach(component => component.Draw());
-        //            }
-        //        });
-        //    });
-        //}
+        public virtual void LateUpdate() {
+            //Debug.Log("que:"+addQueue.Count);
+            while (addQueue.Count > 0) {
+                var gameObject = addQueue.Dequeue();
+                GameObjects.Add(gameObject.Guid, gameObject);
+            }
 
-        public static void AddGameObjectToList(GameObject gameObject) {
-            Instance().GameObjects.Add(gameObject.Guid, gameObject);
+            while (removeQueue.Count > 0) {
+                var gameObject = removeQueue.Dequeue();
+                gameObject.OnDestroy?.Invoke();
+                GameObjects.Remove(gameObject.Guid);
+            }
+
+            if (!isInitialized) {
+                isInitialized = true;
+                OnInitialized?.Invoke();
+            }
         }
 
-        public GameObject[] FindWithTags(string tag) {
-            return GameObjects.Values.Where(x => x.tag == tag).ToArray();
+        /// <summary>
+        /// すぐに追加すると、Update中にコレクションが変更される可能性があるため、キューに追加して後で処理する
+        /// </summary>
+        internal static void AddGameObjectToQue(GameObject gameObject) {
+            if (instance == null) {
+                throw new InvalidOperationException("GameObjectManager が初期化されていません。Initialize() を先に呼び出してください。");
+            }
+            instance.addQueue.Enqueue(gameObject);
         }
 
-        public GameObject FindWithName(string name) {
-            if (!GameObjects.Values.Any(x => x.name == name)) {
+        internal static void RemoveGameObjectToQue(GameObject gameObject) {
+            if (instance == null) {
+                throw new InvalidOperationException("GameObjectManager が初期化されていません。Initialize() を先に呼び出してください。");
+            }
+            instance.removeQueue.Enqueue(gameObject);
+        }
+
+
+        internal IEnumerable<GameObject> FindWithTags(string tag) {
+            foreach (var gameObject in GameObjects.Values) {
+                if (gameObject.tag == tag) {
+                    yield return gameObject;
+                }
+            }
+        }
+
+        internal GameObject? Find(string name) {
+            foreach (var gameObject in GameObjects.Values) {
+                if (gameObject.name == name) {
+                    return gameObject;
+                }
+            }
+
+            return null;
+        }
+
+        internal IEnumerable<GameObject> FindObjects(string name) {
+            foreach (var gameObject in GameObjects.Values) {
+                if (gameObject.name == name) {
+                    yield return gameObject;
+                }
+            }
+        }
+
+        internal GameObject? FindWithGuid(Guid guid) {
+            if (!GameObjects.TryGetValue(guid, out GameObject? value)) {
+               Debug.LogException("FindWithGuid", new KeyNotFoundException("GameObjectが見つかりません"));
                 return null;
-            }
-
-            return GameObjects.Values.Where(x => x.name == name).First();
-        }
-
-        public GameObject FindWithGuid(Guid guid) {
-            if (!GameObjects.ContainsKey(guid)) {
-                throw new NullReferenceException("GameObjectが見つかりません");
             } else {
-                return GameObjects[guid];
+                return value;
             }
+            
         }
-
-        public void UpdateGameObjectList(GameObject gameObject) {
-            if (!GameObjects.ContainsKey(gameObject.Guid)) {
-                Debug.Log($"{gameObject.name}は登録されていません");
-            } else {
-                GameObjects[gameObject.Guid] = gameObject;
-            }
-        }
-
-        public void Destroy(GameObject gameObject) {
-            GameObjects.Remove(gameObject.Guid);
-        }
-
     }
 }

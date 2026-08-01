@@ -2,12 +2,21 @@
 
 namespace STG.Engine.Debugging {
     public partial class MainWindow : Form {
-        public static MainWindow self;
+        public static MainWindow Instance {
+            get {
+                if (instance == null) {
+                    throw new InvalidOperationException("MainWindow instance has not been initialized.");
+                }
+                return instance;
+            }
+        }
+
+        static MainWindow instance;
 
         DebugWindowForm debugWindow = new DebugWindowForm();
 
         public MainWindow() {
-            self = this;
+            instance = this;
 
             InitializeComponent();
             debugWindow.Show();
@@ -21,30 +30,35 @@ namespace STG.Engine.Debugging {
             };
 
             //listView1.Columns.AddRange(Columns);
-
         }
 
         public void SelectItem(GameObject gameObject) {
             listBox1.Items.Clear();
             listBox1.Items.Add(gameObject.name);
-            listBox1.SelectedIndex = 0;
         }
 
-        public GameObject GetSelectedGameObject() {
-            var name = listBox1.SelectedItem as string;
+        void listBox1_SelectedIndexChanged(object sender, EventArgs e) {
+            if (sender is ListBox listBox) {
+                var name = listBox.SelectedItem as string;
 
-            GameObject gameObject = DebugClient.Instance().FindWithName(name);
-            Debug.Log($"GameObjectManagerIstance: {DebugClient.Instance()}"); ;
-            textBox1.Text = $"{gameObject.transform.position}";
-            return gameObject;
-
+                var gameObject = GameObject.Find(name);
+                if (gameObject != null) {
+                    textBox1.Text = $"position:{gameObject.transform.position}\n" +
+                    $"localPosition:{gameObject.transform.localPosition}\n" +
+                    $"parent:{gameObject.transform.parentName}\n";
+                } else {
+                    throw new Exception("GameObjectが見つかりませんでした");
+                }
+            }
         }
 
-        private void listBox1_SelectedIndexChanged(object sender, EventArgs e) {
-            GameObject gameObject = GetSelectedGameObject();
+        private void treeView1_AfterSelect(object sender, TreeViewEventArgs e) {
+            if(e.Node == null) return;
 
-
-
+            var gameObject = GameObject.Find(e.Node.Text);
+            if (gameObject != null) {
+                SelectItem(gameObject);
+            }
         }
     }
 }

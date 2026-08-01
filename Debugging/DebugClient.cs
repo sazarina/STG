@@ -1,26 +1,19 @@
 ﻿using STG.Engine.Component;
 
 namespace STG.Engine.Debugging {
-    public class DebugClient:GameObjectManager {
-        MainWindow window = MainWindow.self;
-        TreeView treeView => window.treeView1;
+    public class DebugClient : GameObjectManager {
+        MainWindow window = MainWindow.Instance;
 
-        HierarchyManager hierarchyManager = new HierarchyManager();
+        public override void Initialize(ScriptController scriptController) {
+            base.Initialize(scriptController);
 
-        public DebugClient(ScriptController scriptController) : base(scriptController) {
             Debug.isDebug = true;
 
-            //Debugging.Log(DebugClient.Instance().GetType());
-        }
-
-        public override void Initialize() {
-            base.Initialize();
-
-            var obj = GameObject.Instantiate(0,0, "HierarchyManager");
-            hierarchyManager = obj.AddComponent<HierarchyManager>();
-            hierarchyManager.Start(this);
+            GameObject.Instantiate<HierarchyManager>(0, 0, "HierarchyManager");
 
             Debug.Log($"DebugClient.Initialize()"); ;
+            OnInitialized += () => {
+            };
         }
 
         public override void Update() {
@@ -33,35 +26,9 @@ namespace STG.Engine.Debugging {
                     window.SelectItem(obj);
                 }
             }
-
-            hierarchyManager.Update();
         }
-
-        /// <summary>
-        /// 式木の操作
-        /// </summary>
-        public void ShowHierarchy() {
-            // ツリービューをクリア
-            treeView.Nodes.Clear();
-
-            Transform root = GetRoot().transform;
-            
-            foreach (var transform in root.Children.Values.//GameObjects.Values.
-                Select(x => x.transform)) {
-
-                var trees = treeView.Nodes.Find(transform.parentName, true);
-
-                // 最初だけ実行されるはず
-                if (trees.Length == 0) {
-                    treeView.Nodes.Add(transform.Name, transform.Name);
-                }
-                // 親のノードが見つかった
-                if (trees.Length > 0) {
-                    var parentNode = trees[0];
-                    parentNode.Nodes.Add(transform.Name, transform.Name);
-                }
-            }
+        public override void LateUpdate() {
+            base.LateUpdate();
         }
-
     }
 }
