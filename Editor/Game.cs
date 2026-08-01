@@ -1,15 +1,19 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using Microsoft.Xna.Framework.Input;
 using MonoGame.Framework.WpfInterop;
 using MonoGame.Framework.WpfInterop.Input;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using STG;
+using STG.Engine;
+using STG.Engine.Component;
+using STG.Engine.Debugging; 
+using STG.Engine.Graphics;
 
 namespace Editor {
     public class MyGame : WpfGame {
+        GameManager? gameManager;
+        DebugWindowForm debugWindow = new DebugWindowForm();
+
         private IGraphicsDeviceService _graphicsDeviceManager;
         private WpfKeyboard _keyboard;
         private WpfMouse _mouse;
@@ -29,15 +33,44 @@ namespace Editor {
             base.Initialize();
 
             // content loading now possible
+            Content.RootDirectory = "Content";
+
+            Screen.Width = (int)Width;
+            Screen.Height = (int)Height;
+
+            LoadHelper.Initialize(Content, GraphicsDevice);
+            GraphicsUltis.Initialize();
+
+            KeyInput.Initialize();
+
+            Debug.Log("WPFGame.initialize()");
+
+            debugWindow.Show();
+
+            gameManager = new GameManager();
+            gameManager.Initialize<GameObjectManager>(GraphicsDevice, Content);
         }
 
         protected override void Update(GameTime time) {
-            // every update we can now query the keyboard & mouse for our WpfGame
-            var mouseState = _mouse.GetState();
-            var keyboardState = _keyboard.GetState();
+            if (gameManager == null) {
+                throw new InvalidOperationException("GameManager is not initialized.");
+            }
+
+            // WPFの入力状態をグローバルなKeyInputに写す
+            KeyInput.OldKeyboard = KeyInput.CurrentKeyboard;
+            KeyInput.CurrentKeyboard = _keyboard.GetState();
+            KeyInput.OldMouseState = KeyInput.CurrentMouseState;
+            KeyInput.CurrentMouseState = _mouse.GetState();
+
+            gameManager.Update(time);
         }
 
         protected override void Draw(GameTime time) {
+            if (gameManager == null) {
+                throw new InvalidOperationException("GameManager is not initialized.");
+            }
+
+            gameManager.Draw();
         }
     }
 }

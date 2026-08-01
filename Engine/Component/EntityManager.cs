@@ -8,6 +8,7 @@ using static STG.Engine.Graphics.GraphicsUltis;
 
 namespace STG.Engine.Component {
     internal class EntityManager {
+
         static EntityManager? instance = null;
 
         internal static EntityManager Instance {
@@ -38,12 +39,6 @@ namespace STG.Engine.Component {
         }
 
         public virtual void Update(GameTime gameTime) {
-            KeyInput.OldKeyboard = KeyInput.CurrentKeyboard;
-            KeyInput.CurrentKeyboard = Keyboard.GetState();
-
-            KeyInput.OldMouseState = KeyInput.CurrentMouseState;
-            KeyInput.CurrentMouseState = Mouse.GetState();
-
             if(gameObjectManager == null) {
                 throw new InvalidOperationException("GameObjectManager が初期化されていません。Initialize() を先に呼び出してください。");
             }

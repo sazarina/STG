@@ -59,6 +59,12 @@ namespace STG {
                 Exit();
 
             // TODO: Add your update logic here
+            KeyInput.OldKeyboard = KeyInput.CurrentKeyboard;
+            KeyInput.CurrentKeyboard = Keyboard.GetState();
+
+            KeyInput.OldMouseState = KeyInput.CurrentMouseState;
+            KeyInput.CurrentMouseState = Mouse.GetState();
+
             TimeManager.Update(gameTime);
             gameManager.Update(gameTime);
             base.Update(gameTime);
